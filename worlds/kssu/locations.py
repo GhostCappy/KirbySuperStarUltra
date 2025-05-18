@@ -10,6 +10,7 @@ class LocationData(NamedTuple):
     code: int | None
     tag: str = ""
 
+# Dont forget to change BASE_ID.
 green_greens_locations = {
     location_names.sb_whispy: LocationData(BASE_ID + 0),
     location_names.sb_gg_maxim: LocationData(BASE_ID + 0x100, "maxim"),
@@ -516,31 +517,115 @@ milky_way_wishes_locations = {
 }
 
 the_arena_locations = {
-    location_names.arena_1: LocationData(BASE_ID + 113),
-    location_names.arena_2: LocationData(BASE_ID + 114),
-    location_names.arena_3: LocationData(BASE_ID + 115),
-    location_names.arena_4: LocationData(BASE_ID + 116),
-    location_names.arena_5: LocationData(BASE_ID + 117),
-    location_names.arena_6: LocationData(BASE_ID + 118),
-    location_names.arena_7: LocationData(BASE_ID + 119),
-    location_names.arena_8: LocationData(BASE_ID + 120),
-    location_names.arena_9: LocationData(BASE_ID + 121),
-    location_names.arena_10: LocationData(BASE_ID + 122),
-    location_names.arena_11: LocationData(BASE_ID + 123),
-    location_names.arena_12: LocationData(BASE_ID + 124),
-    location_names.arena_13: LocationData(BASE_ID + 125),
-    location_names.arena_14: LocationData(BASE_ID + 126),
-    location_names.arena_15: LocationData(BASE_ID + 127),
-    location_names.arena_16: LocationData(BASE_ID + 128),
-    location_names.arena_17: LocationData(BASE_ID + 129),
-    location_names.arena_18: LocationData(BASE_ID + 130),
-    location_names.arena_19: LocationData(BASE_ID + 131),
-    location_names.arena_complete: LocationData(None),
-    location_names.arena_maxim_1: LocationData(BASE_ID + 0x154, "maxim"),
-    location_names.arena_maxim_2: LocationData(BASE_ID + 0x155, "maxim"),
-    location_names.arena_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
-    location_names.arena_maxim_4: LocationData(BASE_ID + 0x157, "maxim"),
-    location_names.arena_maxim_5: LocationData(BASE_ID + 0x158, "maxim"),
+    location_names.the_arena_1: LocationData(BASE_ID + 113),
+    location_names.the_arena_2: LocationData(BASE_ID + 114),
+    location_names.the_arena_3: LocationData(BASE_ID + 115),
+    location_names.the_arena_4: LocationData(BASE_ID + 116),
+    location_names.the_arena_5: LocationData(BASE_ID + 117),
+    location_names.the_arena_6: LocationData(BASE_ID + 118),
+    location_names.the_arena_7: LocationData(BASE_ID + 119),
+    location_names.the_arena_8: LocationData(BASE_ID + 120),
+    location_names.the_arena_9: LocationData(BASE_ID + 121),
+    location_names.the_arena_10: LocationData(BASE_ID + 122),
+    location_names.the_arena_11: LocationData(BASE_ID + 123),
+    location_names.the_arena_12: LocationData(BASE_ID + 124),
+    location_names.the_arena_13: LocationData(BASE_ID + 125),
+    location_names.the_arena_14: LocationData(BASE_ID + 126),
+    location_names.the_arena_15: LocationData(BASE_ID + 127),
+    location_names.the_arena_16: LocationData(BASE_ID + 128),
+    location_names.the_arena_17: LocationData(BASE_ID + 129),
+    location_names.the_arena_18: LocationData(BASE_ID + 130),
+    location_names.the_arena_19: LocationData(BASE_ID + 131),
+    location_names.the_arena_complete: LocationData(None),
+    location_names.the_arena_maxim_1: LocationData(BASE_ID + 0x154, "maxim"),
+    location_names.the_arena_maxim_2: LocationData(BASE_ID + 0x155, "maxim"),
+    location_names.the_arena_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
+    location_names.the_arena_maxim_4: LocationData(BASE_ID + 0x157, "maxim"),
+    location_names.the_arena_maxim_5: LocationData(BASE_ID + 0x158, "maxim"),
+}
+
+purple_plants_locations = {
+    location_names.rotk_whispy: LocationData(BASE_ID + 0)
+}
+
+illusion_islands_locations = {
+    location_names.rotk_lololo: LocationData(BASE_ID + 0)
+}
+
+crash_clouds_locations = {
+    location_names.rotk_kracko: LocationData(BASE_ID + 0)
+}
+
+mt_dedede_sky_locations = {
+    location_names.rotk_kabula: LocationData(BASE_ID + 0)
+}
+
+the_revenge_locations = {
+    location_names.rotk_dedede: LocationData(BASE_ID + 0),
+    location_names.rotk_complete: LocationData(BASE_ID + 1)
+}
+
+revenge_of_the_king_locations = {
+    **purple_plants_locations,
+    **illusion_islands_locations,
+    **crash_clouds_locations,
+    **mt_dedede_sky_locations,
+    **the_revenge_locations
+}
+
+# This will need to be changed level to account for beating each individual stage within each level
+meta_knightmare_locations = {
+    location_names.mku_level_1: LocationData(BASE_ID + 1),
+    location_names.mku_level_2: LocationData(BASE_ID + 2),
+    location_names.mku_level_3: LocationData(BASE_ID + 3),
+    location_names.mku_level_4: LocationData(BASE_ID + 4),
+    location_names.mku_level_5: LocationData(BASE_ID + 5),
+    location_names.mku_complete: LocationData(BASE_ID + 6)
+}
+
+helper_to_hero_locations = {
+    location_names.hth_1: LocationData(BASE_ID + 109),
+    location_names.hth_2: LocationData(BASE_ID + 110),
+    location_names.hth_3: LocationData(BASE_ID + 111),
+    location_names.hth_4: LocationData(BASE_ID + 112),
+    location_names.hth_5: LocationData(BASE_ID + 113),
+    location_names.hth_6: LocationData(BASE_ID + 114),
+    location_names.hth_7: LocationData(BASE_ID + 115),
+    location_names.hth_8: LocationData(BASE_ID + 116),
+    location_names.hth_9: LocationData(BASE_ID + 117),
+    location_names.hth_10: LocationData(BASE_ID + 118),
+    location_names.hth_11: LocationData(BASE_ID + 119),
+    location_names.hth_12: LocationData(BASE_ID + 120),
+    location_names.hth_13: LocationData(BASE_ID + 121),
+    location_names.hth_14: LocationData(BASE_ID + 122),
+    location_names.hth_15: LocationData(BASE_ID + 123),
+    location_names.hth_16: LocationData(BASE_ID + 124),
+    location_names.hth_17: LocationData(BASE_ID + 125),
+    location_names.hth_18: LocationData(BASE_ID + 126),
+    location_names.hth_19: LocationData(BASE_ID + 127),
+    location_names.hth_20: LocationData(BASE_ID + 128),
+    location_names.hth_complete: LocationData(BASE_ID + 129),
+    location_names.hth_maxim_1: LocationData(BASE_ID + 0x154, "maxim"),
+    location_names.hth_maxim_2: LocationData(BASE_ID + 0x155, "maxim"),
+    location_names.hth_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
+}
+
+the_true_arenas_locations = {
+    location_names.the_true_arena_1: LocationData(BASE_ID + 113),
+    location_names.the_true_arena_2: LocationData(BASE_ID + 114),
+    location_names.the_true_arena_3: LocationData(BASE_ID + 115),
+    location_names.the_true_arena_4: LocationData(BASE_ID + 116),
+    location_names.the_true_arena_5: LocationData(BASE_ID + 117),
+    location_names.the_true_arena_6: LocationData(BASE_ID + 118),
+    location_names.the_true_arena_7: LocationData(BASE_ID + 119),
+    location_names.the_true_arena_8: LocationData(BASE_ID + 120),
+    location_names.the_true_arena_9: LocationData(BASE_ID + 121),
+    location_names.the_true_arena_complete: LocationData(None),
+    location_names.the_true_arena_tomato_1: LocationData(BASE_ID + 0x154, "tomato"),
+    location_names.the_true_arena_tomato_2: LocationData(BASE_ID + 0x155, "tomato"),
+    location_names.the_true_arena_tomato_3: LocationData(BASE_ID + 0x156, "tomato"),
+    location_names.the_true_arena_tomato_4: LocationData(BASE_ID + 0x157, "tomato"),
+    location_names.the_true_arena_tomato_5: LocationData(BASE_ID + 0x158, "tomato"),
 }
 
 location_table = {
@@ -550,5 +635,9 @@ location_table = {
     **tgco_locations,
     **revenge_of_meta_knight_locations,
     **milky_way_wishes_locations,
-    **the_arena_locations
+    **the_arena_locations,
+    **revenge_of_the_king_locations,
+    **meta_knightmare_locations,
+    **helper_to_hero_locations,
+    **the_true_arenas_locations
 }

@@ -2,7 +2,7 @@ from typing import NamedTuple, Dict, Optional, Set
 from BaseClasses import ItemClassification, Item
 from .names import item_names
 
-# Probably change this later
+# Will CERTAINLY need to be changed later.
 BASE_ID = 0x470000
 
 class KSSUItem(Item):

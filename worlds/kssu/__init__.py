@@ -24,6 +24,7 @@ from .rules import set_rules
 
 logger = logging.getLogger("Kirby Super Star Ultra")
 
+# Webpage for Archipelago page
 class KSSUWeb(WebWorld):
     theme = "partyTime" 
     setup_en = Tutorial(
@@ -36,6 +37,7 @@ class KSSUWeb(WebWorld):
     )
     tutorials = [setup_en]
     
+# Details for game ROM
 class KSSUSettings(settings.Group):
     class RomFile(settings.UserFilePath):
         """File name of the Kirby Super Star Ultra rom"""
@@ -47,6 +49,7 @@ class KSSUSettings(settings.Group):
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: bool = True
 
+# APWorld information
 class KSSUWorld(World):
     """
     Kirby Super Star Ultra is a remake of the Super Nintendo Entertainment System game Kirby Super Star.
@@ -60,12 +63,11 @@ class KSSUWorld(World):
     item_name_to_id = item_lookup_by_name
     location_name_to_id = location_lookup_by_name
     
-    create_regions = create_regions
-    
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
         self.location_count: int = 0
         
+    # Probably needs more future work
     def generate_early(self) -> None:
         if not self.options.included_subgames.value.intersection(
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
@@ -149,6 +151,8 @@ class KSSUWorld(World):
         self.multiworld.itempool += itempool
         set_rules = set_rules
 
+    def create_regions(self) -> None:
+        pass
     
     def get_filler_item_name(self) -> str:
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]

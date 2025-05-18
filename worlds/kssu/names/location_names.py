@@ -131,36 +131,80 @@ mww_copy = "??? - Copy Essence"
 mww_complete = "Galactic Nova"
 
 # The Arena
-arena_1 = "The Arena - 1 Straight Win"
-arena_2 = "The Arena - 2 Straight Wins"
-arena_3 = "The Arena - 3 Straight Wins"
-arena_4 = "The Arena - 4 Straight Wins"
-arena_5 = "The Arena - 5 Straight Wins"
-arena_6 = "The Arena - 6 Straight Wins"
-arena_7 = "The Arena - 7 Straight Wins"
-arena_8 = "The Arena - 8 Straight Wins"
-arena_9 = "The Arena - 9 Straight Wins"
-arena_10 = "The Arena - 10 Straight Wins"
-arena_11 = "The Arena - 11 Straight Wins"
-arena_12 = "The Arena - 12 Straight Wins"
-arena_13 = "The Arena - 13 Straight Wins"
-arena_14 = "The Arena - 14 Straight Wins"
-arena_15 = "The Arena - 15 Straight Wins"
-arena_16 = "The Arena - 16 Straight Wins"
-arena_17 = "The Arena - 17 Straight Wins"
-arena_18 = "The Arena - 18 Straight Wins"
-arena_19 = "The Arena - 19 Straight Wins"
-arena_complete = "The Arena - 20 Straight Wins"
+the_arena_1 = "The Arena - 1 Straight Win"
+the_arena_2 = "The Arena - 2 Straight Wins"
+the_arena_3 = "The Arena - 3 Straight Wins"
+the_arena_4 = "The Arena - 4 Straight Wins"
+the_arena_5 = "The Arena - 5 Straight Wins"
+the_arena_6 = "The Arena - 6 Straight Wins"
+the_arena_7 = "The Arena - 7 Straight Wins"
+the_arena_8 = "The Arena - 8 Straight Wins"
+the_arena_9 = "The Arena - 9 Straight Wins"
+the_arena_10 = "The Arena - 10 Straight Wins"
+the_arena_11 = "The Arena - 11 Straight Wins"
+the_arena_12 = "The Arena - 12 Straight Wins"
+the_arena_13 = "The Arena - 13 Straight Wins"
+the_arena_14 = "The Arena - 14 Straight Wins"
+the_arena_15 = "The Arena - 15 Straight Wins"
+the_arena_16 = "The Arena - 16 Straight Wins"
+the_arena_17 = "The Arena - 17 Straight Wins"
+the_arena_18 = "The Arena - 18 Straight Wins"
+the_arena_19 = "The Arena - 19 Straight Wins"
+the_arena_complete = "The Arena - 20 Straight Wins"
 
 # Revenge of the King
+rotk_whispy = "Revenge of the King - Whispy's Revenge"
+rotk_lololo = "Revenge of the King - Lololo & Lalala's Revenge"
+rotk_kracko = "Revenge of the King - Kracko's Revenge"
+rotk_kabula = "Revenge of the King - Kabula"
+rotk_dedede = "Revenge of the King - Masked Dedede"
+rotk_complete = "Revenge of the King - Masked Dedede"
 
 # Meta Knightmare Ultra
+mku_level_1 = "Meta Knightmare Ultra - Level 1"
+mku_level_2 = "Meta Knightmare Ultra - Level 2"
+mku_level_3 = "Meta Knightmare Ultra - Level 3"
+mku_level_4 = "Meta Knightmare Ultra - Level 4"
+mku_level_5 = "Meta Knightmare Ultra - Level 5"
+mku_complete = "Meta Knightmare Ultra - Complete"
 
 # Helper to Hero
+hth_1 = "Helper to Hero - Knuckle Joe"
+hth_2 = "Helper to Hero - Parasol Waddle Dee"
+hth_3 = "Helper to Hero - Chilly"
+hth_4 = "Helper to Hero - Blade Knight"
+hth_5 = "Helper to Hero - Simirror"
+hth_6 = "Helper to Hero - Sir Kibble"
+hth_7 = "Helper to Hero - Plasma Wisp"
+hth_8 = "Helper to Hero - Waddle Doo"
+hth_9 = "Helper to Hero - Poppy Bro Jr."
+hth_10 = "Helper to Hero - Gim"
+hth_11 = "Helper to Hero - Birdon"
+hth_12 = "Helper to Hero - Bio Spark"
+hth_13 = "Helper to Hero - Bonkers"
+hth_14 = "Helper to Hero - Burning Leo"
+hth_15 = "Helper to Hero - Capsule J2"
+hth_16 = "Helper to Hero - Bugzzy"
+hth_17 = "Helper to Hero - Tac"
+hth_18 = "Helper to Hero - Wheelie"
+hth_19 = "Helper to Hero - Rocky"
+hth_20 = "Helper to Hero - Sword Knight"
+hth_complete = "Helper to Hero - Complete"
 
 # The TRUE Arena
+the_true_arena_1 = "The True Arena - 1 Straight Win"
+the_true_arena_2 = "The True Arena - 2 Straight Wins"
+the_true_arena_3 = "The True Arena - 3 Straight Wins"
+the_true_arena_4 = "The True Arena - 4 Straight Wins"
+the_true_arena_5 = "The True Arena - 5 Straight Wins"
+the_true_arena_6 = "The True Arena - 6 Straight Wins"
+the_true_arena_7 = "The True Arena - 7 Straight Wins"
+the_true_arena_8 = "The True Arena - 8 Straight Wins"
+the_true_arena_9 = "The True Arena - 9 Straight Wins"
+the_true_arena_complete = "The True Arena - 10 Straight Wins"
 
-# Begin Consumables/Essences
+# Consumables/Essences
+# Spring Breeze
 sb_gg_maxim = "Green Greens - Maxim Tomato"
 sb_gg_1up = "Green Greens - 1-Up"
 sb_fl_1up = "Float Islands - 1-Up"
@@ -169,6 +213,7 @@ sb_bc_1up = "Bubbly Clouds - 1-Up"
 sb_bc_maxim = "Bubbly Clouds - Maxim Tomato"
 sb_bc_1up_moon = "Bubbly Clouds - 1-Up (Secret)"
 
+# Dyna Blade
 db_pp_1up_1 = "Peanut Plains - 1-Up (1)"
 db_pp_maxim_1 = "Peanut Plains - Maxim Tomato (1)"
 db_pp_sword = "Peanut Plains - Sword Essence"
@@ -231,12 +276,14 @@ db_db_cutter = "Dyna Blade's Nest - Cutter Essence"
 db_db_fire = "Dyna Blade's Nest - Fire Essence"
 db_db_beam = "Dyna Blade's Nest - Beam Essence"
 
+# Gourmet Race
 gr_jet = "Gourmet Race 3 - Jet Essence"
 gr_parasol = "Gourmet Race 3 - Parasol Essence"
 gr_ninja = "Gourmet Race 3 - Ninja Essence"
 gr_wing = "Gourmet Race 3 - Wing Essence"
 gr_wheel = "Gourmet Race 3 - Wheel Essence"
 
+# The Great Cave Offensive
 tgco_st_1up_1 = "Sub-Tree - 1-Up (1)"
 tgco_st_maxim_1 = "Sub-Tree - Maxim Tomato (1)"
 tgco_st_maxim_save = "Sub-Tree - Maxim Tomato (Save)"  # ignore
@@ -314,6 +361,7 @@ tgco_ga_ice = "Garden - Ice Essence"
 tgco_ga_parasol_2 = "Garden - Parasol Essence (2)"
 tgco_ga_maxim_10 = "Garden - Maxim Tomato (Exit)"
 
+# Revenge of Meta Knight
 romk_c2_maxim_1 = "RoMK Chapter 2 - Maxim Tomato (1)"
 romk_c2_maxim_2 = "RoMK Chapter 2 - Maxim Tomato (Boss)"
 romk_c2_parasol = "RoMK Chapter 2 - Parasol Essence"
@@ -381,6 +429,7 @@ romk_c7_sleep = "RoMK Chapter 7 - Sleep Essence"
 romk_c7_cutter_2 = "RoMK Chapter 7 - Cutter Essence (2)"
 romk_c7_maxim_4 = "RoMK Chapter 7 - Maxim Tomato (Boss)"
 
+# Milky Way Wishes
 mww_fl_maxim = "Floria - Maxim Tomato (Winter)"
 
 mww_aq_1up_1 = "Aqualiss - 1-Up (1)"
@@ -434,8 +483,25 @@ mww_hm_1up_1 = "Halfmoon - 1-Up (Warp Star)"
 mww_hm_maxim_3 = "Halfmoon - Maxim Tomato (3)"
 mww_hm_maxim_4 = "Halfmoon - Maxim Tomato (4)"
 
-arena_maxim_1 = "The Arena - Maxim Tomato (Rest Area 1)"
-arena_maxim_2 = "The Arena - Maxim Tomato (Rest Area 2)"
-arena_maxim_3 = "The Arena - Maxim Tomato (Rest Area 3)"
-arena_maxim_4 = "The Arena - Maxim Tomato (Rest Area 4)"
-arena_maxim_5 = "The Arena - Maxim Tomato (Rest Area 5)"
+# The Arena
+the_arena_maxim_1 = "The Arena - Maxim Tomato (Rest Area 1)"
+the_arena_maxim_2 = "The Arena - Maxim Tomato (Rest Area 2)"
+the_arena_maxim_3 = "The Arena - Maxim Tomato (Rest Area 3)"
+the_arena_maxim_4 = "The Arena - Maxim Tomato (Rest Area 4)"
+the_arena_maxim_5 = "The Arena - Maxim Tomato (Rest Area 5)"
+
+# Revenge of the King
+
+# Meta Knightmare Ultra
+
+# Helper to Hero
+hth_maxim_1 = "Helper to Hero - Maxim Tomato (Rest Area 1)"
+hth_maxim_2 = "Helper to Hero - Maxim Tomato (Rest Area 2)"
+hth_maxim_3 = "Helper to Hero - Maxim Tomato (Rest Area 3)"
+
+# The TRUE Arena
+the_true_arena_tomato_1 = "The True Arena - Tomato (Rest Area 1)"
+the_true_arena_tomato_2 = "The True Arena - Tomato (Rest Area 2)"
+the_true_arena_tomato_3 = "The True Arena - Tomato (Rest Area 3)"
+the_true_arena_tomato_4 = "The True Arena - Tomato (Rest Area 4)"
+the_true_arena_tomato_5 = "The True Arena - Tomato (Rest Area 5)"
