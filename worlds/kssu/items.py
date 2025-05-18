@@ -13,7 +13,7 @@ class ItemData(NamedTuple):
     classification: ItemClassification
     value: int = 0
 
-sub_games: Dict[str, ItemData] = {
+main_games: Dict[str, ItemData] = {
     item_names.spring_breeze: ItemData(BASE_ID + 0, ItemClassification.progression),
     item_names.dyna_blade: ItemData(BASE_ID + 1, ItemClassification.progression),
     item_names.gourmet_race: ItemData(BASE_ID + 2, ItemClassification.progression),
@@ -27,7 +27,16 @@ sub_games: Dict[str, ItemData] = {
     item_names.the_true_arena: ItemData(BASE_ID + 10, ItemClassification.progression),
 }
 
-sub_game_completion: Dict[str, ItemData] = {
+sub_games: Dict[str, ItemData] = {
+    item_names.megaton_punch: ItemData(BASE_ID + 0x200, ItemClassification.progression),
+    item_names.samurai_kirby: ItemData(BASE_ID + 0x201, ItemClassification.progression),
+    item_names.kirby_card_swipe: ItemData(BASE_ID + 0x202, ItemClassification.progression),
+    item_names.kirby_on_the_draw: ItemData(BASE_ID + 0x203, ItemClassification.progression),
+    item_names.snack_tracks: ItemData(BASE_ID + 0x204, ItemClassification.progression),
+}
+
+
+main_game_completion: Dict[str, ItemData] = {
     item_names.spring_breeze_complete: ItemData(None, ItemClassification.progression),
     item_names.dyna_blade_complete: ItemData(None, ItemClassification.progression),
     item_names.gourmet_race_complete: ItemData(None, ItemClassification.progression),
@@ -39,6 +48,26 @@ sub_game_completion: Dict[str, ItemData] = {
     item_names.meta_knightmare_ultra_complete: ItemData(None, ItemClassification.progression),
     item_names.helper_to_hero_complete: ItemData(None, ItemClassification.progression),
     item_names.the_true_arena_complete: ItemData(None, ItemClassification.progression),
+}
+
+sub_game_completion: Dict[str, ItemData] = {
+    item_names.megaton_punch_1_complete: ItemData(None, ItemClassification.progression),
+    item_names.megaton_punch_2_complete: ItemData(None, ItemClassification.progression),
+    item_names.megaton_punch_3_complete: ItemData(None, ItemClassification.progression),
+    item_names.samurai_kirby_1_complete: ItemData(None, ItemClassification.progression),
+    item_names.samurai_kirby_2_complete: ItemData(None, ItemClassification.progression),
+    item_names.samurai_kirby_3_complete: ItemData(None, ItemClassification.progression),
+    item_names.samurai_kirby_4_complete: ItemData(None, ItemClassification.progression),
+    item_names.samurai_kirby_5_complete: ItemData(None, ItemClassification.progression),
+    item_names.kirby_card_swipe_1_complete: ItemData(None, ItemClassification.progression),
+    item_names.kirby_card_swipe_2_complete: ItemData(None, ItemClassification.progression), 
+    item_names.kirby_card_swipe_3_complete: ItemData(None, ItemClassification.progression),
+    item_names.kirby_on_the_draw_1_complete: ItemData(None, ItemClassification.progression),
+    item_names.kirby_on_the_draw_2_complete: ItemData(None, ItemClassification.progression),
+    item_names.kirby_on_the_draw_3_complete: ItemData(None, ItemClassification.progression),
+    item_names.snack_tracks_1_complete: ItemData(None, ItemClassification.progression),
+    item_names.snack_tracks_2_complete: ItemData(None, ItemClassification.progression),
+    item_names.snack_tracks_3_complete: ItemData(None, ItemClassification.progression),
 }
 
 copy_abilities: Dict[str, ItemData] = {
@@ -152,13 +181,15 @@ misc_items: Dict[str, ItemData] = {
     item_names.one_up: ItemData(BASE_ID + 0x1001, ItemClassification.filler),
     item_names.maxim_tomato: ItemData(BASE_ID + 0x1002, ItemClassification.filler),
     item_names.invincible_candy: ItemData(BASE_ID + 0x1003, ItemClassification.filler),
-    item_names.rainbow_star: ItemData(BASE_ID + 0x1004, ItemClassification.progression)
+    item_names.rainbow_star: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
+    item_names.tomato: ItemData(BASE_ID + 0x1005, ItemClassification.filler)
 }
 
 filler_item_weights: Dict[str, int] = {
     item_names.one_up: 4,
     item_names.maxim_tomato: 2,
-    item_names.invincible_candy: 2
+    item_names.invincible_candy: 2,
+    item_names.tomato: 2
 }
 
 item_table: Dict[str, ItemData] = {
