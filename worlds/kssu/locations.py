@@ -9,7 +9,7 @@ class KSSLocation(Location):
 class LocationData(NamedTuple):
     code: int | None
     tag: str = ""
-
+    
 # Dont forget to change BASE_ID.
 green_greens_locations = {
     location_names.sb_whispy: LocationData(BASE_ID + 0),
@@ -641,3 +641,19 @@ location_table = {
     **helper_to_hero_locations,
     **the_true_arenas_locations
 }
+__all__ = [
+    "KSSULocation", "LocationData",
+    "green_greens_locations", "float_islands_locations", "bubbly_clouds_locations", "mt_dedede_locations",
+    "spring_breeze_locations", "peanut_plains_locations", "mallow_castle_locations", "cocoa_cave_locations",
+    "candy_mountain_locations", "bonus_1_locations", "bonus_2_locations", "dyna_blade_nest_locations",
+    "dyna_blade_locations", "gourmet_race_locations", "subtree_locations", "crystal_locations",
+    "old_tower_locations", "garden_locations", "tgco_locations", "romk_chapter_1_locations",
+    "romk_chapter_2_locations", "romk_chapter_3_locations", "romk_chapter_4_locations",
+    "romk_chapter_5_locations", "romk_chapter_6_locations", "romk_chapter_7_locations",
+    "revenge_of_meta_knight_locations", "floria_locations", "aqualiss_locations", "skyhigh_locations",
+    "hotbeat_locations", "cavios_locations", "mecheye_locations", "halfmoon_locations",
+    "copy_planet_locations", "space_locations", "milky_way_wishes_locations", "the_arena_locations",
+    "purple_plants_locations", "illusion_islands_locations", "crash_clouds_locations",
+    "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",
+    "meta_knightmare_locations", "helper_to_hero_locations", "the_true_arenas_locations", "location_table"
+]

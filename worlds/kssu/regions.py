@@ -2,7 +2,7 @@ import typing
 
 from BaseClasses import Region
 from .items import KSSUItem
-from .locations import KSSULocation, location_lookup_by_name
+from .locations import *
 from .names import item_names, location_names
 from .options import IncludedSubgames
 from . import KSSUWorld
@@ -21,6 +21,8 @@ def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, L
         filter_list.append("one_up")
     if "Invincibility Candy" in world.options.consumables:
         filter_list.append("candy")
+    if "Tomato" in world.options.consumables:
+        filter_list.append("tomato")
     if world.options.essences:
         filter_list.append("essence")
 
