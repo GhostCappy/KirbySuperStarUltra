@@ -43,10 +43,18 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_subgam
         arena = create_region("The Arena", world)
         add_locations(world, arena, the_arena_locations)
         menu.connect(arena, None, lambda state: state.has(item_names.the_arena, world.player))
-        world.get_location(location_names.arena_complete).place_locked_item(
+        world.get_location(location_names.the_arena_complete).place_locked_item(
             world.create_item(item_names.the_arena_complete))
         world.multiworld.regions.append(arena)
 
+    if "The True Arena" in included_subgames:
+        true_arena = create_region("The True Arena", world)
+        add_locations(world, true_arena, the_true_arena_locations)
+        menu.connect(true_arena, None, lambda state: state.has(item_names.the_true_arena, world.player))
+        world.get_location(location_names.the_true_arena_complete).place_locked_item(
+            world.create_item(item_names.the_true_arena_complete))
+        world.multiworld.regions.append(arena)
+        
 def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion):
     spring_breeze = create_region("Spring Breeze", world)
     green_greens = create_region("Green Greens", world)
@@ -187,6 +195,14 @@ def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([milky_way_wishes, floria, aqualiss, skyhigh, hotbeat, cavios,
                                      mecheye, halfmoon, copy_planet])
 
+def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion):
+    pass
+
+def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion):
+    pass
+
+def create_helper_to_hero(world: "KSSUWorld", menu: KSSURegion):
+    pass
 
 def create_regions(world: "KSSUWorld"):
     menu = create_region("Menu", world)
@@ -203,3 +219,9 @@ def create_regions(world: "KSSUWorld"):
         create_revenge_meta_knight(world, menu)
     if "Milky Way Wishes" in included_subgames:
         create_milky_way_wishes(world, menu)
+    if "Revenge of The King" in included_subgames:
+        create_revenge_of_the_king(world, menu)
+    if "Meta Knightmare Ultra" in included_subgames:
+        create_meta_knightmare_ultra(world, menu)
+    if "Helper to Hero" in included_subgames:
+        create_helper_to_hero(world, menu)

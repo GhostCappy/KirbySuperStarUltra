@@ -490,9 +490,11 @@ the_arena_maxim_3 = "The Arena - Maxim Tomato (Rest Area 3)"
 the_arena_maxim_4 = "The Arena - Maxim Tomato (Rest Area 4)"
 the_arena_maxim_5 = "The Arena - Maxim Tomato (Rest Area 5)"
 
+# Will need to add items later for these two. Meta Knightmare Ultra only has 1-ups.
 # Revenge of the King
 
 # Meta Knightmare Ultra
+
 
 # Helper to Hero
 hth_maxim_1 = "Helper to Hero - Maxim Tomato (Rest Area 1)"

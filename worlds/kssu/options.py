@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from Options import PerGameCommonOptions, Range, Choice, OptionSet, OptionDict, DeathLinkMixin, Toggle
 from schema import Schema, And
 
-subgame_mapping = {
+maingame_mapping = {
         0: "Spring Breeze",
         1: "Dyna Blade",
         2: "Gourmet Race",
@@ -17,20 +17,43 @@ subgame_mapping = {
         10: "The True Arena"
 }
 
-class RequiredSubgameCompletions(Range):
+'''
+Future goals to be added:
+- Treasure Hunt: Collect a set number of treasures in The Great Cave Offensive, and beat it.
+- Abilty Hunt: Collect a set number of copy abilities in Milky Way Wishes, and beat it.
+'''
+class Goal(Choice):
+    """Sets the goal of your world.
+
+    - **Milky Way Wishes:** Defeat Marx and complete Milky Way Wishes.
+    - **Main-Game Completion:** Complete a set of required Main Games.
+    - **The Arena:** Complete The Arena.
+    - **Revenge of the King:** Defeat Masked Dedede and complete Revenge of the King.
+    - **Meta Knightmare Ultra:** Defeat Galacta Knight and complete Meta Knightmare Ultra.
+    - **Marx Soul:** Unlock the true arena and defeat Marx Soul."""
+    display_name = "Goal"
+    rich_text_doc = True
+    option_mww = 0
+    option_arena = 1
+    option_rotk = 2
+    option_mku = 3
+    option_true_arena = 4
+    default = 0
+
+class RequiredMainGameCompletions(Range):
     """
-    How many subgames must be completed for the game to be considered complete.
+    How many main-games must be completed for the game to be considered complete.
     """
-    display_name = "Required Subgame Completions"
+    display_name = "Required Main-Game Completions"
     range_start = 1
     range_end = 10
     default = 6
     
-class RequiredSubgames(OptionSet):
+class RequiredMainGames(OptionSet):
     """
-    Which subgames are required to be completed for the game to be considered complete.
+    Which main-games are required to be completed for the game to be considered complete.
     """
-    display_name = "Required Subgames"
+    display_name = "Required Main-Games"
     valid_keys = {
         "Spring Breeze",
         "Dyna Blade",
@@ -46,11 +69,11 @@ class RequiredSubgames(OptionSet):
     }
     default = ["Milky Way Wishes"]
     
-class StartingSubgame(Choice):
+class StartingMainGame(Choice):
     """
-    The subgame that will be unlocked by default.
+    The main-game that will be unlocked by default.
     """
-    display_name = "Starting Subgame"
+    display_name = "Starting Main-Game"
     option_spring_breeze = 0
     option_dyna_blade = 1
     option_gourmet_race = 2
@@ -65,11 +88,11 @@ class StartingSubgame(Choice):
     default = 0
 
 
-class IncludedSubgames(OptionSet):
+class IncludedMainGames(OptionSet):
     """
-    Which subgames should be included as locations.
+    Which main-games should be included as locations.
     """
-    display_name = "Included Subgames"
+    display_name = "Included Main-Games"
     valid_keys = {
         "Spring Breeze",
         "Dyna Blade",
@@ -85,6 +108,11 @@ class IncludedSubgames(OptionSet):
     }
     default = sorted(valid_keys)
     
+
+'''
+Future options to be added:
+- Ability Hunt: Collect a set number of copy abilities to unlock Marx.
+'''  
 class MilkyWayWishesMode(Choice):
     """
     Determines how Marx is unlocked in Milky Way Wishes.
@@ -97,7 +125,7 @@ class MilkyWayWishesMode(Choice):
     option_multiworld = 1
     default = 0
     
-
+# Not yet implemented
 class Consumables(OptionSet):
     """
     Adds the specified consumables to the location pool. Options are Maxim Tomato, 1-Up,
@@ -110,16 +138,16 @@ class Consumables(OptionSet):
 
 class Essences(Toggle):
     """
-    Adds Copy Essence pedestals to the location pool.
+    Adds Copy Essence pedestals across all main-games to the location pool.
     """
     display_name = "Essence-sanity"
     
 @dataclass
 class KSSUOptions(PerGameCommonOptions, DeathLinkMixin):
-    required_subgame_completions: RequiredSubgameCompletions
-    required_subgames: RequiredSubgames
-    starting_subgame: StartingSubgame
-    included_subgames: IncludedSubgames
+    required_maingame_completions: RequiredMainGameCompletions
+    required_maingames: RequiredMainGames
+    starting_maingame: StartingMainGame
+    included_maingames: IncludedMainGames
     consumables: Consumables
     essences: Essences
     milky_way_wishes_mode: MilkyWayWishesMode

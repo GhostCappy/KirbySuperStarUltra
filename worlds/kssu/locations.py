@@ -573,7 +573,7 @@ revenge_of_the_king_locations = {
     **the_revenge_locations
 }
 
-# This will need to be changed level to account for beating each individual stage within each level
+# This might need to be changed level to account for beating each individual stage within each level. Memory address only updates stage count for each level.
 meta_knightmare_locations = {
     location_names.mku_level_1: LocationData(BASE_ID + 1),
     location_names.mku_level_2: LocationData(BASE_ID + 2),
@@ -610,7 +610,7 @@ helper_to_hero_locations = {
     location_names.hth_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
 }
 
-the_true_arenas_locations = {
+the_true_arena_locations = {
     location_names.the_true_arena_1: LocationData(BASE_ID + 113),
     location_names.the_true_arena_2: LocationData(BASE_ID + 114),
     location_names.the_true_arena_3: LocationData(BASE_ID + 115),
@@ -639,7 +639,7 @@ location_table = {
     **revenge_of_the_king_locations,
     **meta_knightmare_locations,
     **helper_to_hero_locations,
-    **the_true_arenas_locations
+    **the_true_arena_locations
 }
 __all__ = [
     "KSSULocation", "LocationData",
@@ -655,5 +655,5 @@ __all__ = [
     "copy_planet_locations", "space_locations", "milky_way_wishes_locations", "the_arena_locations",
     "purple_plants_locations", "illusion_islands_locations", "crash_clouds_locations",
     "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",
-    "meta_knightmare_locations", "helper_to_hero_locations", "the_true_arenas_locations", "location_table"
+    "meta_knightmare_locations", "helper_to_hero_locations", "the_true_arena_locations", "location_table"
 ]
