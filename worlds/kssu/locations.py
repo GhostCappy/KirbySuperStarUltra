@@ -3,7 +3,7 @@ from BaseClasses import Location
 from .names import location_names, item_names
 from .items import BASE_ID
 
-class KSSLocation(Location):
+class KSSULocation(Location):
     game = "Kirby Super Star Ultra"
     
 class LocationData(NamedTuple):
