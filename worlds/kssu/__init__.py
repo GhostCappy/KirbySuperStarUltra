@@ -9,7 +9,7 @@ from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Tutorial, MultiWorld, ItemClassification
 from Options import OptionError
 
-from typing import Dict, List, ClassVar, Any, Mapping
+from typing import Any, Mapping
 
 from .names import item_names
 from .rom import KSSUProcedurePatch, write_tokens
@@ -17,7 +17,7 @@ from .regions import create_regions
 from .options import KSSUOptions, maingame_mapping, IncludedMaingames, Consumables
 from .client import KSSUClient 
 from .items import (item_lookup_by_name, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
-                    main_games, dyna_items, planets, treasures, main_game_completion, trap)
+                    main_games, dyna_items, planets, treasures, trap)
 from .locations import location_lookup_by_name
 from .rules import set_rules
 
@@ -26,15 +26,16 @@ logger = logging.getLogger("Kirby Super Star Ultra")
 # Webpage for Archipelago page
 class KSSUWeb(WebWorld):
     theme = "partyTime" 
-    setup_en = Tutorial(
-        "Multiworld Setup Tutorial",
-        "A guide to setting up YourGame for Archipelago.",
-        "English",
-        "setup_en.md",
-        "setup/en",
-        ["GhostCappy"]
-    )
-    tutorials = [setup_en]
+    tutorials = [
+        Tutorial(
+            tutorial_name="Setup Guide",
+            description="A guide to setting up Kirby Super Star Ultra for Archipelago.",
+            language="English",
+            file_name="setup_en.md",
+            link="setup/en",
+            authors=["GhostCappy"],
+        )
+    ]
     
 # Details for game ROM
 class KSSUSettings(settings.Group):
@@ -55,6 +56,7 @@ class KSSUWorld(World):
     The remake retains all game modes found in the original and adds four major new ones.
     """
     game = "Kirby Super Star Ultra"
+    item_name_groups = item_groups
     options_dataclass = KSSUOptions
     options: KSSUOptions
     web = KSSUWeb()
@@ -67,6 +69,7 @@ class KSSUWorld(World):
         self.location_count: int = 0
         
     # Probably needs more future work
+    # Verifies user options
     def generate_early(self) -> None:
         if not self.options.included_maingames.value.intersection(
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
@@ -148,15 +151,15 @@ class KSSUWorld(World):
         
         self.multiworld.itempool += itempool
 
+    # Proably needs more future work
     def create_regions(self) -> None:
-        pass
-    
+        create_regions(self)
+
     def get_filler_item_name(self) -> str:
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def set_rules(self) -> None:
-        # no current rules
-        pass
+        set_rules(self, self.disabled_locations)
 
     def generate_output(self, output_directory: str) -> None:
         patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])

@@ -573,7 +573,8 @@ revenge_of_the_king_locations = {
     **the_revenge_locations
 }
 
-# This might need to be changed level to account for beating each individual stage within each level. Memory address only updates stage count for each level.
+# This might need to be changed level to account for beating each individual stage within each level. 
+# Memory address only updates stage count for each level.
 meta_knightmare_locations = {
     location_names.mku_level_1: LocationData(BASE_ID + 1),
     location_names.mku_level_2: LocationData(BASE_ID + 2),

@@ -6,7 +6,6 @@ from worlds.generic.Rules import set_rule, add_rule
 if TYPE_CHECKING:
     from . import KSSUWorld
 
-
 def set_rules(world: "KSSUWorld", excluded):
     player = world.player
     options = world.options
