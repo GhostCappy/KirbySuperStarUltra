@@ -203,6 +203,34 @@ the_true_arena_8 = "The True Arena - 8 Straight Wins"
 the_true_arena_9 = "The True Arena - 9 Straight Wins"
 the_true_arena_complete = "The True Arena - 10 Straight Wins"
 
+# Sub-Games
+# Megaton Punch
+megaton_punch_1 = "Megaton Punch - Waddle Dee"
+megaton_punch_2 = "Megaton Punch - Knuckle Joe"
+megaton_punch_3 = "Megaton Punch - Iron Mam"
+
+# Samurai Kirby
+samurai_kirby_1 = "Samurai Kirby - Waddle Doo"
+samurai_kirby_2 = "Samurai Kirby - Wheelie"
+samurai_kirby_3 = "Samurai Kirby - Chef Kawasaki"
+samurai_kirby_4 = "Samurai Kirby - King Dedede"
+samurai_kirby_5 = "Samurai Kirby - Meta Knight"
+
+# Kirby Card Swipe
+kirby_card_swipe_1 = "Kirby Card Swipe (Level 1)"
+kirby_card_swipe_2 = "Kirby Card Swipe (Level 2)"
+kirby_card_swipe_3 = "Kirby Card Swipe (Level 3)"
+
+# Kirby on the Draw
+kirby_on_the_draw_1= "Kirby on the Draw (Level 1)"
+kirby_on_the_draw_2 = "Kirby on the Draw (Level 2)"
+kirby_on_the_draw_3 = "Kirby on the Draw (Level 3)"
+
+# Snack Tracks
+snack_tracks_1 = "Snack Tracks (Level 1)"
+snack_tracks_2 = "Snack Tracks (Level 2)"
+snack_tracks_3 = "Snack Tracks (Level 3)"
+
 # Consumables/Essences
 # Spring Breeze
 sb_gg_maxim = "Green Greens - Maxim Tomato"
@@ -492,8 +520,54 @@ the_arena_maxim_5 = "The Arena - Maxim Tomato (Rest Area 5)"
 
 # Will need to add items later for these two.
 # Revenge of the King
+rotk_pp_maxim_1 = "Purple Plants - Maxim Tomato (1)"
+rotk_pp_maxim_2 = "Purple Plants - Maxim Tomato (2)"
+rotk_pp_maxim_1up = "Purple Plants - 1-Up"
+
+rotk_ii_food_1 = "Illusion Island - Food (1)"
+rotk_ii_maxim_1 = "Illusion Island - Maxim Tomato"
+rotk_ii_1up_1 = "Illusion Island - 1-Up"
+rotk_ii_maxim_2 = "Illusion Island - Maxim Tomato (HAL Room)"
+rotk_ii_1up_2 = "Illusion Island - 1-Up (HAL Room)"
+rotk_ii_candy = "Illusion Island - Invincibility Candy"
+rotk_ii_food_2 = "Illusion Island - Food (2)"
+
+rotk_cc_food_1 = "Crash Croud - Food (1)"
+rotk_cc_food_2 = "Crash Croud - Food (2)"
+rotk_cc_food_3 = "Crash Croud - Food (3)"
+rotk_cc_1up_1 = "Crash Croud - 1-Up"
+rotk_cc_1up_2 = "Crash Croud - 1-Up (2)"
+rotk_cc_food_4 = "Crash Croud - Food (4)"
+rotk_cc_food_5 = "Crash Croud - Food (5)"
+rotk_cc_food_6 = "Crash Croud - Food (6)"
+rotk_cc_food_7 = "Crash Croud - Food (7)"
+rotk_cc_food_8 = "Crash Croud - Food (8)"
+rotk_cc_food_9 = "Crash Croud - Food (9)"
+rotk_cc_food_10 = "Crash Croud - Food (10)"
+rotk_cc_food_11 = "Crash Croud - Food (11)"
+rotk_cc_food_12 = "Crash Croud - Food (12)"
+rotk_cc_food_13 = "Crash Croud - Food (13)"
+rotk_cc_food_14 = "Crash Croud - Food (14)"
+rotk_cc_food_15 = "Crash Croud - Food (15)"
+rotk_cc_1up_3 = "Crash Croud - 1-Up (3)"
+
+rotk_tr_food_1 = "The Revenge - Food (1)"
+rotk_tr_food_2 = "The Revenge - Food (2)"
+rotk_tr_food_3 = "The Revenge - Food (3)"
+rotk_tr_food_4 = "The Revenge - Food (4)"
+rotk_tr_food_5 = "The Revenge - Food (5)"
+rotk_tr_1up_1 = "The Revenge - 1-Up (1)"
+rotk_tr_food_6 = "The Revenge - Food (6)"
+rotk_tr_food_7 = "The Revenge - Food (7)"
+rotk_tr_1up_2 = "The Revenge - 1-Up (2)"
+rotk_tr_food_8 = "The Revenge - Food (8)"
+rotk_tr_maxim_1 = "The Revenge - Maxim Tomato (1)"
+rotk_tr_maxim_2 = "The Revenge - Maxim Tomato (2)"
+rotk_tr_1up_3 = "The Revenge - 1-Up (3)"
+rotk_tr_food_9 = "The Revenge - Food (9)"
 
 # Meta Knightmare Ultra
+
 
 
 # Helper to Hero
