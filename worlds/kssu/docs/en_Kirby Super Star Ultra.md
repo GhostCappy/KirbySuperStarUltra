@@ -15,6 +15,15 @@ such as gamemodes, treasures, 1-ups, and more. See "Which items can be in anothe
 In the Milky Way Wishes goal, the player must unlock the "Milky Way Wishes" game, and met a certain condition to unlock 
 Galactic Nova, and defeat Marx.
 
+In Main Game Completion goal, the player will clear a certain % of specified games.
+
+In The Arena goal, the player must unlocked "The Arena", and achieve victory.
+
+In Revenge of the King goal, the player must unlock the game "Revenge of the King", and defeated Masked Dedede.
+
+In Meta Knightmare Ultra goal, the player must unlock "Meta Knightmare Ultra" and defeat Galacta Knight.
+
+In Marx Soul goal, the player must unlock the TRUE arena by beating all main-games, and defeating Marx Soul.
 ## What is considered a location check?
 
 - Each stage in Spring Breeze
