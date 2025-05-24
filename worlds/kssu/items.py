@@ -193,6 +193,8 @@ filler_item_weights: Dict[str, int] = {
 }
 
 item_table: Dict[str, ItemData] = {
+    **main_games,
+    **main_game_completion,
     **sub_games,
     **sub_game_completion,
     **copy_abilities,

@@ -4,7 +4,7 @@ from BaseClasses import Region
 from .items import KSSUItem
 from .locations import *
 from .names import item_names, location_names
-from .options import IncludedSubgames
+from .options import IncludedMainGames
 from . import KSSUWorld
 
 class KSSURegion(Region):
@@ -30,8 +30,8 @@ def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, L
 
     region.add_locations(filtered, KSSULocation)
     
-def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_subgames: set[str]):
-    if "Gourmet Race" in included_subgames:
+def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_maingames: set[str]):
+    if "Gourmet Race" in included_maingames:
         gourmet_race = create_region("Gourmet Race", world)
         add_locations(world, gourmet_race, gourmet_race_locations)
         menu.connect(gourmet_race, None, lambda state: state.has(item_names.gourmet_race, world.player))
@@ -39,7 +39,7 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_subgam
             world.create_item(item_names.gourmet_race_complete))
         world.multiworld.regions.append(gourmet_race)
 
-    if "The Arena" in included_subgames:
+    if "The Arena" in included_maingames:
         arena = create_region("The Arena", world)
         add_locations(world, arena, the_arena_locations)
         menu.connect(arena, None, lambda state: state.has(item_names.the_arena, world.player))
@@ -47,7 +47,7 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_subgam
             world.create_item(item_names.the_arena_complete))
         world.multiworld.regions.append(arena)
 
-    if "The True Arena" in included_subgames:
+    if "The True Arena" in included_maingames:
         true_arena = create_region("The True Arena", world)
         add_locations(world, true_arena, the_true_arena_locations)
         menu.connect(true_arena, None, lambda state: state.has(item_names.the_true_arena, world.player))
@@ -207,21 +207,21 @@ def create_helper_to_hero(world: "KSSUWorld", menu: KSSURegion):
 def create_regions(world: "KSSUWorld"):
     menu = create_region("Menu", world)
     world.multiworld.regions.append(menu)
-    included_subgames = world.options.included_subgames.value
-    create_trivial_regions(world, menu, included_subgames)
-    if "Spring Breeze" in included_subgames:
+    included_maingames = world.options.included_maingames.value
+    create_trivial_regions(world, menu, included_maingames)
+    if "Spring Breeze" in included_maingames:
         create_spring_breeze(world, menu)
-    if "Dyna Blade" in included_subgames:
+    if "Dyna Blade" in included_mainames:
         create_dyna_blade(world, menu)
-    if "The Great Cave Offensive" in included_subgames:
+    if "The Great Cave Offensive" in included_maingames:
         create_great_cave_offensive(world, menu)
-    if "Revenge of Meta Knight" in included_subgames:
+    if "Revenge of Meta Knight" in included_maingames:
         create_revenge_meta_knight(world, menu)
-    if "Milky Way Wishes" in included_subgames:
+    if "Milky Way Wishes" in included_maingames:
         create_milky_way_wishes(world, menu)
-    if "Revenge of The King" in included_subgames:
+    if "Revenge of The King" in included_maingames:
         create_revenge_of_the_king(world, menu)
-    if "Meta Knightmare Ultra" in included_subgames:
+    if "Meta Knightmare Ultra" in included_maingames:
         create_meta_knightmare_ultra(world, menu)
-    if "Helper to Hero" in included_subgames:
+    if "Helper to Hero" in included_maingames:
         create_helper_to_hero(world, menu)
