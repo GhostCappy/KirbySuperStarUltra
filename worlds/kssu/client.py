@@ -5,8 +5,7 @@ import asyncio
 from Utils import async_start
 from NetUtils import ClientStatus
 from typing import TYPE_CHECKING, Optional, Set, List, Dict
-from .locations import location_lookup_by_name
-from .items import treasures, item_lookup_by_id, BASE_ID
+from .items import treasures, BASE_ID
 from random import Random
 
 import worlds._bizhawk as bizhawk

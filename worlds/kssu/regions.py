@@ -1,11 +1,13 @@
-import typing
 
 from BaseClasses import Region
+from typing import TYPE_CHECKING
 from .items import KSSUItem
 from .locations import *
 from .names import item_names, location_names
 from .options import IncludedMainGames
-from . import KSSUWorld
+
+if TYPE_CHECKING:
+    from . import KSSUWorld
 
 class KSSURegion(Region):
     game = "Kirby Super Star Ultra"
@@ -211,7 +213,7 @@ def create_regions(world: "KSSUWorld"):
     create_trivial_regions(world, menu, included_maingames)
     if "Spring Breeze" in included_maingames:
         create_spring_breeze(world, menu)
-    if "Dyna Blade" in included_mainames:
+    if "Dyna Blade" in included_maingames:
         create_dyna_blade(world, menu)
     if "The Great Cave Offensive" in included_maingames:
         create_great_cave_offensive(world, menu)

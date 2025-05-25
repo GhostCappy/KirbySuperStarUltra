@@ -14,11 +14,11 @@ from typing import Any, Mapping
 from .names import item_names
 from .rom import KSSUProcedurePatch, write_tokens
 from .regions import create_regions
-from .options import KSSUOptions, maingame_mapping, IncludedMaingames, Consumables
+from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Consumables
 from .client import KSSUClient 
-from .items import (item_lookup_by_name, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
-                    main_games, dyna_items, planets, treasures, trap)
-from .locations import location_lookup_by_name
+from .items import (lookup_id_to_name, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
+                    main_games, dyna_items, planets, treasures)
+from .locations import location_table, KSSULocation
 from .rules import set_rules
 
 logger = logging.getLogger("Kirby Super Star Ultra")
@@ -61,8 +61,9 @@ class KSSUWorld(World):
     options: KSSUOptions
     web = KSSUWeb()
     settings: typing.ClassVar[KSSUSettings]
-    item_name_to_id = item_lookup_by_name
-    location_name_to_id = location_lookup_by_name
+    item_name_to_id = lookup_id_to_name
+    location_name_to_id = {location: data.code
+                           for location, data in location_table.items() if data.code}
     
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
@@ -70,6 +71,7 @@ class KSSUWorld(World):
         
     # Probably needs more future work
     # Verifies user options
+    
     def generate_early(self) -> None:
         if not self.options.included_maingames.value.intersection(
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
@@ -94,10 +96,11 @@ class KSSUWorld(World):
                 
             # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
-            self.options.included_maingames = IncludedMaingames.valid_keys
+            self.options.included_maingames = IncludedMainGames.valid_keys
             self.options.consumables.value = Consumables.valid_keys
             self.options.essences.value = True
-                
+   
+          
     def create_item(self, name, force_classification: ItemClassification | None = None):
         if name not in item_table:
             raise Exception(f"{name} is not a valid item name for Kirby Super Star.")
@@ -150,7 +153,7 @@ class KSSUWorld(World):
                                              k=location_count)])
         
         self.multiworld.itempool += itempool
-
+    
     # Proably needs more future work
     def create_regions(self) -> None:
         create_regions(self)
@@ -171,14 +174,4 @@ class KSSUWorld(World):
         patch.write(rom_path)
 
     def fill_slot_data(self) -> Mapping[str, Any]:
-        # Options that are relevant to the client
-        option_data = {
-        "included_maingames": list(self.options.included_maingames.value),
-        "required_maingames": list(self.options.required_maingames.value),
-        "required_maingame_completions": self.options.required_maingame_completions.value,
-        "starting_maingame": self.options.starting_maingame.value,
-        "consumables": list(self.options.consumables.value),
-        "essences": self.options.essences.value
-        }
-
-        return option_data
+        pass

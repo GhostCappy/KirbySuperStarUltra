@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, Range, Choice, OptionSet, OptionDict, DeathLinkMixin, Toggle
-from schema import Schema, And
+from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLinkMixin, Toggle
+
 
 maingame_mapping = {
         0: "Spring Breeze",
@@ -17,11 +17,6 @@ maingame_mapping = {
         10: "The True Arena"
 }
 
-'''
-Future goals to be added:
-- Treasure Hunt: Collect a set number of treasures in The Great Cave Offensive, and beat it.
-- Abilty Hunt: Collect a set number of copy abilities in Milky Way Wishes, and beat it.
-'''
 class Goal(Choice):
     """Sets the goal of your world.
 
@@ -87,7 +82,6 @@ class StartingMainGame(Choice):
     option_the_true_arena = 10
     default = 0
 
-
 class IncludedMainGames(OptionSet):
     """
     Which main-games should be included as locations.
@@ -107,12 +101,7 @@ class IncludedMainGames(OptionSet):
         "The True Arena"
     }
     default = sorted(valid_keys)
-    
 
-'''
-Future options to be added:
-- Ability Hunt: Collect a set number of copy abilities to unlock Marx.
-'''  
 class MilkyWayWishesMode(Choice):
     """
     Determines how Marx is unlocked in Milky Way Wishes.
@@ -143,7 +132,8 @@ class Essences(Toggle):
     display_name = "Essence-sanity"
     
 @dataclass
-class KSSUOptions(PerGameCommonOptions, DeathLinkMixin):
+class KSSUOptions(PerGameCommonOptions):
+    goal: Goal
     required_maingame_completions: RequiredMainGameCompletions
     required_maingames: RequiredMainGames
     starting_maingame: StartingMainGame
