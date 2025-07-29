@@ -67,7 +67,6 @@ class KSSUWorld(World):
     
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
-        self.location_count: int = 0
         
     # Probably needs more future work
     # Verifies user options
@@ -99,7 +98,7 @@ class KSSUWorld(World):
             self.options.included_maingames = IncludedMainGames.valid_keys
             self.options.consumables.value = Consumables.valid_keys
             self.options.essences.value = True
-   
+    
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
         if name not in item_table:
@@ -162,11 +161,11 @@ class KSSUWorld(World):
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def set_rules(self) -> None:
-        set_rules(self, self.disabled_locations)
+        pass
 
     def generate_output(self, output_directory: str) -> None:
         patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
-        patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
+        #patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
         write_tokens(patch)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
@@ -174,4 +173,8 @@ class KSSUWorld(World):
         patch.write(rom_path)
 
     def fill_slot_data(self) -> Mapping[str, Any]:
-        pass
+        option_data = {
+            "goal": self.options.goal.current_key,
+        }
+        
+        return option_data
