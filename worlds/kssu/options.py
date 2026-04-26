@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLinkMixin, Toggle
 
-
 maingame_mapping = {
         0: "Spring Breeze",
         1: "Dyna Blade",

@@ -1,6 +1,6 @@
 from typing import NamedTuple
 from BaseClasses import Location
-from .names import location_names, item_names
+from .names import location_names
 from .items import BASE_ID
 
 class KSSULocation(Location):
@@ -545,24 +545,24 @@ the_arena_locations = {
 }
 
 purple_plants_locations = {
-    location_names.rotk_whispy: LocationData(BASE_ID + 0)
+    location_names.rotk_whispy: LocationData(BASE_ID + 150)
 }
 
 illusion_islands_locations = {
-    location_names.rotk_lololo: LocationData(BASE_ID + 0)
+    location_names.rotk_lololo: LocationData(BASE_ID + 151)
 }
 
 crash_clouds_locations = {
-    location_names.rotk_kracko: LocationData(BASE_ID + 0)
+    location_names.rotk_kracko: LocationData(BASE_ID + 152)
 }
 
 mt_dedede_sky_locations = {
-    location_names.rotk_kabula: LocationData(BASE_ID + 0)
+    location_names.rotk_kabula: LocationData(BASE_ID + 153)
 }
 
 the_revenge_locations = {
-    location_names.rotk_dedede: LocationData(BASE_ID + 0),
-    location_names.rotk_complete: LocationData(BASE_ID + 1)
+    location_names.rotk_dedede: LocationData(BASE_ID + 154),
+    location_names.rotk_complete: LocationData(None)
 }
 
 revenge_of_the_king_locations = {
@@ -575,58 +575,78 @@ revenge_of_the_king_locations = {
 
 # This might need to be changed level to account for beating each individual stage within each level. 
 # Memory address only updates stage count for each level.
+mku_level_1_locations = {
+    location_names.mku_level_1: LocationData(BASE_ID + 156)
+}
+
+mku_level_2_locations = {
+    location_names.mku_level_2: LocationData(BASE_ID + 157)
+}
+
+mku_level_3_locations = {
+    location_names.mku_level_3: LocationData(BASE_ID + 158)
+}
+
+mku_level_4_locations = {
+    location_names.mku_level_4: LocationData(BASE_ID + 159)
+}
+
+mku_level_5_locations = {
+    location_names.mku_level_5: LocationData(BASE_ID + 160),
+    location_names.mku_complete: LocationData(None)
+}
+
 meta_knightmare_locations = {
-    location_names.mku_level_1: LocationData(BASE_ID + 1),
-    location_names.mku_level_2: LocationData(BASE_ID + 2),
-    location_names.mku_level_3: LocationData(BASE_ID + 3),
-    location_names.mku_level_4: LocationData(BASE_ID + 4),
-    location_names.mku_level_5: LocationData(BASE_ID + 5),
-    location_names.mku_complete: LocationData(BASE_ID + 6)
+    **mku_level_1_locations,
+    **mku_level_2_locations,
+    **mku_level_3_locations,
+    **mku_level_4_locations,
+    **mku_level_5_locations
 }
 
 helper_to_hero_locations = {
-    location_names.hth_1: LocationData(BASE_ID + 109),
-    location_names.hth_2: LocationData(BASE_ID + 110),
-    location_names.hth_3: LocationData(BASE_ID + 111),
-    location_names.hth_4: LocationData(BASE_ID + 112),
-    location_names.hth_5: LocationData(BASE_ID + 113),
-    location_names.hth_6: LocationData(BASE_ID + 114),
-    location_names.hth_7: LocationData(BASE_ID + 115),
-    location_names.hth_8: LocationData(BASE_ID + 116),
-    location_names.hth_9: LocationData(BASE_ID + 117),
-    location_names.hth_10: LocationData(BASE_ID + 118),
-    location_names.hth_11: LocationData(BASE_ID + 119),
-    location_names.hth_12: LocationData(BASE_ID + 120),
-    location_names.hth_13: LocationData(BASE_ID + 121),
-    location_names.hth_14: LocationData(BASE_ID + 122),
-    location_names.hth_15: LocationData(BASE_ID + 123),
-    location_names.hth_16: LocationData(BASE_ID + 124),
-    location_names.hth_17: LocationData(BASE_ID + 125),
-    location_names.hth_18: LocationData(BASE_ID + 126),
-    location_names.hth_19: LocationData(BASE_ID + 127),
-    location_names.hth_20: LocationData(BASE_ID + 128),
-    location_names.hth_complete: LocationData(BASE_ID + 129),
-    location_names.hth_maxim_1: LocationData(BASE_ID + 0x154, "maxim"),
-    location_names.hth_maxim_2: LocationData(BASE_ID + 0x155, "maxim"),
-    location_names.hth_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
+    location_names.hth_1: LocationData(BASE_ID + 909),
+    location_names.hth_2: LocationData(BASE_ID + 910),
+    location_names.hth_3: LocationData(BASE_ID + 911),
+    location_names.hth_4: LocationData(BASE_ID + 912),
+    location_names.hth_5: LocationData(BASE_ID + 913),
+    location_names.hth_6: LocationData(BASE_ID + 914),
+    location_names.hth_7: LocationData(BASE_ID + 915),
+    location_names.hth_8: LocationData(BASE_ID + 916),
+    location_names.hth_9: LocationData(BASE_ID + 917),
+    location_names.hth_10: LocationData(BASE_ID + 918),
+    location_names.hth_11: LocationData(BASE_ID + 919),
+    location_names.hth_12: LocationData(BASE_ID + 920),
+    location_names.hth_13: LocationData(BASE_ID + 921),
+    location_names.hth_14: LocationData(BASE_ID + 922),
+    location_names.hth_15: LocationData(BASE_ID + 923),
+    location_names.hth_16: LocationData(BASE_ID + 924),
+    location_names.hth_17: LocationData(BASE_ID + 925),
+    location_names.hth_18: LocationData(BASE_ID + 926),
+    location_names.hth_19: LocationData(BASE_ID + 927),
+    location_names.hth_20: LocationData(BASE_ID + 928),
+    location_names.helper_to_hero_complete: LocationData(None),
+    location_names.hth_maxim_1: LocationData(BASE_ID + 0x954, "maxim"),
+    location_names.hth_maxim_2: LocationData(BASE_ID + 0x955, "maxim"),
+    location_names.hth_maxim_3: LocationData(BASE_ID + 0x956, "maxim"),
 }
 
 the_true_arena_locations = {
-    location_names.the_true_arena_1: LocationData(BASE_ID + 113),
-    location_names.the_true_arena_2: LocationData(BASE_ID + 114),
-    location_names.the_true_arena_3: LocationData(BASE_ID + 115),
-    location_names.the_true_arena_4: LocationData(BASE_ID + 116),
-    location_names.the_true_arena_5: LocationData(BASE_ID + 117),
-    location_names.the_true_arena_6: LocationData(BASE_ID + 118),
-    location_names.the_true_arena_7: LocationData(BASE_ID + 119),
-    location_names.the_true_arena_8: LocationData(BASE_ID + 120),
-    location_names.the_true_arena_9: LocationData(BASE_ID + 121),
+    location_names.the_true_arena_1: LocationData(BASE_ID + 210),
+    location_names.the_true_arena_2: LocationData(BASE_ID + 211),
+    location_names.the_true_arena_3: LocationData(BASE_ID + 212),
+    location_names.the_true_arena_4: LocationData(BASE_ID + 213),
+    location_names.the_true_arena_5: LocationData(BASE_ID + 214),
+    location_names.the_true_arena_6: LocationData(BASE_ID + 215),
+    location_names.the_true_arena_7: LocationData(BASE_ID + 216),
+    location_names.the_true_arena_8: LocationData(BASE_ID + 217),
+    location_names.the_true_arena_9: LocationData(BASE_ID + 218),
     location_names.the_true_arena_complete: LocationData(None),
-    location_names.the_true_arena_tomato_1: LocationData(BASE_ID + 0x154, "tomato"),
-    location_names.the_true_arena_tomato_2: LocationData(BASE_ID + 0x155, "tomato"),
-    location_names.the_true_arena_tomato_3: LocationData(BASE_ID + 0x156, "tomato"),
-    location_names.the_true_arena_tomato_4: LocationData(BASE_ID + 0x157, "tomato"),
-    location_names.the_true_arena_tomato_5: LocationData(BASE_ID + 0x158, "tomato"),
+    location_names.the_true_arena_tomato_1: LocationData(BASE_ID + 0x300, "tomato"),
+    location_names.the_true_arena_tomato_2: LocationData(BASE_ID + 0x301, "tomato"),
+    location_names.the_true_arena_tomato_3: LocationData(BASE_ID + 0x302, "tomato"),
+    location_names.the_true_arena_tomato_4: LocationData(BASE_ID + 0x303, "tomato"),
+    location_names.the_true_arena_tomato_5: LocationData(BASE_ID + 0x304, "tomato"),
 }
 
 location_table = {
@@ -642,6 +662,7 @@ location_table = {
     **helper_to_hero_locations,
     **the_true_arena_locations
 }
+
 __all__ = [
     "KSSULocation", "LocationData",
     "green_greens_locations", "float_islands_locations", "bubbly_clouds_locations", "mt_dedede_locations",
@@ -656,5 +677,7 @@ __all__ = [
     "copy_planet_locations", "space_locations", "milky_way_wishes_locations", "the_arena_locations",
     "purple_plants_locations", "illusion_islands_locations", "crash_clouds_locations",
     "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",
-    "meta_knightmare_locations", "helper_to_hero_locations", "the_true_arena_locations", "location_table"
+    "mku_level_1_locations", "mku_level_2_locations", "mku_level_3_locations", "mku_level_4_locations",
+    "mku_level_5_locations", "meta_knightmare_locations", "helper_to_hero_locations", 
+    "the_true_arena_locations", "location_table"
 ]

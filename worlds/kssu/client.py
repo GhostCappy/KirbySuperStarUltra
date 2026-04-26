@@ -26,9 +26,34 @@ class KSSUClient(BizHawkClient):
     goal_complete = False
     
 # Game Address Offsets
+    unlock_games = 0x05c174
+    unlock_true_arena = 0x05C175
+    ignore_game_notice = 0x05C176
+    ignore_arena_notice = 0x05C177
+    current_game = 0x05B6A5
+    current_stage = 0x05B6A6
+    current_screen = 0x05B6A7
+    transition_state = 0x05B6A4
+    kirby_lifes = 0x05B824
+    kirby_hp = 0x0771D4
+    kirby_ability = 0x0BAF7B
+    dyna_blade_stages = 0x05BE0A
+    dyna_blade_extras = 0x06C26A
+    tgco_treasure_count = 0x06E752
+    tgco_gold = 0x06E748
+    gourmet_wins = 0x05BE3C
+    mww_abilities = 0x071201
+    mww_plants = 0x071190
+    can_copy_enemies = 0x05B81A
+    arena_wins = 0x06FFA2
+    hth_wins = 0x06FD40
+    samurai_wins = 0x0A8448
+    megaton_wins = 0x0A83D1
+    card_swipe_wins = 0x0B784A 
 
 # AP Address Offsets
-
+    received_offset = 0x000000
+    deathlink_flags = 0x000000
     
     def __init__(self) -> None:
         super().__init__()
@@ -74,8 +99,6 @@ class KSSUClient(BizHawkClient):
                 ]
             )
             
-            # Return if save data not yet initialized, else it's 0xff, and that's bad
-            # Also after booting the entire memory will be 0x00, which is also not good for receiving items
             if int.from_bytes(read_state[0]) == 0:
                 return
 
@@ -103,7 +126,7 @@ class KSSUClient(BizHawkClient):
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-
+                    (self.received_offset, 2, self.ram_mem_domain),
                 ]
             )
  '''

@@ -2,21 +2,23 @@ import os
 import typing
 import logging
 import pkgutil
+import threading
+import base64
 
 # Shows warning but should work without issue
 import settings
 from worlds.AutoWorld import World, WebWorld
-from BaseClasses import Tutorial, MultiWorld, ItemClassification
+from BaseClasses import Tutorial, MultiWorld, ItemClassification, Item, CollectionState
 from Options import OptionError
 
-from typing import Any, Mapping
+from typing import Any, List, Mapping, Dict, ClassVar
 
 from .names import item_names
 from .rom import KSSUProcedurePatch, write_tokens
 from .regions import create_regions
 from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Consumables
 from .client import KSSUClient 
-from .items import (lookup_id_to_name, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
+from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
                     main_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
@@ -49,6 +51,13 @@ class KSSUSettings(settings.Group):
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: bool = True
 
+class KSSUEventItem(Item):
+    game = "Kirby Super Star Ultra"
+    event = True
+
+    def __init__(self, name: str, player: int):
+        super().__init__(name, ItemClassification.progression, None, player)
+        
 # APWorld information
 class KSSUWorld(World):
     """
@@ -56,21 +65,24 @@ class KSSUWorld(World):
     The remake retains all game modes found in the original and adds four major new ones.
     """
     game = "Kirby Super Star Ultra"
+    item_name_to_id = lookup_item_to_id
     item_name_groups = item_groups
     options_dataclass = KSSUOptions
     options: KSSUOptions
     web = KSSUWeb()
+    treasure_value: List[int]
     settings: typing.ClassVar[KSSUSettings]
-    item_name_to_id = lookup_id_to_name
     location_name_to_id = {location: data.code
                            for location, data in location_table.items() if data.code}
     
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld, player)
-        
+        self.rom_name: bytearray = bytearray()
+        self.rom_name_available_event = threading.Event()
+        self.treasure_value = []
+          
     # Probably needs more future work
     # Verifies user options
-    
     def generate_early(self) -> None:
         if not self.options.included_maingames.value.intersection(
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
@@ -98,13 +110,17 @@ class KSSUWorld(World):
             self.options.included_maingames = IncludedMainGames.valid_keys
             self.options.consumables.value = Consumables.valid_keys
             self.options.essences.value = True
-    
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
         if name not in item_table:
-            raise Exception(f"{name} is not a valid item name for Kirby Super Star.")
+            raise Exception(f"{name} is not a valid item name for Kirby Super Star Ultra.")
+        
         data = item_table[name]
         classification = force_classification if force_classification else data.classification
+        
+        if data.code is None:
+            return KSSUEventItem(name, self.player)
+                             
         return KSSUItem(name, classification, data.code, self.player)
 
     def create_items(self) -> None:
@@ -115,6 +131,7 @@ class KSSUWorld(World):
         self.multiworld.push_precollected(starting_mode)
         itempool.extend([self.create_item(name) for name in copy_abilities])
         itempool.extend(modes)
+        treasure_value = 0
         
         if "Dyna Blade" in self.options.included_maingames:
             force = None
@@ -124,6 +141,7 @@ class KSSUWorld(World):
         if "The Great Cave Offensive" in self.options.included_maingames:
             for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
                 itempool.append(self.create_item(name))
+                treasure_value += treasure.value
         if "Milky Way Wishes" in self.options.included_maingames:
             planet = [self.create_item(name) for name in planets]
             starting_planet = self.random.choice(planet)
@@ -152,29 +170,67 @@ class KSSUWorld(World):
                                              k=location_count)])
         
         self.multiworld.itempool += itempool
-    
-    # Proably needs more future work
-    def create_regions(self) -> None:
-        create_regions(self)
+        # DEBUG: detect event items placed on real locations
+        for loc in self.multiworld.get_locations(self.player):
+            if loc.address is not None and loc.item and getattr(loc.item, "code", None) is None:
+                print("BAD EVENT ITEM:", loc.name, "has", loc.item.name)
+
+        
+    set_rules = set_rules
+    create_regions = create_regions
 
     def get_filler_item_name(self) -> str:
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
-    def set_rules(self) -> None:
-        pass
-
-    def generate_output(self, output_directory: str) -> None:
-        patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
-        #patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
-        write_tokens(patch)
-        rom_path = os.path.join(
-            output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
-        )
-        patch.write(rom_path)
-
     def fill_slot_data(self) -> Mapping[str, Any]:
-        option_data = {
-            "goal": self.options.goal.current_key,
-        }
-        
-        return option_data
+        slot_data = self.options.as_dict("included_maingames", "consumables", "essences", "milky_way_wishes_mode")
+        slot_data.update({
+            "treasure_value": self.treasure_value
+        })
+        return slot_data
+    
+    @staticmethod
+    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
+        return slot_data
+    
+    def generate_output(self, output_directory: str) -> None:
+            patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
+            patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
+            write_tokens(patch)
+            rom_path = os.path.join(
+                output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
+            )
+            patch.write(rom_path)
+            
+            # Use the actual output filename as ROM name
+            rom_filename = os.path.basename(rom_path)
+            self.rom_name = bytearray(rom_filename, "utf-8")
+
+            # Signal modify_multidata() that ROM name is ready
+            self.rom_name_available_event.set()
+
+    def modify_multidata(self, multidata: Dict[str, Any]) -> None:
+        self.rom_name_available_event.wait()
+        assert isinstance(self.rom_name, bytearray)
+        rom_name = getattr(self, "rom_name", None)
+        if rom_name:
+            new_name = base64.b64encode(self.rom_name).decode()
+            multidata["connect_names"][new_name] = multidata["connect_names"][self.multiworld.player_name[self.player]]
+            
+    def collect(self, state: "CollectionState", item: "Item") -> bool:
+        value = super().collect(state, item)
+
+        if item.name in treasures:
+            state.prog_items[self.player]["Gold"] += treasures[item.name].value
+
+        return value
+
+    def remove(self, state: "CollectionState", item: "Item") -> bool:
+        value = super().remove(state, item)
+
+        if item.name in treasures:
+            state.prog_items[self.player]["Gold"] -= treasures[item.name].value
+            if not state.prog_items[self.player]["Gold"]:
+                del state.prog_items[self.player]["Gold"]
+
+        return value

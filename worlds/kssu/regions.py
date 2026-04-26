@@ -28,9 +28,11 @@ def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, L
     if world.options.essences:
         filter_list.append("essence")
 
-    filtered = {location: data.code for location, data in locations.items() if data.tag in filter_list}
-
-    region.add_locations(filtered, KSSULocation)
+    filtered = {location: data.code 
+                for location, data in locations.items() 
+                if data.tag in filter_list}
+    if filtered:
+        region.add_locations(filtered, KSSULocation)
     
 def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_maingames: set[str]):
     if "Gourmet Race" in included_maingames:
@@ -55,7 +57,15 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_mainga
         menu.connect(true_arena, None, lambda state: state.has(item_names.the_true_arena, world.player))
         world.get_location(location_names.the_true_arena_complete).place_locked_item(
             world.create_item(item_names.the_true_arena_complete))
-        world.multiworld.regions.append(arena)
+        world.multiworld.regions.append(true_arena)
+        
+    if "Helper to Hero" in included_maingames:
+        helper_to_hero = create_region("Helper to Hero", world)
+        add_locations(world, helper_to_hero, helper_to_hero_locations)
+        menu.connect(helper_to_hero, None, lambda state: state.has(item_names.helper_to_hero, world.player))
+        world.get_location(location_names.helper_to_hero_complete).place_locked_item(
+            world.create_item(item_names.helper_to_hero_complete))
+        world.multiworld.regions.append(helper_to_hero)
         
 def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion):
     spring_breeze = create_region("Spring Breeze", world)
@@ -198,13 +208,50 @@ def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion):
                                      mecheye, halfmoon, copy_planet])
 
 def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion):
-    pass
+    revenge_of_the_king = create_region("Revenge of the King", world)
+    purple_plants = create_region("Purple Plants", world)
+    illusion_islands = create_region("Illusion Islands", world)
+    crash_clouds = create_region("Float Islands", world)
+    mt_dedede_sky = create_region("Mt. Dedede Sky", world)
+    the_revenge = create_region("The Revenge", world)
+
+    for region, connection, locations in zip((purple_plants, crash_clouds, illusion_islands, mt_dedede_sky, the_revenge),
+                                             (crash_clouds, illusion_islands, mt_dedede_sky, the_revenge, None),
+                                             (purple_plants_locations, crash_clouds_locations, illusion_islands_locations,
+                                              mt_dedede_sky_locations, the_revenge_locations)
+                                             ):
+        if connection:
+            region.connect(connection)
+        add_locations(world, region, locations)
+
+    menu.connect(revenge_of_the_king, None, lambda state: state.has(item_names.revenge_of_the_king, world.player))
+    revenge_of_the_king.connect(purple_plants)
+    world.get_location(location_names.rotk_complete).place_locked_item(
+        world.create_item(item_names.revenge_of_the_king_complete))
+    world.multiworld.regions.extend([revenge_of_the_king, purple_plants, crash_clouds, illusion_islands, mt_dedede_sky, the_revenge])
 
 def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion):
-    pass
+    meta_knightmare_ultra = create_region("Meta Knightmare Ultra", world)
+    mku_level_1 = create_region("Level 1", world)
+    mku_level_2 = create_region("Level 2", world)
+    mku_level_3 = create_region("Level 3", world)
+    mku_level_4 = create_region("Level 4", world)
+    mku_level_5 = create_region("Level 5", world)
 
-def create_helper_to_hero(world: "KSSUWorld", menu: KSSURegion):
-    pass
+    for region, connection, locations in zip((mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5),
+                                             (mku_level_2, mku_level_3, mku_level_4, mku_level_5, None),
+                                             (mku_level_1_locations, mku_level_2_locations, mku_level_3_locations,
+                                              mku_level_4_locations, mku_level_5_locations)
+                                             ):
+        if connection:
+            region.connect(connection)
+        add_locations(world, region, locations)
+
+    menu.connect(meta_knightmare_ultra, None, lambda state: state.has(item_names.meta_knightmare_ultra, world.player))
+    meta_knightmare_ultra.connect(mku_level_1)
+    world.get_location(location_names.mku_complete).place_locked_item(
+        world.create_item(item_names.meta_knightmare_ultra_complete))
+    world.multiworld.regions.extend([meta_knightmare_ultra, mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5])
 
 def create_regions(world: "KSSUWorld"):
     menu = create_region("Menu", world)
@@ -225,5 +272,5 @@ def create_regions(world: "KSSUWorld"):
         create_revenge_of_the_king(world, menu)
     if "Meta Knightmare Ultra" in included_maingames:
         create_meta_knightmare_ultra(world, menu)
-    if "Helper to Hero" in included_maingames:
-        create_helper_to_hero(world, menu)
+        
+    world.regions = list(world.multiworld.regions)

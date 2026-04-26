@@ -22,8 +22,7 @@ def revenge_metaknight_rules(world: "KSSUWorld"):
 def milky_way_wishes_rules(world: "KSSUWorld"):
     pass
 
-
-def set_rules(world: "KSSUWorld", excluded):
+def set_rules(world: "KSSUWorld") -> None:
     # Dyna Blade
     if "Dyna Blade" in world.options.included_maingames:
         dyna_blade_rules(world)
@@ -39,7 +38,8 @@ def set_rules(world: "KSSUWorld", excluded):
     # Milky Way Wishes
     if "Milky Way Wishes" in world.options.included_maingames:
         milky_way_wishes_rules(world)
-        
+    
+    # The Arena 
     if "The Arena" in world.options.included_maingames:
         for i in range(10, 21):
             set_rule(world.get_location(f"The Arena - {i} Straight Wins"),

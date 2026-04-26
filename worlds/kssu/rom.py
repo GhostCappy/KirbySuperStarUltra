@@ -2,6 +2,7 @@ from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
 
 # Change these values later
+'''
 maxims = 0x7FA9F
 one_ups = 0x7FABD
 candies = 0x7FAD8
@@ -12,6 +13,7 @@ treasure_values = 0xAFCEF
 mww_mode = 0xAFD6D
 
 slot_data = 0x3FD00
+'''
 
 def get_base_rom_as_bytes() -> bytes:
     with open(get_settings().KSSU_options.rom_file, "rb") as infile:

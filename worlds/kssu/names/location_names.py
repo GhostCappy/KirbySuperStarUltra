@@ -189,7 +189,7 @@ hth_17 = "Helper to Hero - Tac"
 hth_18 = "Helper to Hero - Wheelie"
 hth_19 = "Helper to Hero - Rocky"
 hth_20 = "Helper to Hero - Sword Knight"
-hth_complete = "Helper to Hero - Complete"
+helper_to_hero_complete = "Helper to Hero - Complete"
 
 # The TRUE Arena
 the_true_arena_1 = "The True Arena - 1 Straight Win"
