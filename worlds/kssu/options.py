@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLinkMixin, Toggle
+from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLink, Toggle
 
 maingame_mapping = {
         0: "Spring Breeze",
@@ -140,3 +140,4 @@ class KSSUOptions(PerGameCommonOptions):
     consumables: Consumables
     essences: Essences
     milky_way_wishes_mode: MilkyWayWishesMode
+    deathlink: DeathLink
