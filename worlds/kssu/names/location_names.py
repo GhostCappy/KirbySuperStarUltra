@@ -1,19 +1,19 @@
 # Spring Breeze
-sb_whispy = "Spring Breeze - Whispy Woods"
-sb_lololo = "Spring Breeze - Lololo & Lalala"
-sb_kracko = "Spring Breeze - Kracko"
-sb_dedede = "Spring Breeze - King Dedede"
+sb_whispy = "Spring Breeze - Stage 1"
+sb_lololo = "Spring Breeze - Stage 2"
+sb_kracko = "Spring Breeze - Stage 3"
+sb_dedede = "Spring Breeze - Stage 4"
 sb_complete = "Spring Breeze - Castle Dedede"
 
 # Dyna Blade
-db_stage_1 = "Dyna Blade - Peanut Plains"
-db_stage_2 = "Dyna Blade - Mallow Castle"
-db_stage_3 = "Dyna Blade - Cocoa Cave"
-db_stage_4 = "Dyna Blade - Candy Mountain"
-db_stage_5 = "Dyna Blade - Dyna Blade's Nest"
+db_stage_1 = "Dyna Blade - Stage 1"
+db_stage_2 = "Dyna Blade - Stage 2"
+db_stage_3 = "Dyna Blade - Stage 3"
+db_stage_4 = "Dyna Blade - Stage 4"
+db_stage_5 = "Dyna Blade - Stage 5"
 db_complete = "Dyna Blade - Dyna Blade"
 db_switch_1 = "Dyna Blade - Switch 1"
-db_switch_2 = "Dyna Blade - Switch 2"
+db_switch_2 = "Dyna Blade - Switch 2"   
 db_iron_mam = "Dyna Blade - Iron Mam"
 
 # Gourmet Race
@@ -99,7 +99,7 @@ romk_chapter_4 = "Revenge of Meta Knight - Chapter 4"
 romk_chapter_5 = "Revenge of Meta Knight - Chapter 5"
 romk_chapter_6 = "Revenge of Meta Knight - Chapter 6"
 romk_chapter_7 = "Revenge of Meta Knight - Chapter 7"
-romk_complete = "Revenge of Meta Knight - Halberd's Helm"  # doesn't require Wheel (its a partner)
+romk_complete = "Revenge of Meta Knight - Halberd's Helm"  # doesn't require Wheel
 
 # Milky Way Wishes
 mww_floria = "Floria - Twin Woods"
@@ -153,12 +153,12 @@ the_arena_19 = "The Arena - 19 Straight Wins"
 the_arena_complete = "The Arena - 20 Straight Wins"
 
 # Revenge of the King
-rotk_whispy = "Revenge of the King - Whispy's Revenge"
-rotk_lololo = "Revenge of the King - Lololo & Lalala's Revenge"
-rotk_kracko = "Revenge of the King - Kracko's Revenge"
-rotk_kabula = "Revenge of the King - Kabula"
-rotk_dedede = "Revenge of the King - Masked Dedede"
-rotk_complete = "Revenge of the King - Masked Dedede"
+rotk_whispy = "Revenge of the King - Stage 1"
+rotk_lololo = "Revenge of the King - Stage 2"
+rotk_kracko = "Revenge of the King - Stage 3"
+rotk_kabula = "Revenge of the King - Stage 4"
+rotk_dedede = "Revenge of the King - Stage 5"
+rotk_complete = "Revenge of the King - Complete"
 
 # Meta Knightmare Ultra
 mku_level_1 = "Meta Knightmare Ultra - Level 1"
@@ -217,19 +217,19 @@ samurai_kirby_4 = "Samurai Kirby - King Dedede"
 samurai_kirby_5 = "Samurai Kirby - Meta Knight"
 
 # Kirby Card Swipe
-kirby_card_swipe_1 = "Kirby Card Swipe (Level 1)"
-kirby_card_swipe_2 = "Kirby Card Swipe (Level 2)"
-kirby_card_swipe_3 = "Kirby Card Swipe (Level 3)"
+kirby_card_swipe_1 = "Kirby Card Swipe - Level 1"
+kirby_card_swipe_2 = "Kirby Card Swipe - Level 2"
+kirby_card_swipe_3 = "Kirby Card Swipe - Level 3"
 
 # Kirby on the Draw
-kirby_on_the_draw_1= "Kirby on the Draw (Level 1)"
-kirby_on_the_draw_2 = "Kirby on the Draw (Level 2)"
-kirby_on_the_draw_3 = "Kirby on the Draw (Level 3)"
+kirby_on_the_draw_1 = "Kirby on the Draw - Level 1"
+kirby_on_the_draw_2 = "Kirby on the Draw - Level 2"
+kirby_on_the_draw_3 = "Kirby on the Draw - Level 3"
 
 # Snack Tracks
-snack_tracks_1 = "Snack Tracks (Level 1)"
-snack_tracks_2 = "Snack Tracks (Level 2)"
-snack_tracks_3 = "Snack Tracks (Level 3)"
+snack_tracks_1 = "Snack Tracks - Level 1"
+snack_tracks_2 = "Snack Tracks - Level 2"
+snack_tracks_3 = "Snack Tracks - Level 3"
 
 # Consumables/Essences
 # Spring Breeze

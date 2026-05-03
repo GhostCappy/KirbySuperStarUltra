@@ -253,6 +253,27 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion):
         world.create_item(item_names.meta_knightmare_ultra_complete))
     world.multiworld.regions.extend([meta_knightmare_ultra, mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5])
 
+def create_subgames(world: "KSSUWorld", menu: KSSURegion):
+    megaton_punch = create_region("Megaton Punch", world)
+    samurai_kirby = create_region("Samurai Kirby", world)
+    card_swipe = create_region("Kirby Card Swipe", world)
+    kotd = create_region("Kirby on the Draw", world)
+    snack_track = create_region("Snack Tracks", world)
+
+    add_locations(world, megaton_punch, megaton_locations)
+    add_locations(world, samurai_kirby, samurai_locations)
+    add_locations(world, card_swipe, card_swipe_locations)
+    add_locations(world, kotd, kotd_locations)
+    add_locations(world, snack_track, snack_track_locations)
+
+    menu.connect(megaton_punch, lambda state: state.has(item_names.megaton_punch, world.player))
+    menu.connect(samurai_kirby, lambda state: state.has(item_names.samurai_kirby, world.player))
+    menu.connect(card_swipe, lambda state: state.has(item_names.card_swipe, world.player))
+    menu.connect(kotd, lambda state: state.has(item_names.kotd, world.player))
+    menu.connect(snack_track, lambda state: state.has(item_names.snack_track, world.player))
+
+    world.multiworld.regions.extend([megaton_punch, samurai_kirby, card_swipe, kotd, snack_track])
+
 def create_regions(world: "KSSUWorld"):
     menu = create_region("Menu", world)
     world.multiworld.regions.append(menu)
@@ -272,5 +293,7 @@ def create_regions(world: "KSSUWorld"):
         create_revenge_of_the_king(world, menu)
     if "Meta Knightmare Ultra" in included_maingames:
         create_meta_knightmare_ultra(world, menu)
+    if world.options.include_subgames:
+        create_subgames(world, menu)
         
     world.regions = list(world.multiworld.regions)

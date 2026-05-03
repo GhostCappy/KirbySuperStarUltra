@@ -100,6 +100,8 @@ class IncludedMainGames(OptionSet):
         "The True Arena"
     }
     default = sorted(valid_keys)
+    
+    
 
 class MilkyWayWishesMode(Choice):
     """
@@ -130,6 +132,14 @@ class Essences(Toggle):
     """
     display_name = "Essence-sanity"
     
+class IncludeSubgames(Toggle):
+    """
+    If enabled, all Sub-Games (Megaton Punch, Samurai Kirby, Kirby Card Swipe,
+    Kirby on the Draw, Snack Tracks) will be included as location checks.
+    """
+    display_name = "Include Sub-Games"
+    default = True
+    
 @dataclass
 class KSSUOptions(PerGameCommonOptions):
     goal: Goal
@@ -140,4 +150,6 @@ class KSSUOptions(PerGameCommonOptions):
     consumables: Consumables
     essences: Essences
     milky_way_wishes_mode: MilkyWayWishesMode
+    include_subgames: IncludeSubgames
     deathlink: DeathLink
+    

@@ -641,12 +641,52 @@ the_true_arena_locations = {
     location_names.the_true_arena_7: LocationData(BASE_ID + 216),
     location_names.the_true_arena_8: LocationData(BASE_ID + 217),
     location_names.the_true_arena_9: LocationData(BASE_ID + 218),
-    location_names.the_true_arena_complete: LocationData(None),
+    location_names.the_true_arena_complete: LocationData(None), 
     location_names.the_true_arena_tomato_1: LocationData(BASE_ID + 0x300, "tomato"),
     location_names.the_true_arena_tomato_2: LocationData(BASE_ID + 0x301, "tomato"),
     location_names.the_true_arena_tomato_3: LocationData(BASE_ID + 0x302, "tomato"),
     location_names.the_true_arena_tomato_4: LocationData(BASE_ID + 0x303, "tomato"),
     location_names.the_true_arena_tomato_5: LocationData(BASE_ID + 0x304, "tomato"),
+}
+
+megaton_locations = {
+    location_names.megaton_punch_1: LocationData(BASE_ID + 0x450),
+    location_names.megaton_punch_2: LocationData(BASE_ID + 0x451),
+    location_names.megaton_punch_3: LocationData(BASE_ID + 0x452),
+}
+
+samurai_locations = {
+    location_names.samurai_kirby_1: LocationData(BASE_ID + 0x500),
+    location_names.samurai_kirby_2: LocationData(BASE_ID + 0x501),
+    location_names.samurai_kirby_3: LocationData(BASE_ID + 0x502),
+    location_names.samurai_kirby_4: LocationData(BASE_ID + 0x503),
+    location_names.samurai_kirby_5: LocationData(BASE_ID + 0x504),
+}
+
+card_swipe_locations = {
+    location_names.kirby_card_swipe_1: LocationData(BASE_ID + 0x550),
+    location_names.kirby_card_swipe_2: LocationData(BASE_ID + 0x551),
+    location_names.kirby_card_swipe_3: LocationData(BASE_ID + 0x552),
+}
+
+kotd_locations = {
+    location_names.kirby_on_the_draw_1: LocationData(BASE_ID + 0x600),
+    location_names.kirby_on_the_draw_2: LocationData(BASE_ID + 0x601),
+    location_names.kirby_on_the_draw_3: LocationData(BASE_ID + 0x602),
+}
+
+snack_track_locations = {
+    location_names.snack_tracks_1: LocationData(BASE_ID + 0x650),
+    location_names.snack_tracks_2: LocationData(BASE_ID + 0x651),
+    location_names.snack_tracks_3: LocationData(BASE_ID + 0x652),
+}
+
+subgame_locations = {
+    **megaton_locations,
+    **samurai_locations,
+    **card_swipe_locations,
+    **kotd_locations,
+    **snack_track_locations
 }
 
 location_table = {
@@ -660,7 +700,8 @@ location_table = {
     **revenge_of_the_king_locations,
     **meta_knightmare_locations,
     **helper_to_hero_locations,
-    **the_true_arena_locations
+    **the_true_arena_locations,
+    **subgame_locations
 }
 
 __all__ = [
@@ -679,5 +720,6 @@ __all__ = [
     "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",
     "mku_level_1_locations", "mku_level_2_locations", "mku_level_3_locations", "mku_level_4_locations",
     "mku_level_5_locations", "meta_knightmare_locations", "helper_to_hero_locations", 
-    "the_true_arena_locations", "location_table"
+    "the_true_arena_locations", "megaton_locations", "samurai_locations", "card_swipe_locations", 
+    "kotd_locations", "snack_track_locations", "subgame_locations", "location_table"
 ]

@@ -5,6 +5,7 @@ import pkgutil
 import threading
 import base64
 
+
 # Shows warning but should work without issue
 import settings
 from worlds.AutoWorld import World, WebWorld
@@ -183,7 +184,7 @@ class KSSUWorld(World):
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        slot_data = self.options.as_dict("included_maingames", "consumables", "essences", "milky_way_wishes_mode")
+        slot_data = self.options.as_dict("included_maingames", "consumables", "essences", "milky_way_wishes_mode", "deathlink")
         slot_data.update({
             "treasure_value": self.treasure_value
         })
