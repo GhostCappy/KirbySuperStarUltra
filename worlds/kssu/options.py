@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLink, Toggle, OptionGroup, OptionCounter
-from schema import Schema, And, Use, Optional, Or
+from Options import Choice, DeathLink, OptionCounter, OptionGroup, OptionSet, PerGameCommonOptions, Range, Toggle
+from schema import Schema, And
 
 maingame_mapping = {
         0: "Spring Breeze",
@@ -189,17 +189,14 @@ class MilkyWayWishesMode(Choice):
     default = 0
     
 # Not yet implemented
-class Foodsanity(OptionSet):
+class Foodsanity(Toggle):
     """
     [Not currently implemented]
     
-    Adds the specified consumables to the location pool. 
-    Options are Maxim Tomato, 1-Up, and Invincibility Candy.
+    Adds all static foods, invincible candy, and 1-ups into the location pool.
     """
     display_name = "Foodsanity"
-    valid_keys = ("Maxim Tomato", "1-Up", "Invincibility Candy")
 
-    default = frozenset()
 
 # Not yet implemented
 class EssencesSanity(Toggle):
@@ -311,3 +308,23 @@ kssu_option_groups = [
         SamuaraiWins
     ])
 ]
+
+'''
+option_presets = {
+    "SNES Default": {
+
+    },
+    "Revenge of the King": {
+
+    },
+    "Marx Soul": {
+
+    },
+    "Marx Soul": {
+
+    },
+    "Insanity": {
+
+    },
+}
+'''

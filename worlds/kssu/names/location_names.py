@@ -3,7 +3,7 @@ sb_whispy = "Spring Breeze - Stage 1"
 sb_lololo = "Spring Breeze - Stage 2"
 sb_kracko = "Spring Breeze - Stage 3"
 sb_dedede = "Spring Breeze - Stage 4"
-sb_complete = "Spring Breeze - Castle Dedede"
+sb_complete = "Spring Breeze - Complete"
 
 # Dyna Blade
 db_stage_1 = "Dyna Blade - Stage 1"
@@ -11,7 +11,7 @@ db_stage_2 = "Dyna Blade - Stage 2"
 db_stage_3 = "Dyna Blade - Stage 3"
 db_stage_4 = "Dyna Blade - Stage 4"
 db_stage_5 = "Dyna Blade - Stage 5"
-db_complete = "Dyna Blade - Dyna Blade"
+db_complete = "Dyna Blade - Complete"
 db_switch_1 = "Dyna Blade - Switch 1"
 db_switch_2 = "Dyna Blade - Switch 2"   
 db_iron_mam = "Dyna Blade - Iron Mam"
@@ -20,14 +20,14 @@ db_iron_mam = "Dyna Blade - Iron Mam"
 gr_stage_1 = "Gourmet Race - Win Round 1"
 gr_stage_2 = "Gourmet Race - Win Round 2"
 gr_stage_3 = "Gourmet Race - Win Round 3"
-gr_complete = "Gourmet Race - Results"
+gr_complete = "Gourmet Race - Complete"
 
 # The Great Cave Offensive
 tgco_fatty_whale = "The Great Cave Offensive - Fatty Whale"
 tgco_virus = "The Great Cave Offensive - Computer Virus"
 tgco_chameleon = "The Great Cave Offensive - Chameleo Arm"
 tgco_wham_bam = "The Great Cave Offensive - Wham Bam Rock"
-tgco_complete = "The Great Cave Offensive - Cave Exit"
+tgco_complete = "The Great Cave Offensive - Complete"
 
 # Treasures
 tgco_treasure_1 = "Sub-Tree - Gold Medal"
@@ -99,7 +99,7 @@ romk_chapter_4 = "Revenge of Meta Knight - Chapter 4"
 romk_chapter_5 = "Revenge of Meta Knight - Chapter 5"
 romk_chapter_6 = "Revenge of Meta Knight - Chapter 6"
 romk_chapter_7 = "Revenge of Meta Knight - Chapter 7"
-romk_complete = "Revenge of Meta Knight - Halberd's Helm"  # doesn't require Wheel
+romk_complete = "Revenge of Meta Knight - Complete"  # doesn't require Wheel
 
 # Milky Way Wishes
 mww_floria = "Floria - Twin Woods"

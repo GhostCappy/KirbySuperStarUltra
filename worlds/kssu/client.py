@@ -299,7 +299,7 @@ class KSSUClient(BizHawkClient):
             # Spring Breeze
             if curr == 0:  
                 game_name = "Spring Breeze"
-                if stage > 0:
+                if stage > 0 and stage <= 3:
                     if self.prev_stage is None or stage != self.prev_stage:
                         loc = self.get_location(game_name, f"Stage {stage}")
                         if loc is not None:
@@ -314,7 +314,7 @@ class KSSUClient(BizHawkClient):
             # Dyna Blade 
             if curr == 1: 
                 game_name = "Dyna Blade"
-                if stage > 0:
+                if stage > 0 and stage <= 4:
                     if self.prev_stage is None or stage != self.prev_stage:
                         loc = self.get_location(game_name, f"Stage {stage}")
                         if loc is not None:
@@ -326,14 +326,23 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
                 if stage == 4 and trans == 3:
-                    loc = self.get_location(game_name, "Complete")
+
+                    loc = self.get_location(game_name, "Stage 5")
                     if loc is not None:
                         send_locations.add(loc)
+                        
+            # Gourmet Race
+            if curr == 2:
+                game_name = "Gourmet Race"
 
             # The Great Cave Offensive 
             # Dreadful
             if curr == 3:
                 game_name = "The Great Cave Offensive"
+                if trans == 3:
+                    loc = self.get_location(game_name, "Complete")
+                    if loc is not None:
+                        send_locations.add(loc)
 
             # Revenge of Meta Knight
             if curr == 4:  
@@ -401,6 +410,7 @@ class KSSUClient(BizHawkClient):
                     loc = self.get_location(game_name, label)
                     if loc is not None:
                         send_locations.add(loc)
+                        
 
             # True Arena 
             if curr == 10: 

@@ -7,6 +7,7 @@ from .options import maingame_mapping
 if TYPE_CHECKING:
     from . import KSSUWorld
     
+# Wtf is this    
 starting_stage = 0x09EAC0
 
 def get_base_rom_as_bytes() -> bytes:

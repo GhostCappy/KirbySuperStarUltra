@@ -110,7 +110,7 @@ class KSSUWorld(World):
             # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
             self.options.included_maingames = IncludedMainGames.valid_keys
-            self.options.foodsanity.value = Foodsanity.valid_keys
+            self.options.foodsanity.value = True
             self.options.essences.value = True
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
@@ -137,13 +137,15 @@ class KSSUWorld(World):
         
         if "Dyna Blade" in self.options.included_maingames:
             force = None
-            if not self.options.essences and "Maxim Tomato" not in self.options.foodsanity:
+            if not self.options.essences and not self.options.foodsanity:
                 force = ItemClassification.useful
             itempool.extend([self.create_item(name, force) for name in dyna_items])
+            
         if "The Great Cave Offensive" in self.options.included_maingames:
             for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
                 itempool.append(self.create_item(name))
                 treasure_value += treasure.value
+                
         if "Milky Way Wishes" in self.options.included_maingames:
             planet = [self.create_item(name) for name in planets]
             starting_planet = self.random.choice(planet)
