@@ -1,6 +1,13 @@
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APPatchExtension
+from typing import Iterable, TYPE_CHECKING, Optional
 
+from .options import maingame_mapping
+
+if TYPE_CHECKING:
+    from . import KSSUWorld
+    
+starting_stage = 0x09EAC0
 
 def get_base_rom_as_bytes() -> bytes:
     with open(get_settings().kssu_options.rom_file, "rb") as infile:
@@ -25,6 +32,23 @@ class KSSUProcedurePatch(APProcedurePatch, APTokenMixin):
     def get_source_data(cls) -> bytes:
         return get_base_rom_as_bytes()
 
+def patch_rom(world: "KSSUWorld", patch: KSSUProcedurePatch) -> None:
+    # starting subgame (index)
+    patch.write_token("starting_maingame", world.options.starting_maingame.value)
+
+    # numeric goal (how many subgames must be completed)
+    patch.write_token(
+        "required_subgame_completions",
+        world.options.required_subgame_completions.value,
+    )
+    
+    required_maingames = 0
+    for val, maingame in maingame_mapping.items():
+        if maingame in world.options.required_maingames:
+            required_maingames_mask |= (1 << val)
+
+    patch.write_token("required_maingames", required_maingames)
+    
 # Might need more added
 def write_tokens(patch: KSSUProcedurePatch) -> None:
     patch.write_file("token_data.bin", patch.get_token_binary())

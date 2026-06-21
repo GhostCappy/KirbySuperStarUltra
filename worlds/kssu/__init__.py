@@ -17,13 +17,13 @@ from typing import Any, List, Mapping, Dict, ClassVar
 from .names import item_names
 from .rom import KSSUProcedurePatch, write_tokens
 from .regions import create_regions
-from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Consumables
+from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanity
 from .client import KSSUClient 
 from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
                     main_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
-
+from .options import kssu_option_groups
 logger = logging.getLogger("Kirby Super Star Ultra")
 
 # Webpage for Archipelago page
@@ -39,6 +39,7 @@ class KSSUWeb(WebWorld):
             authors=["GhostCappy"],
         )
     ]
+    option_groups = kssu_option_groups
     
 # Details for game ROM
 class KSSUSettings(settings.Group):
@@ -109,7 +110,7 @@ class KSSUWorld(World):
             # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
             self.options.included_maingames = IncludedMainGames.valid_keys
-            self.options.consumables.value = Consumables.valid_keys
+            self.options.foodsanity.value = Foodsanity.valid_keys
             self.options.essences.value = True
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
@@ -136,7 +137,7 @@ class KSSUWorld(World):
         
         if "Dyna Blade" in self.options.included_maingames:
             force = None
-            if not self.options.essences and "Maxim Tomato" not in self.options.consumables:
+            if not self.options.essences and "Maxim Tomato" not in self.options.foodsanity:
                 force = ItemClassification.useful
             itempool.extend([self.create_item(name, force) for name in dyna_items])
         if "The Great Cave Offensive" in self.options.included_maingames:
@@ -184,7 +185,7 @@ class KSSUWorld(World):
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        slot_data = self.options.as_dict("included_maingames", "consumables", "essences", "milky_way_wishes_mode", "deathlink")
+        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", "milky_way_wishes_mode", "deathlink")
         slot_data.update({
             "treasure_value": self.treasure_value
         })

@@ -28,6 +28,7 @@ class KSSUClient(BizHawkClient):
     goal_flag: int
     ram_mem_domain = "Main RAM"
     goal_complete = False
+    received_items_count: int = 0
     
 # Game Address Offsets
     # Generic
@@ -46,10 +47,12 @@ class KSSUClient(BizHawkClient):
     kirby_lifes = 0x05B824
     kirby_hp = 0x0771D4
     kirby_ability = 0x0BAF7B
+    candy_timer = 0x0BB22C
     
     # Dyna Blade
     dyna_blade_stages = 0x05BE0A
     dyna_blade_extras = 0x06C26A
+    iron_mam_defeated = 0x06C266
     
     # TGCO
     tgco_treasure_count = 0x06E752
@@ -93,6 +96,8 @@ class KSSUClient(BizHawkClient):
     snack_red_score = 0x0B860E
     snack_green_score = 0x0B8812
     snack_timer = 0x0B8828
+    
+    header_offset = 0x3ffe00
 
 # AP Address Offsets
     received_offset = 0x29EAC0
@@ -130,6 +135,17 @@ class KSSUClient(BizHawkClient):
         self.last_death_link = 0
         
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
+        header = await bizhawk.read(
+            ctx.bizhawk_ctx, (
+                (self.header_offset, 18, self.ram_mem_domain),
+            )
+        )
+        if b'KIRBY USDX E' not in header[0]:
+            return False
+        if header[0] != b'KIRBY USDX EYKWE01':
+            from CommonClient import logger
+            logger.warning("Rom appears to be a non-US version of Kirby Super Star Ultra. "
+                           "Please dump and use your copy of the US version, as it is the only supported version.")
         ctx.game = self.game
         ctx.items_handling = 0b111
         ctx.want_slot_data = True
@@ -154,6 +170,7 @@ class KSSUClient(BizHawkClient):
             if "tags" in args:
                 if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
                     self.received_deathlink = True     
+
                 
     def get_location(self, game: str, label: str) -> int | None:
         name = f"{game} - {label}"
@@ -185,7 +202,7 @@ class KSSUClient(BizHawkClient):
                 return
             
             send_locations: Set[int] = set()
-
+            
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
@@ -222,6 +239,10 @@ class KSSUClient(BizHawkClient):
                     (self.snack_red_score, 2, self.ram_mem_domain),     # 19
                     (self.snack_green_score, 2, self.ram_mem_domain),   # 20
                     (self.snack_timer, 2, self.ram_mem_domain),         # 21
+                    (self.received_offset, 2, self.ram_mem_domain),         # 22
+                    (self.deathlink_flags, 1, self.ram_mem_domain),         # 23
+                    
+                    (self.iron_mam_defeated, 1, self.ram_mem_domain),         # 23
                 ]
             )
             
@@ -252,9 +273,31 @@ class KSSUClient(BizHawkClient):
             snack_red = int.from_bytes(read_state[19], "little")
             snack_green = int.from_bytes(read_state[20], "little")
             snack_timer = int.from_bytes(read_state[21], "little")
+            
+            received_sav = int.from_bytes(read_state[22], "little")
+            deathlink_flag = int.from_bytes(read_state[23], "little")
+            
+            iron_mam = int.from_bytes(read_state[24], "little")
 
+            # Item Handling
+            for index in range(min(self.received_items_count, received_sav), len(ctx.items_received)):
+                network_item = ctx.items_received[index]
+                name = ctx.item_names.lookup_in_game(network_item.item)
+
+                match name:
+                    case "Invincible Candy":
+                        await self.bizhawk_add_halfword(ctx, self.candy_timer, 1320)
+
+                # Keep APSave updated
+                if index >= received_sav:
+                    await self.bizhawk_set_halfword(ctx, self.received_offset, index + 1)
+
+                self.received_items_count = index + 1
+                await asyncio.sleep(0.1)
+            
+            # Location Handeling
             # Spring Breeze
-            if curr == 0:  # Spring Breeze
+            if curr == 0:  
                 game_name = "Spring Breeze"
                 if stage > 0:
                     if self.prev_stage is None or stage != self.prev_stage:
@@ -269,20 +312,26 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Dyna Blade 
-            if curr == 1:  # Dyna Blade
+            if curr == 1: 
                 game_name = "Dyna Blade"
                 if stage > 0:
                     if self.prev_stage is None or stage != self.prev_stage:
                         loc = self.get_location(game_name, f"Stage {stage}")
                         if loc is not None:
                             send_locations.add(loc)
+                            
+                if iron_mam == 8:
+                    loc = self.get_location(game_name, f"Iron Mam")
+                    if loc is not None:
+                        send_locations.add(loc)
 
                 if stage == 4 and trans == 3:
                     loc = self.get_location(game_name, "Complete")
                     if loc is not None:
                         send_locations.add(loc)
 
-            # The Great Cave Offensive
+            # The Great Cave Offensive 
+            # Dreadful
             if curr == 3:
                 game_name = "The Great Cave Offensive"
 
@@ -300,6 +349,7 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Milky Way Wishes
+            # Dreadful: Part 2
             if curr == 5:
                 game_name = "Milky Way Wishes"
 
@@ -429,6 +479,9 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # --- DeathLink ---
+            # Need a better way to track player in-game.
+            
+            '''
             if self.deathlink_enabled:
                 in_gameplay = (trans == 0)
                 alive = (0 < hp < 255 and hp != 28)
@@ -450,6 +503,7 @@ class KSSUClient(BizHawkClient):
                     if self.received_deathlink:
                         self.received_deathlink = False
                         await self.deathlink_kill_player(ctx)
+                '''
 
             # --- Send locations if changed ---
             if send_locations != self.local_checked_locations:
@@ -584,5 +638,21 @@ class KSSUClient(BizHawkClient):
             ctx.bizhawk_ctx,
             [
                 (address, halfword.to_bytes(length=2, byteorder="little"),self.ram_mem_domain)
+            ]
+        )
+
+    async def bizhawk_add_halfword(self, ctx: "BizHawkClientContext", address: int, amount: int):
+        read_state = await bizhawk.read(
+            ctx.bizhawk_ctx,
+            [
+                (address, 2, self.ram_mem_domain),
+            ]
+        )
+        current = int.from_bytes(read_state[0], "little")
+        new_value = min(current + amount, 0xFFFF)
+        await bizhawk.write(
+            ctx.bizhawk_ctx,
+            [
+                (address, new_value.to_bytes(2, "little"), self.ram_mem_domain)
             ]
         )

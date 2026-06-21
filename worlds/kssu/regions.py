@@ -17,13 +17,13 @@ def create_region(name, world: "KSSUWorld"):
 
 def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, LocationData]):
     filter_list = [""]
-    if "Maxim Tomato" in world.options.consumables:
+    if "Maxim Tomato" in world.options.foodsanity:
         filter_list.append("maxim")
-    if "1-Up" in world.options.consumables:
+    if "1-Up" in world.options.foodsanity:
         filter_list.append("one_up")
-    if "Invincibility Candy" in world.options.consumables:
+    if "Invincibility Candy" in world.options.foodsanity:
         filter_list.append("candy")
-    if "Tomato" in world.options.consumables:
+    if "Tomato" in world.options.foodsanity:
         filter_list.append("tomato")
     if world.options.essences:
         filter_list.append("essence")
@@ -113,7 +113,7 @@ def create_dyna_blade(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([dyna_blade, peanut_plains, mallow_castle, cocoa_cave,
                                      candy_mountain, dyna_blade_nest])
 
-    if world.options.essences or "Maxim Tomato" in world.options.consumables:
+    if world.options.essences or "Maxim Tomato" in world.options.foodsanity:
         extra1 = create_region("Dyna Blade Bonus 1", world)
         extra2 = create_region("Dyna Blade Bonus 2", world)
         for locations, region in zip((bonus_1_locations, bonus_2_locations), (extra1, extra2)):

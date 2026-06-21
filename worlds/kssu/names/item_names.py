@@ -158,6 +158,7 @@ one_up = "1-Up"
 maxim_tomato = "Maxim Tomato"
 food = "Food"
 tomato = "Tomato"
+cave_key = "Cave Key"
 
 # Hopefully not needed but, the whole list of "Food" items (Excluding 1-Up, Maxim Tomato, and Tomato)
 '''

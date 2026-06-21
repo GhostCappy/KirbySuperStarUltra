@@ -179,8 +179,10 @@ misc_items: Dict[str, ItemData] = {
     item_names.one_up: ItemData(BASE_ID + 0x1001, ItemClassification.filler),
     item_names.maxim_tomato: ItemData(BASE_ID + 0x1002, ItemClassification.filler),
     item_names.invincible_candy: ItemData(BASE_ID + 0x1003, ItemClassification.filler),
-    item_names.rainbow_star: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
-    item_names.tomato: ItemData(BASE_ID + 0x1005, ItemClassification.filler)
+    item_names.cave_key: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
+    item_names.rainbow_star: ItemData(BASE_ID + 0x1005, ItemClassification.progression),
+    item_names.tomato: ItemData(BASE_ID + 0x1006, ItemClassification.filler)
+    
 }
 
 filler_item_weights: Dict[str, int] = {
