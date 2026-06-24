@@ -1,27 +1,37 @@
 from typing import Dict, TYPE_CHECKING
 from .items import main_game_completion
 from .names import location_names, item_names
-from worlds.generic.Rules import set_rule, add_rule
+from worlds.generic.Rules import set_rule
+from BaseClasses import CollectionState
 
 if TYPE_CHECKING:
     from . import KSSUWorld
-    from BaseClasses import CollectionState
+    
+# I better remember this file at some point, this is responsible for logic.
 
+# Abilities that can beat wind  
 def can_fight_wind(state: "CollectionState", player: int):
     return state.has_any([item_names.wing, item_names.jet, item_names.ninja], player)
 
+# Abilities that can hit switches (and food if enabled)
 def dyna_blade_rules(world: "KSSUWorld"):
     pass
 
-def great_cave_rules(world: "KSSUWorld"):
+# Abilities that can access treasure, food, essences, etc.
+def the_great_cave_rules(world: "KSSUWorld"):
     pass
 
-def revenge_metaknight_rules(world: "KSSUWorld"):
+# Abilties that can access cannon, food and essences
+def revenge_of_metaknight_rules(world: "KSSUWorld"):
     pass
 
+# Abilties that can access essences and food
 def milky_way_wishes_rules(world: "KSSUWorld"):
     pass
 
+# More rules that need to be made:
+# Helper to Hero (When helpers are blocked behind ability)
+# The True Aena (Same thing as arena)
 def set_rules(world: "KSSUWorld") -> None:
     # Dyna Blade
     if "Dyna Blade" in world.options.included_maingames:
@@ -29,17 +39,18 @@ def set_rules(world: "KSSUWorld") -> None:
     
     # Great Cave Offensive
     if "The Great Cave Offensive" in world.options.included_maingames:
-        great_cave_rules(world)
+        the_great_cave_rules(world)
         
     # Revenge of Meta Knight
     if "Revenge of Meta Knight" in world.options.included_maingames:
-        revenge_metaknight_rules(world)
+        revenge_of_metaknight_rules(world)
         
     # Milky Way Wishes
     if "Milky Way Wishes" in world.options.included_maingames:
         milky_way_wishes_rules(world)
     
     # The Arena 
+    # NGL idk wtf this does. I think logically puts having 5 abilities needed to beat more than 10 bosses?
     if "The Arena" in world.options.included_maingames:
         for i in range(10, 21):
             set_rule(world.get_location(f"The Arena - {i} Straight Wins"),

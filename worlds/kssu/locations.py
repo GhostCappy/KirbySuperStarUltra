@@ -1,52 +1,57 @@
-from typing import NamedTuple
+from typing import NamedTuple, TYPE_CHECKING
 from BaseClasses import ItemClassification, Location
 from .names import location_names
 from .items import BASE_ID
+from . import items
+
+if TYPE_CHECKING:
+    from .world import KSSUWorld
 
 class KSSULocation(Location):
     game = "Kirby Super Star Ultra"
     
 class LocationData(NamedTuple):
-    code: int | None
-    tag: str = ""
+    code: int | None # Location ID
+    tag: str = "" # Item Name (If applicable)
     
 # Dont forget to change BASE_ID.
+# Each stage location contains the items and boss of that stage 
+# Useful for foodsanity
+# Spring Breeze
 green_greens_locations = {
-    location_names.sb_whispy: LocationData(BASE_ID + 0),
     location_names.sb_gg_maxim: LocationData(BASE_ID + 0x100, "maxim"),
     location_names.sb_gg_1up: LocationData(BASE_ID + 0x200, "one_up")
 }
 
 float_islands_locations = {
-    location_names.sb_lololo: LocationData(BASE_ID + 1),
     location_names.sb_fl_1up: LocationData(BASE_ID + 0x201, "one_up"),
     location_names.sb_fl_candy: LocationData(BASE_ID + 0x400, "candy"),
 }
 
 bubbly_clouds_locations = {
-    location_names.sb_kracko: LocationData(BASE_ID + 2),
     location_names.sb_bc_1up: LocationData(BASE_ID + 0x202, "one_up"),
     location_names.sb_bc_maxim: LocationData(BASE_ID + 0x101, "maxim"),
     location_names.sb_bc_1up_moon: LocationData(BASE_ID + 0x203, "one_up")
 }
 
-mt_dedede_locations = {
-    location_names.sb_dedede: LocationData(BASE_ID + 3),
-    location_names.sb_complete: LocationData(None),
+spring_breeze_locations = {
+    location_names.sb_whispy: LocationData(BASE_ID + 0), # Stage 1
+    location_names.sb_lololo: LocationData(BASE_ID + 1), # Stage 2
+    location_names.sb_kracko: LocationData(BASE_ID + 2), # Stage 3
+    location_names.sb_dedede: LocationData(BASE_ID + 3), # Stage 4
+    location_names.sb_complete: LocationData(None), # Game Complete
 }
 
-spring_breeze_locations = {
+spring_breeze_food_locations = {
     **green_greens_locations,
     **float_islands_locations,
     **bubbly_clouds_locations,
-    **mt_dedede_locations,
 }
 
+# Dyna Blade
 peanut_plains_locations = {
-    location_names.db_stage_1: LocationData(BASE_ID + 4),
     location_names.db_pp_1up_1: LocationData(BASE_ID + 0x204, "one_up"),
     location_names.db_pp_maxim_1: LocationData(BASE_ID + 0x102, "maxim"),
-    location_names.db_pp_sword: LocationData(BASE_ID + 0x800, "essence"),
     location_names.db_pp_maxim_2: LocationData(BASE_ID + 0x103, "maxim"),
     location_names.db_pp_1up_2: LocationData(BASE_ID + 0x205, "one_up"),
     location_names.db_pp_candy: LocationData(BASE_ID + 0x401, "candy"),
@@ -54,10 +59,7 @@ peanut_plains_locations = {
 }
 
 mallow_castle_locations = {
-    location_names.db_stage_2: LocationData(BASE_ID + 5),
-    location_names.db_switch_1: LocationData(BASE_ID + 9),
     location_names.db_mc_1up_1: LocationData(BASE_ID + 0x206, "one_up"),
-    location_names.db_mc_wheel: LocationData(BASE_ID + 0x801, "essence"),
     location_names.db_mc_maxim_1: LocationData(BASE_ID + 0x105, "maxim"),
     location_names.db_mc_1up_2: LocationData(BASE_ID + 0x207, "one_up"),
     location_names.db_mc_1up_3: LocationData(BASE_ID + 0x208, "one_up"),
@@ -65,9 +67,27 @@ mallow_castle_locations = {
     location_names.db_mc_1up_5: LocationData(BASE_ID + 0x20A, "one_up"),
 }
 
+cocoa_cave_locations = {
+    location_names.db_cc_maxim_1: LocationData(BASE_ID + 0x108, "maxim"),
+    location_names.db_cc_1up_1: LocationData(BASE_ID + 0x20B, "one_up"),
+    location_names.db_cc_1up_2: LocationData(BASE_ID + 0x20C, "one_up"),
+}
+
+candy_mountain_locations = {
+    location_names.db_cm_1up_1: LocationData(BASE_ID + 0x20D, "one_up"),
+    location_names.db_cm_1up_2: LocationData(BASE_ID + 0x20E, "one_up"),
+    location_names.db_cm_1up_3: LocationData(BASE_ID + 0x20F, "one_up"),
+    location_names.db_cm_1up_4: LocationData(BASE_ID + 0x210, "one_up"),
+    location_names.db_cm_candy: LocationData(BASE_ID + 0x402, "candy"),
+    location_names.db_cm_maxim_1: LocationData(BASE_ID + 0x109, "maxim"),
+    location_names.db_cm_maxim_2: LocationData(BASE_ID + 0x10A, "maxim"),
+    location_names.db_cm_1up_5: LocationData(BASE_ID + 0x211, "one_up"),
+    location_names.db_cm_1up_6: LocationData(BASE_ID + 0x212, "one_up"),
+    location_names.db_cm_maxim_3: LocationData(BASE_ID + 0x10B, "maxim")
+}
+
+
 bonus_1_locations = {
-    location_names.db_b1_maxim_l: LocationData(BASE_ID + 0x106, "maxim"),
-    location_names.db_b1_maxim_r: LocationData(BASE_ID + 0x107, "maxim"),
     location_names.db_b1_beam: LocationData(BASE_ID + 0x802, "essence"),
     location_names.db_b1_fire: LocationData(BASE_ID + 0x803, "essence"),
     location_names.db_b1_mirror: LocationData(BASE_ID + 0x804, "essence"),
@@ -80,31 +100,6 @@ bonus_1_locations = {
     location_names.db_b1_hammer: LocationData(BASE_ID + 0x80B, "essence"),
 }
 
-cocoa_cave_locations = {
-    location_names.db_stage_3: LocationData(BASE_ID + 6),
-    location_names.db_iron_mam: LocationData(BASE_ID + 11),
-    location_names.db_cc_maxim_1: LocationData(BASE_ID + 0x108, "maxim"),
-    location_names.db_cc_1up_1: LocationData(BASE_ID + 0x20B, "one_up"),
-    location_names.db_cc_1up_2: LocationData(BASE_ID + 0x20C, "one_up"),
-}
-
-candy_mountain_locations = {
-    location_names.db_stage_4: LocationData(BASE_ID + 7),
-    location_names.db_switch_2: LocationData(BASE_ID + 10),
-    location_names.db_cm_1up_1: LocationData(BASE_ID + 0x20D, "one_up"),
-    location_names.db_cm_hammer: LocationData(BASE_ID + 0x80C, "essence"),
-    location_names.db_cm_1up_2: LocationData(BASE_ID + 0x20E, "one_up"),
-    location_names.db_cm_1up_3: LocationData(BASE_ID + 0x20F, "one_up"),
-    location_names.db_cm_1up_4: LocationData(BASE_ID + 0x210, "one_up"),
-    location_names.db_cm_candy: LocationData(BASE_ID + 0x402, "candy"),
-    location_names.db_cm_maxim_1: LocationData(BASE_ID + 0x109, "maxim"),
-    location_names.db_cm_maxim_2: LocationData(BASE_ID + 0x10A, "maxim"),
-    location_names.db_cm_1up_5: LocationData(BASE_ID + 0x211, "one_up"),
-    location_names.db_cm_copy: LocationData(BASE_ID + 0x80D, "essence"),
-    location_names.db_cm_1up_6: LocationData(BASE_ID + 0x212, "one_up"),
-    location_names.db_cm_maxim_3: LocationData(BASE_ID + 0x10B, "maxim")
-}
-
 bonus_2_locations = {
     location_names.db_b2_wheel: LocationData(BASE_ID + 0x80E, "essence"),
     location_names.db_b2_yoyo: LocationData(BASE_ID + 0x80F, "essence"),
@@ -115,12 +110,9 @@ bonus_2_locations = {
     location_names.db_b2_ice: LocationData(BASE_ID + 0x814, "essence"),
     location_names.db_b2_suplex: LocationData(BASE_ID + 0x815, "essence"),
     location_names.db_b2_copy: LocationData(BASE_ID + 0x816, "essence"),
-    location_names.db_b2_maxim: LocationData(BASE_ID + 0x10C, "maxim"),
 }
 
 dyna_blade_nest_locations = {
-    location_names.db_stage_5: LocationData(BASE_ID + 8),
-    location_names.db_complete: LocationData(None),
     location_names.db_db_cutter: LocationData(BASE_ID + 0x860, "essence"),
     location_names.db_db_beam: LocationData(BASE_ID + 0x861, "essence"),
     location_names.db_db_fire: LocationData(BASE_ID + 0x862, "essence"),
@@ -128,20 +120,47 @@ dyna_blade_nest_locations = {
 }
 
 dyna_blade_locations = {
+    location_names.db_stage_1: LocationData(BASE_ID + 4),
+    location_names.db_stage_2: LocationData(BASE_ID + 5),
+    location_names.db_switch_1: LocationData(BASE_ID + 9),
+    location_names.db_stage_3: LocationData(BASE_ID + 6),
+    location_names.db_iron_mam: LocationData(BASE_ID + 11),
+    location_names.db_stage_4: LocationData(BASE_ID + 7),
+    location_names.db_switch_2: LocationData(BASE_ID + 10),
+    location_names.db_stage_5: LocationData(BASE_ID + 8),
+    location_names.db_complete: LocationData(None),
+}
+
+dyna_blade_food_locations = {
     **peanut_plains_locations,
     **mallow_castle_locations,
     **cocoa_cave_locations,
     **candy_mountain_locations,
-    **dyna_blade_nest_locations,
-    **bonus_1_locations,
-    **bonus_2_locations,
+    location_names.db_b1_maxim_l: LocationData(BASE_ID + 0x106, "maxim"), # All 3 from Dyna Blade Nest
+    location_names.db_b1_maxim_r: LocationData(BASE_ID + 0x107, "maxim"),
+    location_names.db_b2_maxim: LocationData(BASE_ID + 0x10C, "maxim"), 
 }
 
+dyna_blade_essence_locations = {
+    location_names.db_pp_sword: LocationData(BASE_ID + 0x800, "essence"), # Peanut Plains
+        location_names.db_mc_wheel: LocationData(BASE_ID + 0x801, "essence"), # Mallow castle
+    location_names.db_cm_hammer: LocationData(BASE_ID + 0x80C, "essence"), # Candy Mountain
+    location_names.db_cm_copy: LocationData(BASE_ID + 0x80D, "essence"), # Candy Mountain
+    **dyna_blade_nest_locations, # Dyna Blade
+    **bonus_1_locations, # Bonus 1
+    **bonus_2_locations, # Bonus 2
+}
+
+# Gourmet Race
 gourmet_race_locations = {
     location_names.gr_stage_1: LocationData(BASE_ID + 12),
     location_names.gr_stage_2: LocationData(BASE_ID + 13),
     location_names.gr_stage_3: LocationData(BASE_ID + 14),
     location_names.gr_complete: LocationData(None),
+}
+
+gourmet_race_essence_locations = {
+    # All in stage 3
     location_names.gr_jet: LocationData(BASE_ID + 0x817, "essence"),
     location_names.gr_parasol: LocationData(BASE_ID + 0x818, "essence"),
     location_names.gr_ninja: LocationData(BASE_ID + 0x819, "essence"),
@@ -149,6 +168,8 @@ gourmet_race_locations = {
     location_names.gr_wheel: LocationData(BASE_ID + 0x81B, "essence"),
 }
 
+# The Great Cave Offensive
+# If you're going through the source code right now, make sure you drink plenty of water!
 subtree_locations = {
     location_names.tgco_fatty_whale: LocationData(BASE_ID + 15),
     location_names.tgco_treasure_1: LocationData(BASE_ID + 19),
@@ -164,14 +185,20 @@ subtree_locations = {
     location_names.tgco_treasure_11: LocationData(BASE_ID + 29),
     location_names.tgco_treasure_12: LocationData(BASE_ID + 30),
     location_names.tgco_treasure_13: LocationData(BASE_ID + 31),
+}
+
+subtree_food_locations = {
     location_names.tgco_st_1up_1: LocationData(BASE_ID + 0x213, "one_up"),
     location_names.tgco_st_maxim_1: LocationData(BASE_ID + 0x10D, "maxim"),
     location_names.tgco_st_1up_2: LocationData(BASE_ID + 0x214, "one_up"),
     location_names.tgco_st_maxim_2: LocationData(BASE_ID + 0x10E, "maxim"),
+    location_names.tgco_st_maxim_3: LocationData(BASE_ID + 0x10F, "maxim"),
+}
+
+subtree_essence_locations = {
     location_names.tgco_st_jet: LocationData(BASE_ID + 0x81C, "essence"),
     location_names.tgco_st_mirror: LocationData(BASE_ID + 0x81D, "essence"),
     location_names.tgco_st_sword: LocationData(BASE_ID + 0x81E, "essence"),
-    location_names.tgco_st_maxim_3: LocationData(BASE_ID + 0x10F, "maxim"),
 }
 
 crystal_locations = {
@@ -192,15 +219,21 @@ crystal_locations = {
     location_names.tgco_treasure_27: LocationData(BASE_ID + 45),
     location_names.tgco_treasure_28: LocationData(BASE_ID + 46),
     location_names.tgco_treasure_29: LocationData(BASE_ID + 47),
+}
+
+crystal_food_locations = {
     location_names.tgco_cr_1up_1: LocationData(BASE_ID + 0x215, "one_up"),
     location_names.tgco_cr_maxim_1: LocationData(BASE_ID + 0x110, "maxim"),
     location_names.tgco_cr_maxim_2: LocationData(BASE_ID + 0x111, "maxim"),
     location_names.tgco_cr_maxim_3: LocationData(BASE_ID + 0x112, "maxim"),
     location_names.tgco_cr_maxim_4: LocationData(BASE_ID + 0x113, "maxim"),
+    location_names.tgco_cr_maxim_5: LocationData(BASE_ID + 0x114, "maxim"),
+}
+
+crystal_essence_locations = {
     location_names.tgco_cr_fighter: LocationData(BASE_ID + 0x81F, "essence"),
     location_names.tgco_cr_wing: LocationData(BASE_ID + 0x820, "essence"),
     location_names.tgco_cr_jet: LocationData(BASE_ID + 0x821, "essence"),
-    location_names.tgco_cr_maxim_5: LocationData(BASE_ID + 0x114, "maxim"),
 }
 
 old_tower_locations = {
@@ -221,11 +254,27 @@ old_tower_locations = {
     location_names.tgco_treasure_43: LocationData(BASE_ID + 61),
     location_names.tgco_treasure_44: LocationData(BASE_ID + 62),
     location_names.tgco_treasure_45: LocationData(BASE_ID + 63),
+}
+
+old_tower_food_locations = {
     location_names.tgco_ot_maxim_1: LocationData(BASE_ID + 0x115, "maxim"),
     location_names.tgco_ot_maxim_2: LocationData(BASE_ID + 0x116, "maxim"),
     location_names.tgco_ot_1up_1: LocationData(BASE_ID + 0x216, "one_up"),
     location_names.tgco_ot_maxim_3: LocationData(BASE_ID + 0x117, "maxim"),
     location_names.tgco_ot_maxim_4: LocationData(BASE_ID + 0x118, "maxim"),
+    location_names.tgco_ot_maxim_5: LocationData(BASE_ID + 0x119, "maxim"),
+    location_names.tgco_ot_maxim_6: LocationData(BASE_ID + 0x11A, "maxim"),
+    location_names.tgco_ot_maxim_7: LocationData(BASE_ID + 0x11B, "maxim"),
+    location_names.tgco_ot_maxim_8: LocationData(BASE_ID + 0x11C, "maxim"),
+    location_names.tgco_ot_maxim_9: LocationData(BASE_ID + 0x11D, "maxim"),
+    location_names.tgco_ot_maxim_10: LocationData(BASE_ID + 0x11E, "maxim"),
+    location_names.tgco_ot_maxim_11: LocationData(BASE_ID + 0x11F, "maxim"),
+    location_names.tgco_ot_maxim_12: LocationData(BASE_ID + 0x120, "maxim"),
+    location_names.tgco_ot_1up_2: LocationData(BASE_ID + 0x217, "one_up"),
+}
+
+old_tower_essence_locations = {
+    # zzz...
     location_names.tgco_ot_sleep_1: LocationData(BASE_ID + 0x822, "essence"),
     location_names.tgco_ot_sleep_2: LocationData(BASE_ID + 0x823, "essence"),
     location_names.tgco_ot_sleep_3: LocationData(BASE_ID + 0x824, "essence"),
@@ -234,19 +283,10 @@ old_tower_locations = {
     location_names.tgco_ot_sleep_6: LocationData(BASE_ID + 0x827, "essence"),
     location_names.tgco_ot_sleep_7: LocationData(BASE_ID + 0x828, "essence"),
     location_names.tgco_ot_sleep_8: LocationData(BASE_ID + 0x829, "essence"),
-    location_names.tgco_ot_maxim_5: LocationData(BASE_ID + 0x119, "maxim"),
     location_names.tgco_ot_ninja: LocationData(BASE_ID + 0x82A, "essence"),
     location_names.tgco_ot_wing: LocationData(BASE_ID + 0x82B, "essence"),
     location_names.tgco_ot_plasma: LocationData(BASE_ID + 0x82C, "essence"),
-    location_names.tgco_ot_maxim_6: LocationData(BASE_ID + 0x11A, "maxim"),
     location_names.tgco_ot_mirror: LocationData(BASE_ID + 0x82D, "essence"),
-    location_names.tgco_ot_maxim_7: LocationData(BASE_ID + 0x11B, "maxim"),
-    location_names.tgco_ot_maxim_8: LocationData(BASE_ID + 0x11C, "maxim"),
-    location_names.tgco_ot_maxim_9: LocationData(BASE_ID + 0x11D, "maxim"),
-    location_names.tgco_ot_maxim_10: LocationData(BASE_ID + 0x11E, "maxim"),
-    location_names.tgco_ot_maxim_11: LocationData(BASE_ID + 0x11F, "maxim"),
-    location_names.tgco_ot_maxim_12: LocationData(BASE_ID + 0x120, "maxim"),
-    location_names.tgco_ot_1up_2: LocationData(BASE_ID + 0x217, "one_up"),
 }
 
 garden_locations = {
@@ -267,22 +307,17 @@ garden_locations = {
     location_names.tgco_treasure_58: LocationData(BASE_ID + 76),
     location_names.tgco_treasure_59: LocationData(BASE_ID + 77),
     location_names.tgco_treasure_60: LocationData(BASE_ID + 78),
-    location_names.tgco_ga_jet: LocationData(BASE_ID + 0x82E, "essence"),
-    location_names.tgco_ga_wing_1: LocationData(BASE_ID + 0x82F, "essence"),
-    location_names.tgco_ga_ninja: LocationData(BASE_ID + 0x830, "essence"),
+}
+
+garden_food_locations = {
     location_names.tgco_ga_maxim_1: LocationData(BASE_ID + 0x121, "maxim"),
     location_names.tgco_ga_maxim_2: LocationData(BASE_ID + 0x122, "maxim"),
     location_names.tgco_ga_maxim_3: LocationData(BASE_ID + 0x123, "maxim"),
     location_names.tgco_ga_maxim_4: LocationData(BASE_ID + 0x124, "maxim"),
     location_names.tgco_ga_1up_1: LocationData(BASE_ID + 0x218, "one_up"),
+     location_names.tgco_ga_1up_2: LocationData(BASE_ID + 0x219, "one_up"),
     location_names.tgco_ga_1up_6: LocationData(BASE_ID + 0x230, "one_up"),
-    location_names.tgco_ga_wing_2: LocationData(BASE_ID + 0x831, "essence"),
-    location_names.tgco_ga_plasma: LocationData(BASE_ID + 0x832, "essence"),
     location_names.tgco_ga_maxim_5: LocationData(BASE_ID + 0x125, "maxim"),
-    location_names.tgco_ga_wheel: LocationData(BASE_ID + 0x833, "essence"),
-    location_names.tgco_ga_sleep: LocationData(BASE_ID + 0x834, "essence"),
-    location_names.tgco_ga_parasol_1: LocationData(BASE_ID + 0x835, "essence"),
-    location_names.tgco_ga_1up_2: LocationData(BASE_ID + 0x219, "essence"),
     location_names.tgco_ga_maxim_6: LocationData(BASE_ID + 0x126, "maxim"),
     location_names.tgco_ga_maxim_7: LocationData(BASE_ID + 0x127, "maxim"),
     location_names.tgco_ga_1up_3: LocationData(BASE_ID + 0x21A, "one_up"),
@@ -290,10 +325,21 @@ garden_locations = {
     location_names.tgco_ga_1up_5: LocationData(BASE_ID + 0x21C, "one_up"),
     location_names.tgco_ga_maxim_8: LocationData(BASE_ID + 0x128, "maxim"),
     location_names.tgco_ga_maxim_9: LocationData(BASE_ID + 0x129, "maxim"),
+    location_names.tgco_ga_maxim_10: LocationData(BASE_ID + 0x12A, "maxim"),
+}
+
+garden_essence_locations = {
+    location_names.tgco_ga_jet: LocationData(BASE_ID + 0x82E, "essence"),
+    location_names.tgco_ga_wing_1: LocationData(BASE_ID + 0x82F, "essence"),
+    location_names.tgco_ga_ninja: LocationData(BASE_ID + 0x830, "essence"),
+    location_names.tgco_ga_wing_2: LocationData(BASE_ID + 0x831, "essence"),
+    location_names.tgco_ga_plasma: LocationData(BASE_ID + 0x832, "essence"),
+    location_names.tgco_ga_wheel: LocationData(BASE_ID + 0x833, "essence"),
+    location_names.tgco_ga_sleep: LocationData(BASE_ID + 0x834, "essence"),
+    location_names.tgco_ga_parasol_1: LocationData(BASE_ID + 0x835, "essence"),
     location_names.tgco_ga_bomb: LocationData(BASE_ID + 0x836, "essence"),
     location_names.tgco_ga_ice: LocationData(BASE_ID + 0x837, "essence"),
     location_names.tgco_ga_parasol_2: LocationData(BASE_ID + 0x838, "essence"),
-    location_names.tgco_ga_maxim_10: LocationData(BASE_ID + 0x12A, "maxim"),
 }
 
 tgco_locations = {
@@ -303,50 +349,72 @@ tgco_locations = {
     **garden_locations,
 }
 
-romk_chapter_1_locations = {
-    location_names.romk_chapter_1: LocationData(BASE_ID + 79),
+tgco_food_locations = {
+    **subtree_food_locations,
+    **crystal_food_locations,
+    **old_tower_food_locations,
+    **garden_food_locations,
 }
 
-romk_chapter_2_locations = {
-    location_names.romk_chapter_2: LocationData(BASE_ID + 80),
+tgco_essence_locations = {
+    **subtree_essence_locations,
+    **crystal_essence_locations,
+    **old_tower_essence_locations,
+    **garden_essence_locations,
+}
+
+# Revenge of Meta Knight
+romk_chapter_2_food_locations = {
     location_names.romk_c2_maxim_1: LocationData(BASE_ID + 0x12B, "maxim"),
     location_names.romk_c2_maxim_2: LocationData(BASE_ID + 0x12C, "maxim"),
+}
+
+romk_chapter_2_essence_locations = {
     location_names.romk_c2_parasol: LocationData(BASE_ID + 0x839, "essence"),
     location_names.romk_c2_bomb: LocationData(BASE_ID + 0x83A, "essence"),
     location_names.romk_c2_wing: LocationData(BASE_ID + 0x83B, "essence"),
 }
 
-romk_chapter_3_locations = {
-    location_names.romk_chapter_3: LocationData(BASE_ID + 81),
+romk_chapter_3_food_locations = {
     location_names.romk_c3_1up_1: LocationData(BASE_ID + 0x21D, "one_up"),
+    location_names.romk_c3_1up_2: LocationData(BASE_ID + 0x22F, "one_up"),
+    location_names.romk_c3_maxim_1: LocationData(BASE_ID + 0x12D, "maxim"),
+}
+
+romk_chapter_3_essence_locations = {
     location_names.romk_c3_cutter_1: LocationData(BASE_ID + 0x83C, "essence"),
     location_names.romk_c3_sword: LocationData(BASE_ID + 0x83D, "essence"),
     location_names.romk_c3_fighter: LocationData(BASE_ID + 0x83E, "essence"),
     location_names.romk_c3_cutter_2: LocationData(BASE_ID + 0x83F, "essence"),
     location_names.romk_c3_ice: LocationData(BASE_ID + 0x840, "essence"),
-    location_names.romk_c3_1up_2: LocationData(BASE_ID + 0x22F, "one_up"),
-    location_names.romk_c3_maxim_1: LocationData(BASE_ID + 0x12D, "maxim"),
     location_names.romk_c3_mirror: LocationData(BASE_ID + 0x841, "essence"),
     location_names.romk_c3_parasol: LocationData(BASE_ID + 0x842, "essence"),
     location_names.romk_c3_ninja: LocationData(BASE_ID + 0x843, "essence"),
     location_names.romk_c3_wheel: LocationData(BASE_ID + 0x844, "essence"),
 }
 
-romk_chapter_4_locations = {
-    location_names.romk_chapter_4: LocationData(BASE_ID + 82),
-    location_names.romk_c4_sword: LocationData(BASE_ID + 0x864, "essence"),
+
+romk_chapter_4_food_locations = {
     location_names.romk_c4_candy_1: LocationData(BASE_ID + 0x403, "candy"),
     location_names.romk_c4_maxim_1: LocationData(BASE_ID + 0x12E, "maxim"),
-    location_names.romk_c4_fire: LocationData(BASE_ID + 0x845, "essence"),
-    location_names.romk_c4_yoyo: LocationData(BASE_ID + 0x846, "essence"),
-    location_names.romk_c4_beam: LocationData(BASE_ID + 0x847, "essence"),
     location_names.romk_c4_maxim_2: LocationData(BASE_ID + 0x12F, "maxim"),
 }
 
-romk_chapter_5_locations = {
-    location_names.romk_chapter_5: LocationData(BASE_ID + 83),
+romk_chapter_4_essence_locations = {
+    location_names.romk_c4_sword: LocationData(BASE_ID + 0x864, "essence"),
+    location_names.romk_c4_fire: LocationData(BASE_ID + 0x845, "essence"),
+    location_names.romk_c4_yoyo: LocationData(BASE_ID + 0x846, "essence"),
+    location_names.romk_c4_beam: LocationData(BASE_ID + 0x847, "essence"),
+}
+
+
+romk_chapter_5_food_locations = {
     location_names.romk_c5_maxim_1: LocationData(BASE_ID + 0x130, "maxim"),
     location_names.romk_c5_maxim_2: LocationData(BASE_ID + 0x131, "maxim"),
+    location_names.romk_c5_maxim_3: LocationData(BASE_ID + 0x132, "maxim"),
+}
+
+romk_chapter_5_essence_locations = {
     location_names.romk_c5_sword: LocationData(BASE_ID + 0x848, "essence"),
     location_names.romk_c5_wing: LocationData(BASE_ID + 0x849, "essence"),
     location_names.romk_c5_ice: LocationData(BASE_ID + 0x84A, "essence"),
@@ -356,58 +424,85 @@ romk_chapter_5_locations = {
     location_names.romk_c5_plasma: LocationData(BASE_ID + 0x84E, "essence"),
     location_names.romk_c5_cutter: LocationData(BASE_ID + 0x84F, "essence"),
     location_names.romk_c5_mirror: LocationData(BASE_ID + 0x850, "essence"),
-    location_names.romk_c5_maxim_3: LocationData(BASE_ID + 0x132, "maxim"),
 }
 
-romk_chapter_6_locations = {
-    location_names.romk_chapter_6: LocationData(BASE_ID + 84),
-    location_names.romk_c6_parasol: LocationData(BASE_ID + 0x851, "essence"),
-    location_names.romk_c6_jet: LocationData(BASE_ID + 0x852, "essence"),
-    location_names.romk_c6_wing_1: LocationData(BASE_ID + 0x853, "essence"),
+romk_chapter_6_food_locations = {
     location_names.romk_c6_candy: LocationData(BASE_ID + 0x404, "candy"),
     location_names.romk_c6_maxim_1: LocationData(BASE_ID + 0x133, "maxim"),
-    location_names.romk_c6_wing_2: LocationData(BASE_ID + 0x854, "essence"),
-    location_names.romk_c6_suplex: LocationData(BASE_ID + 0x855, "essence"),
-    location_names.romk_c6_yoyo: LocationData(BASE_ID + 0x856, "essence"),
     location_names.romk_c6_1up_1: LocationData(BASE_ID + 0x21E, "one_up"),
     location_names.romk_c6_1up_2: LocationData(BASE_ID + 0x21F, "one_up"),
     location_names.romk_c6_maxim_2: LocationData(BASE_ID + 0x134, "maxim"),
-    location_names.romk_c6_bomb: LocationData(BASE_ID + 0x857, "essence"),
     location_names.romk_c6_maxim_3: LocationData(BASE_ID + 0x135, "maxim"),
 }
 
-romk_chapter_7_locations = {
-    location_names.romk_chapter_7: LocationData(BASE_ID + 85),
-    location_names.romk_complete: LocationData(None),
+romk_chapter_6_essence_locations = {
+    location_names.romk_c6_parasol: LocationData(BASE_ID + 0x851, "essence"),
+    location_names.romk_c6_jet: LocationData(BASE_ID + 0x852, "essence"),
+    location_names.romk_c6_wing_1: LocationData(BASE_ID + 0x853, "essence"),
+    location_names.romk_c6_wing_2: LocationData(BASE_ID + 0x854, "essence"),
+    location_names.romk_c6_suplex: LocationData(BASE_ID + 0x855, "essence"),
+    location_names.romk_c6_yoyo: LocationData(BASE_ID + 0x856, "essence"),
+    location_names.romk_c6_bomb: LocationData(BASE_ID + 0x857, "essence"),
+}
+
+
+romk_chapter_7_food_locations = {
+    location_names.romk_c7_maxim_1: LocationData(BASE_ID + 0x136, "maxim"),
+    location_names.romk_c7_maxim_2: LocationData(BASE_ID + 0x137, "maxim"),
+    location_names.romk_c7_maxim_3: LocationData(BASE_ID + 0x138, "maxim"),
+    location_names.romk_c7_maxim_4: LocationData(BASE_ID + 0x139, "maxim"),
+}
+
+romk_chapter_7_essence_locations = {
     location_names.romk_c7_cutter_1: LocationData(BASE_ID + 0x858, "essence"),
     location_names.romk_c7_parasol: LocationData(BASE_ID + 0x859, "essence"),
     location_names.romk_c7_yoyo: LocationData(BASE_ID + 0x85A, "essence"),
     location_names.romk_c7_stone: LocationData(BASE_ID + 0x85B, "essence"),
     location_names.romk_c7_ninja_1: LocationData(BASE_ID + 0x85C, "essence"),
-    location_names.romk_c7_maxim_1: LocationData(BASE_ID + 0x136, "maxim"),
-    location_names.romk_c7_maxim_2: LocationData(BASE_ID + 0x137, "maxim"),
-    location_names.romk_c7_maxim_3: LocationData(BASE_ID + 0x138, "maxim"),
     location_names.romk_c7_ninja_2: LocationData(BASE_ID + 0x85D, "essence"),
     location_names.romk_c7_sleep: LocationData(BASE_ID + 0x85E, "essence"),
     location_names.romk_c7_cutter_2: LocationData(BASE_ID + 0x85F, "essence"),
-    location_names.romk_c7_maxim_4: LocationData(BASE_ID + 0x139, "maxim"),
 }
 
 revenge_of_meta_knight_locations = {
-    **romk_chapter_1_locations,
-    **romk_chapter_2_locations,
-    **romk_chapter_3_locations,
-    **romk_chapter_4_locations,
-    **romk_chapter_5_locations,
-    **romk_chapter_6_locations,
-    **romk_chapter_7_locations,
+    location_names.romk_chapter_1: LocationData(BASE_ID + 79),
+    location_names.romk_chapter_2: LocationData(BASE_ID + 80),
+    location_names.romk_chapter_3: LocationData(BASE_ID + 81),
+    location_names.romk_chapter_4: LocationData(BASE_ID + 82),
+    location_names.romk_chapter_5: LocationData(BASE_ID + 83),
+    location_names.romk_chapter_6: LocationData(BASE_ID + 84),
+    location_names.romk_chapter_7: LocationData(BASE_ID + 85),
+    location_names.romk_complete: LocationData(None),
 }
 
+revenge_of_meta_knight_food_locations = {
+    **romk_chapter_2_food_locations,
+    **romk_chapter_3_food_locations,
+    **romk_chapter_4_food_locations,
+    **romk_chapter_5_food_locations,
+    **romk_chapter_6_food_locations,
+    **romk_chapter_7_food_locations,
+}
+
+revenge_of_meta_knight_essence_locations = {
+    **romk_chapter_2_essence_locations,
+    **romk_chapter_3_essence_locations,
+    **romk_chapter_4_essence_locations,
+    **romk_chapter_5_essence_locations,
+    **romk_chapter_6_essence_locations,
+    **romk_chapter_7_essence_locations,
+}
+
+# Milky Way Wishes
+# Essence Sanity does not apply here, they will always be a location in Milky Way Wishes
 floria_locations = {
     location_names.mww_floria: LocationData(BASE_ID + 87),
     location_names.mww_cutter: LocationData(BASE_ID + 88),
     location_names.mww_fighter: LocationData(BASE_ID + 89),
     location_names.mww_ice: LocationData(BASE_ID + 90),
+}
+
+floria_food_locations = {
     location_names.mww_fl_maxim: LocationData(BASE_ID + 0x13A, "maxim"),
 }
 
@@ -416,6 +511,9 @@ aqualiss_locations = {
     location_names.mww_beam: LocationData(BASE_ID + 92),
     location_names.mww_parasol: LocationData(BASE_ID + 93),
     location_names.mww_sword: LocationData(BASE_ID + 94),
+}
+
+aqualiss_food_locations = {
     location_names.mww_aq_1up_1: LocationData(BASE_ID + 0x220, "one_up"),
     location_names.mww_aq_maxim_1: LocationData(BASE_ID + 0x13B, "maxim"),
     location_names.mww_aq_1up_2: LocationData(BASE_ID + 0x221, "one_up"),
@@ -423,7 +521,6 @@ aqualiss_locations = {
     location_names.mww_aq_maxim_3: LocationData(BASE_ID + 0x13D, "maxim"),
     location_names.mww_aq_1up_3: LocationData(BASE_ID + 0x222, "one_up"),
     location_names.mww_aq_maxim_4: LocationData(BASE_ID + 0x13E, "maxim"),
-
 }
 
 skyhigh_locations = {
@@ -431,6 +528,9 @@ skyhigh_locations = {
     location_names.mww_jet: LocationData(BASE_ID + 96),
     location_names.mww_wheel: LocationData(BASE_ID + 97),
     location_names.mww_wing: LocationData(BASE_ID + 98),
+}
+
+skyhigh_food_locations = {
     location_names.mww_sh_1up_1: LocationData(BASE_ID + 0x223, "one_up"),
     location_names.mww_sh_maxim_1: LocationData(BASE_ID + 0x13F, "maxim"),
     location_names.mww_sh_candy: LocationData(BASE_ID + 0x405, "candy"),
@@ -441,6 +541,9 @@ hotbeat_locations = {
     location_names.mww_hotbeat: LocationData(BASE_ID + 99),
     location_names.mww_fire: LocationData(BASE_ID + 100),
     location_names.mww_suplex: LocationData(BASE_ID + 101),
+}
+
+hotbeat_food_locations = {
     location_names.mww_hb_candy: LocationData(BASE_ID + 0x406, "candy"),
     location_names.mww_hb_maxim_1: LocationData(BASE_ID + 0x141, "maxim"),
     location_names.mww_hb_maxim_2: LocationData(BASE_ID + 0x142, "maxim"),
@@ -460,6 +563,9 @@ cavios_locations = {
     location_names.mww_bomb: LocationData(BASE_ID + 103),
     location_names.mww_hammer: LocationData(BASE_ID + 104),
     location_names.mww_stone: LocationData(BASE_ID + 105),
+}
+
+cavios_food_locations = {
     location_names.mww_cv_maxim_1: LocationData(BASE_ID + 0x148, "maxim"),
     location_names.mww_cv_maxim_2: LocationData(BASE_ID + 0x149, "maxim"),
     location_names.mww_cv_maxim_3: LocationData(BASE_ID + 0x14A, "maxim"),
@@ -474,6 +580,9 @@ mecheye_locations = {
     location_names.mww_mecheye: LocationData(BASE_ID + 106),
     location_names.mww_plasma: LocationData(BASE_ID + 107),
     location_names.mww_yoyo: LocationData(BASE_ID + 108),
+}
+
+mecheye_food_locations = {
     location_names.mww_me_1up_1: LocationData(BASE_ID + 0x229, "one_up"),
     location_names.mww_me_candy: LocationData(BASE_ID + 0x408, "candy"),
     location_names.mww_me_1up_2: LocationData(BASE_ID + 0x22A, "one_up"),
@@ -489,19 +598,14 @@ halfmoon_locations = {
     location_names.mww_halfmoon: LocationData(BASE_ID + 109),
     location_names.mww_mirror: LocationData(BASE_ID + 110),
     location_names.mww_ninja: LocationData(BASE_ID + 111),
+}
+
+halfmoon_food_locations = {
     location_names.mww_hm_maxim_1: LocationData(BASE_ID + 0x150, "maxim"),
     location_names.mww_hm_maxim_2: LocationData(BASE_ID + 0x151, "maxim"),
     location_names.mww_hm_1up_1: LocationData(BASE_ID + 0x22E, "one_up"),
     location_names.mww_hm_maxim_3: LocationData(BASE_ID + 0x152, "maxim"),
     location_names.mww_hm_maxim_4: LocationData(BASE_ID + 0x153, "maxim"),
-}
-
-copy_planet_locations = {
-    location_names.mww_copy: LocationData(BASE_ID + 112)
-}
-
-space_locations = {
-    location_names.mww_complete: LocationData(None)
 }
 
 milky_way_wishes_locations = {
@@ -512,10 +616,21 @@ milky_way_wishes_locations = {
     **cavios_locations,
     **mecheye_locations,
     **halfmoon_locations,
-    **copy_planet_locations,
-    **space_locations
+    location_names.mww_copy: LocationData(BASE_ID + 112), # ??? Planet
+    location_names.mww_complete: LocationData(None)
 }
 
+milky_way_wishes_food_locations = {
+    **floria_food_locations,
+    **aqualiss_food_locations,
+    **skyhigh_food_locations,
+    **hotbeat_food_locations,
+    **cavios_food_locations,
+    **mecheye_food_locations,
+    **halfmoon_food_locations,
+}
+
+# The Arena
 the_arena_locations = {
     location_names.the_arena_1: LocationData(BASE_ID + 113),
     location_names.the_arena_2: LocationData(BASE_ID + 114),
@@ -537,6 +652,9 @@ the_arena_locations = {
     location_names.the_arena_18: LocationData(BASE_ID + 130),
     location_names.the_arena_19: LocationData(BASE_ID + 131),
     location_names.the_arena_complete: LocationData(None),
+}
+
+the_arena_food_locations = {
     location_names.the_arena_maxim_1: LocationData(BASE_ID + 0x154, "maxim"),
     location_names.the_arena_maxim_2: LocationData(BASE_ID + 0x155, "maxim"),
     location_names.the_arena_maxim_3: LocationData(BASE_ID + 0x156, "maxim"),
@@ -544,37 +662,47 @@ the_arena_locations = {
     location_names.the_arena_maxim_5: LocationData(BASE_ID + 0x158, "maxim"),
 }
 
-purple_plants_locations = {
-    location_names.rotk_whispy: LocationData(BASE_ID + 150)
+# Revenge of the King
+# This is all Ultra-specific, so I have not added ANY item locations yet
+purple_plants_food_locations = {
+    
 }
 
-illusion_islands_locations = {
-    location_names.rotk_lololo: LocationData(BASE_ID + 151)
+illusion_islands_food_locations = {
+    
 }
 
-crash_clouds_locations = {
-    location_names.rotk_kracko: LocationData(BASE_ID + 152)
+crash_clouds_food_locations = {
+    
 }
 
-mt_dedede_sky_locations = {
-    location_names.rotk_kabula: LocationData(BASE_ID + 153)
+mt_dedede_sky_food_locations = {
+    
 }
 
-the_revenge_locations = {
+the_revenge_food_locations = {
+
+}
+
+revenge_of_the_king_locations = {
+    location_names.rotk_whispy: LocationData(BASE_ID + 150),
+    location_names.rotk_lololo: LocationData(BASE_ID + 151),
+    location_names.rotk_kracko: LocationData(BASE_ID + 152),
+    location_names.rotk_kabula: LocationData(BASE_ID + 153),
     location_names.rotk_dedede: LocationData(BASE_ID + 154),
     location_names.rotk_complete: LocationData(None)
 }
 
-revenge_of_the_king_locations = {
-    **purple_plants_locations,
-    **illusion_islands_locations,
-    **crash_clouds_locations,
-    **mt_dedede_sky_locations,
-    **the_revenge_locations
+revenge_of_the_king_food_locations = {
+    **purple_plants_food_locations,
+    **illusion_islands_food_locations,
+    **crash_clouds_food_locations,
+    **mt_dedede_sky_food_locations,
+    **the_revenge_food_locations
 }
 
-# This might need to be changed level to account for beating each individual stage within each level. 
-# Memory address only updates stage count for each level.
+# Memory address only updates current screens for each level, the "stage" address affects the level.
+# Oh my god I hope there's no items in this mode I'd lose my mind
 mku_level_1_locations = {
     location_names.mku_level_1: LocationData(BASE_ID + 156)
 }
@@ -631,6 +759,36 @@ helper_to_hero_locations = {
     location_names.hth_maxim_3: LocationData(BASE_ID + 0x956, "maxim"),
 }
 
+helper_to_hero_locations = {
+    location_names.hth_1: LocationData(BASE_ID + 909),
+    location_names.hth_2: LocationData(BASE_ID + 910),
+    location_names.hth_3: LocationData(BASE_ID + 911),
+    location_names.hth_4: LocationData(BASE_ID + 912),
+    location_names.hth_5: LocationData(BASE_ID + 913),
+    location_names.hth_6: LocationData(BASE_ID + 914),
+    location_names.hth_7: LocationData(BASE_ID + 915),
+    location_names.hth_8: LocationData(BASE_ID + 916),
+    location_names.hth_9: LocationData(BASE_ID + 917),
+    location_names.hth_10: LocationData(BASE_ID + 918),
+    location_names.hth_11: LocationData(BASE_ID + 919),
+    location_names.hth_12: LocationData(BASE_ID + 920),
+    location_names.hth_13: LocationData(BASE_ID + 921),
+    location_names.hth_14: LocationData(BASE_ID + 922),
+    location_names.hth_15: LocationData(BASE_ID + 923),
+    location_names.hth_16: LocationData(BASE_ID + 924),
+    location_names.hth_17: LocationData(BASE_ID + 925),
+    location_names.hth_18: LocationData(BASE_ID + 926),
+    location_names.hth_19: LocationData(BASE_ID + 927),
+    location_names.hth_20: LocationData(BASE_ID + 928),
+    location_names.helper_to_hero_complete: LocationData(None),
+}
+
+helper_to_hero_food_locations = {
+    location_names.hth_maxim_1: LocationData(BASE_ID + 0x954, "maxim"),
+    location_names.hth_maxim_2: LocationData(BASE_ID + 0x955, "maxim"),
+    location_names.hth_maxim_3: LocationData(BASE_ID + 0x956, "maxim"),
+}
+
 the_true_arena_locations = {
     location_names.the_true_arena_1: LocationData(BASE_ID + 210),
     location_names.the_true_arena_2: LocationData(BASE_ID + 211),
@@ -642,6 +800,10 @@ the_true_arena_locations = {
     location_names.the_true_arena_8: LocationData(BASE_ID + 217),
     location_names.the_true_arena_9: LocationData(BASE_ID + 218),
     location_names.the_true_arena_complete: LocationData(None), 
+}
+
+# Good luck if you turn this setting on.
+the_true_arena_food_locations = {
     location_names.the_true_arena_tomato_1: LocationData(BASE_ID + 0x300, "tomato"),
     location_names.the_true_arena_tomato_2: LocationData(BASE_ID + 0x301, "tomato"),
     location_names.the_true_arena_tomato_3: LocationData(BASE_ID + 0x302, "tomato"),
@@ -649,6 +811,8 @@ the_true_arena_locations = {
     location_names.the_true_arena_tomato_5: LocationData(BASE_ID + 0x304, "tomato"),
 }
 
+# Sub-Games
+# Will later add more locations to seperate levels for Megaton Punch & Samurai Kirby
 megaton_locations = {
     location_names.megaton_punch_1: LocationData(BASE_ID + 0x450),
     location_names.megaton_punch_2: LocationData(BASE_ID + 0x451),
@@ -702,6 +866,14 @@ location_table = {
     **helper_to_hero_locations,
     **the_true_arena_locations,
     **subgame_locations
+}
+
+food_table = {
+
+}
+
+essence_table = {
+    
 }
 
 __all__ = [

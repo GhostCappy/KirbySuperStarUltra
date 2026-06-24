@@ -9,21 +9,6 @@ from .options import IncludedMainGames
 if TYPE_CHECKING:
     from . import KSSUWorld
     
-def create_and_connect_regions(world: KSSUWorld) -> None:
-    create_all_regions(world)
-    connect_regions(world)
-    
-def create_all_regions(world: KSSUWorld) -> None:
-    regions = []
-
-    # Add to multiworld region
-    world.multiworld.regions += regions
-    
-def connect_regions(world: KSSUWorld) -> None:
-    what = False
-    
-    
-'''
 class KSSURegion(Region):
     game = "Kirby Super Star Ultra"
 
@@ -48,7 +33,8 @@ def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, L
                 if data.tag in filter_list}
     if filtered:
         region.add_locations(filtered, KSSULocation)
-    
+
+
 def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_maingames: set[str]):
     if "Gourmet Race" in included_maingames:
         gourmet_race = create_region("Gourmet Race", world)
@@ -312,4 +298,3 @@ def create_regions(world: "KSSUWorld"):
         create_subgames(world, menu)
         
     world.regions = list(world.multiworld.regions)
- '''

@@ -22,8 +22,8 @@ from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler
                     main_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
+from . import web_world
 logger = logging.getLogger("Kirby Super Star Ultra")
-
 
     
 # Details for game ROM
@@ -56,7 +56,7 @@ class KSSUWorld(World):
     item_name_groups = item_groups
     options_dataclass = KSSUOptions
     options: KSSUOptions
-    web = KSSUWeb()
+    web = web_world.KSSUWeb()
     treasure_value: List[int]
     settings: typing.ClassVar[KSSUSettings]
     location_name_to_id = {location: data.code
@@ -99,12 +99,15 @@ class KSSUWorld(World):
             self.options.essences.value = True
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
+        # Make sure the item is in the item table
         if name not in item_table:
             raise Exception(f"{name} is not a valid item name for Kirby Super Star Ultra.")
         
+        # If it is, set its classification
         data = item_table[name]
         classification = force_classification if force_classification else data.classification
         
+        # If there is no BASE_ID in an item, it is an event (Ex. A mode is completed)
         if data.code is None:
             return KSSUEventItem(name, self.player)
                              
@@ -112,32 +115,45 @@ class KSSUWorld(World):
 
     def create_items(self) -> None:
         itempool = []
+        # Add the included games
         modes = [self.create_item(name) for name in main_games if name in self.options.included_maingames]
         starting_mode = self.create_item(maingame_mapping[self.options.starting_maingame])
+
+        # At least one game is needed to play. This game should be removed from item pool.
         modes.remove(starting_mode)
         self.multiworld.push_precollected(starting_mode)
+
+        # Add copy abilities
         itempool.extend([self.create_item(name) for name in copy_abilities])
         itempool.extend(modes)
+
         treasure_value = 0
         
+        # If Dyna blade is included, add its items
         if "Dyna Blade" in self.options.included_maingames:
             force = None
             if not self.options.essences and not self.options.foodsanity:
                 force = ItemClassification.useful
             itempool.extend([self.create_item(name, force) for name in dyna_items])
             
+        # If TGCO is included, add its items
         if "The Great Cave Offensive" in self.options.included_maingames:
             for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
                 itempool.append(self.create_item(name))
                 treasure_value += treasure.value
-                
+        
+        # If Milky Way Wishes is included, add its items
         if "Milky Way Wishes" in self.options.included_maingames:
+            # Start with a random planet, and remove it from the pool
             planet = [self.create_item(name) for name in planets]
             starting_planet = self.random.choice(planet)
             planet.remove(starting_planet)
             self.multiworld.push_precollected(starting_planet)
+
+            # Add the rest
             itempool.extend(planet)
 
+            # If the YAML is set to mulitworld, the "rainbow star" item will be included in the pool.
             if self.options.milky_way_wishes_mode == "multiworld":
                 itempool.extend(self.create_item(item_names.rainbow_star) for _ in range(7))
                 

@@ -14,9 +14,9 @@ class KSSUItem(Item):
     game = "Kirby Super Star Ultra"
     
 class ItemData(NamedTuple):
-    code: Optional[int]
-    classification: ItemClassification
-    value: int = 0
+    code: Optional[int] # Item ID
+    classification: ItemClassification # Type of item (progression, filler, trap)
+    value: int = 0 # Gold Value (If applicable)
 
 main_games: Dict[str, ItemData] = {
     item_names.spring_breeze: ItemData(BASE_ID + 0, ItemClassification.progression),
@@ -191,11 +191,12 @@ misc_items: Dict[str, ItemData] = {
 }
 
 # Filler Items
+# Change this later
 def get_random_filler_item_name(world: KSSUWorld) -> str:
     # Random Chance for a Trap
     if world.random.randint(0, 99) < world.options.trap_chance:
-        return "Sleep Trap"
-    return "1-Up"
+        return "1-Up"
+    return "Invincible Candy"
 
 
 def create_all_items(world: KSSUWorld) -> None:
@@ -211,8 +212,6 @@ def create_all_items(world: KSSUWorld) -> None:
     itempool: Dict[str, ItemData] = {
         **main_games,
         **main_game_completion,
-        **sub_games,
-        **sub_game_completion,
         **copy_abilities,
         **treasures,
         **planets,
@@ -221,10 +220,9 @@ def create_all_items(world: KSSUWorld) -> None:
     }
 
     # Something like this
-    '''
     if world.options.subgames:
-        itempool.append(world.create_item("sub_games"))
-    '''
+        itempool.append(**sub_games)
+        itempool.append(**sub_game_completion)
 
     # The length of our itempool is easy to determine, since we have it as a list.
     number_of_items = len(itempool)
