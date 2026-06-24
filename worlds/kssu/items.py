@@ -1,7 +1,12 @@
-from typing import NamedTuple, Dict, Optional, Set
-from BaseClasses import ItemClassification, Item
-from .names import item_names
 
+from typing import NamedTuple, Dict, Optional, Set
+from BaseClasses import Item, ItemClassification
+from .names import item_names
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .world import KSSUWorld
+    
 # Will CERTAINLY need to be changed later.
 BASE_ID = 0x200000
 
@@ -185,6 +190,68 @@ misc_items: Dict[str, ItemData] = {
     
 }
 
+# Filler Items
+def get_random_filler_item_name(world: KSSUWorld) -> str:
+    # Random Chance for a Trap
+    if world.random.randint(0, 99) < world.options.trap_chance:
+        return "Sleep Trap"
+    return "1-Up"
+
+
+def create_all_items(world: KSSUWorld) -> None:
+    # Eventually need to seperate to check for every option specific item:
+    # - Individual Main-Games
+    # - All sub-games
+    # - Tresures (If TGCO is on)
+    # - Planets (If MWW is on)
+    # - Dyna Items (If Dyna Blade is on)
+    # - Food (If Foodsanity is on)
+    # - Essences (If EssencesSanity is on)
+    # - Cave Key (If the option is turned on)
+    itempool: Dict[str, ItemData] = {
+        **main_games,
+        **main_game_completion,
+        **sub_games,
+        **sub_game_completion,
+        **copy_abilities,
+        **treasures,
+        **planets,
+        **dyna_items,
+        **misc_items,
+    }
+
+    # Something like this
+    '''
+    if world.options.subgames:
+        itempool.append(world.create_item("sub_games"))
+    '''
+
+    # The length of our itempool is easy to determine, since we have it as a list.
+    number_of_items = len(itempool)
+
+    # The number of total locations 
+    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
+
+    # Subtract the number of items from the number of locations to get the number of empty item slots.
+    needed_number_of_filler_items = number_of_unfilled_locations - number_of_items
+
+    # Fill the rest of item pool with filler
+    # (1-Ups, Candy, etc.)
+    itempool += [world.create_filler() for _ in range(needed_number_of_filler_items)]
+
+    # Anyway. With our world's itempool finalized, we now need to submit it to the multiworld itempool.
+    # This is how the generator actually knows about the existence of our items.
+    world.multiworld.itempool += itempool
+
+    # Give the player starting inventory (if desired)
+    '''
+    if world.options.start_with_one_confetti_cannon:
+        # We're adding a filler item, but you can also add progression items to the player's precollected inventory.
+        starting_confetti_cannon = world.create_item("Confetti Cannon")
+        world.push_precollected(starting_confetti_cannon)
+    '''
+    
+'''
 filler_item_weights: Dict[str, int] = {
     item_names.one_up: 4,
     item_names.maxim_tomato: 2,
@@ -192,17 +259,6 @@ filler_item_weights: Dict[str, int] = {
     item_names.tomato: 2
 }
 
-item_table: Dict[str, ItemData] = {
-    **main_games,
-    **main_game_completion,
-    **sub_games,
-    **sub_game_completion,
-    **copy_abilities,
-    **treasures,
-    **planets,
-    **dyna_items,
-    **misc_items
-}
 
 item_groups: Dict[str, Set[str]] = {
     "Copy Ability": {name for name in copy_abilities},
@@ -211,3 +267,4 @@ item_groups: Dict[str, Set[str]] = {
 }
 
 lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
+'''

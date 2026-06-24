@@ -1,5 +1,5 @@
 
-from BaseClasses import Region
+from BaseClasses import Entrance, Region
 from typing import TYPE_CHECKING
 from .items import KSSUItem
 from .locations import *
@@ -8,7 +8,22 @@ from .options import IncludedMainGames
 
 if TYPE_CHECKING:
     from . import KSSUWorld
+    
+def create_and_connect_regions(world: KSSUWorld) -> None:
+    create_all_regions(world)
+    connect_regions(world)
+    
+def create_all_regions(world: KSSUWorld) -> None:
+    regions = []
 
+    # Add to multiworld region
+    world.multiworld.regions += regions
+    
+def connect_regions(world: KSSUWorld) -> None:
+    what = False
+    
+    
+'''
 class KSSURegion(Region):
     game = "Kirby Super Star Ultra"
 
@@ -297,3 +312,4 @@ def create_regions(world: "KSSUWorld"):
         create_subgames(world, menu)
         
     world.regions = list(world.multiworld.regions)
+ '''

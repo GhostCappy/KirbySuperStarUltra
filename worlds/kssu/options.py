@@ -284,7 +284,7 @@ class KSSUOptions(PerGameCommonOptions):
     samurai_kirby_difficulties: SamuraiDifficulties
     samurai_kirby_wins: SamuaraiWins
     
-kssu_option_groups = [
+option_groups = [
     OptionGroup("General Options", [
         Goal,
         RequiredMainGameCompletions,
@@ -309,8 +309,9 @@ kssu_option_groups = [
     ])
 ]
 
-'''
+
 option_presets = {
+    '''
     "SNES Default": {
 
     },
@@ -326,5 +327,5 @@ option_presets = {
     "Insanity": {
 
     },
-}
 '''
+}

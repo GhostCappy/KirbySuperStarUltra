@@ -1,5 +1,5 @@
 from typing import NamedTuple
-from BaseClasses import Location
+from BaseClasses import ItemClassification, Location
 from .names import location_names
 from .items import BASE_ID
 
