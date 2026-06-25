@@ -1,8 +1,7 @@
 
-from typing import NamedTuple, Dict, Optional, Set
+from typing import NamedTuple, Dict, Optional, Set, TYPE_CHECKING
 from BaseClasses import Item, ItemClassification
 from .names import item_names
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .world import KSSUWorld
@@ -18,18 +17,62 @@ class ItemData(NamedTuple):
     classification: ItemClassification # Type of item (progression, filler, trap)
     value: int = 0 # Gold Value (If applicable)
 
-main_games: Dict[str, ItemData] = {
+# Might be a better way of doing this but idk it
+
+spring_breeze: Dict[str, ItemData] = {
     item_names.spring_breeze: ItemData(BASE_ID + 0, ItemClassification.progression),
+    item_names.spring_breeze_complete: ItemData(None, ItemClassification.progression),
+}
+
+dyna_blade: Dict[str, ItemData] = {
     item_names.dyna_blade: ItemData(BASE_ID + 1, ItemClassification.progression),
+    item_names.dyna_blade_complete: ItemData(None, ItemClassification.progression),
+}
+
+gourmet_race: Dict[str, ItemData] = {
     item_names.gourmet_race: ItemData(BASE_ID + 2, ItemClassification.progression),
+    item_names.gourmet_race_complete: ItemData(None, ItemClassification.progression),
+}
+
+the_great_cave_offensive: Dict[str, ItemData] = {
     item_names.great_cave_offensive: ItemData(BASE_ID + 3, ItemClassification.progression),
+    item_names.great_cave_offensive_complete: ItemData(None, ItemClassification.progression),
+}
+
+revenge_of_meta_knight: Dict[str, ItemData] = {
     item_names.revenge_of_meta_knight: ItemData(BASE_ID + 4, ItemClassification.progression),
+    item_names.revenge_of_meta_knight_complete: ItemData(None, ItemClassification.progression),
+}
+
+milky_way_wishes: Dict[str, ItemData] = {
     item_names.milky_way_wishes: ItemData(BASE_ID + 5, ItemClassification.progression),
+    item_names.milky_way_wishes_complete: ItemData(None, ItemClassification.progression),
+}
+
+the_arena: Dict[str, ItemData] = {
     item_names.the_arena: ItemData(BASE_ID + 6, ItemClassification.progression),
+    item_names.the_arena_complete: ItemData(None, ItemClassification.progression),
+
+}
+
+revenge_of_the_king: Dict[str, ItemData] = {
     item_names.revenge_of_the_king: ItemData(BASE_ID + 7, ItemClassification.progression),
+    item_names.revenge_of_the_king_complete: ItemData(None, ItemClassification.progression),
+}
+
+meta_knightmare_ultra: Dict[str, ItemData] = {
     item_names.meta_knightmare_ultra: ItemData(BASE_ID + 8, ItemClassification.progression),
+    item_names.meta_knightmare_ultra_complete: ItemData(None, ItemClassification.progression),
+}
+
+helper_to_hero: Dict[str, ItemData] = {
     item_names.helper_to_hero: ItemData(BASE_ID + 9, ItemClassification.progression),
+    item_names.helper_to_hero_complete: ItemData(None, ItemClassification.progression),
+}
+
+the_true_arena: Dict[str, ItemData] = {
     item_names.the_true_arena: ItemData(BASE_ID + 10, ItemClassification.progression),
+    item_names.the_true_arena_complete: ItemData(None, ItemClassification.progression),
 }
 
 sub_games: Dict[str, ItemData] = {
@@ -38,20 +81,6 @@ sub_games: Dict[str, ItemData] = {
     item_names.kirby_card_swipe: ItemData(BASE_ID + 0x202, ItemClassification.progression),
     item_names.kirby_on_the_draw: ItemData(BASE_ID + 0x203, ItemClassification.progression),
     item_names.snack_tracks: ItemData(BASE_ID + 0x204, ItemClassification.progression),
-}
-
-main_game_completion: Dict[str, ItemData] = {
-    item_names.spring_breeze_complete: ItemData(None, ItemClassification.progression),
-    item_names.dyna_blade_complete: ItemData(None, ItemClassification.progression),
-    item_names.gourmet_race_complete: ItemData(None, ItemClassification.progression),
-    item_names.great_cave_offensive_complete: ItemData(None, ItemClassification.progression),
-    item_names.revenge_of_meta_knight_complete: ItemData(None, ItemClassification.progression),
-    item_names.milky_way_wishes_complete: ItemData(None, ItemClassification.progression),
-    item_names.the_arena_complete: ItemData(None, ItemClassification.progression),
-    item_names.revenge_of_the_king_complete: ItemData(None, ItemClassification.progression),
-    item_names.meta_knightmare_ultra_complete: ItemData(None, ItemClassification.progression),
-    item_names.helper_to_hero_complete: ItemData(None, ItemClassification.progression),
-    item_names.the_true_arena_complete: ItemData(None, ItemClassification.progression),
 }
 
 sub_game_completion: Dict[str, ItemData] = {
@@ -187,7 +216,6 @@ misc_items: Dict[str, ItemData] = {
     item_names.cave_key: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
     item_names.rainbow_star: ItemData(BASE_ID + 0x1005, ItemClassification.progression),
     item_names.tomato: ItemData(BASE_ID + 0x1006, ItemClassification.filler)
-    
 }
 
 # Filler Items
@@ -199,6 +227,11 @@ def get_random_filler_item_name(world: KSSUWorld) -> str:
     return "Invincible Candy"
 
 
+itempool: Dict[str, ItemData] = {
+    **copy_abilities,
+    # **misc_items,
+}
+
 def create_all_items(world: KSSUWorld) -> None:
     # Eventually need to seperate to check for every option specific item:
     # - Individual Main-Games
@@ -209,17 +242,46 @@ def create_all_items(world: KSSUWorld) -> None:
     # - Food (If Foodsanity is on)
     # - Essences (If EssencesSanity is on)
     # - Cave Key (If the option is turned on)
-    itempool: Dict[str, ItemData] = {
-        **main_games,
-        **main_game_completion,
-        **copy_abilities,
-        **treasures,
-        **planets,
-        **dyna_items,
-        **misc_items,
-    }
 
-    # Something like this
+
+    # Add Main Games in pool if enabled
+    # There REALLY might be a better way of doing this (like for each bla bla bla)
+    if "Spring Breeze" in world.options.included_maingames:
+        itempool.append(**spring_breeze)
+        
+    if "Dyna Blade" in world.options.included_maingames:
+        itempool.append(**dyna_blade)
+        itempool.append(**dyna_items)
+        
+    if "Gourmet Race" in world.options.included_maingames:
+        itempool.append(**gourmet_race)
+        
+    if "The Great Cave Offensive" in world.options.included_maingames:
+        itempool.append(**the_great_cave_offensive)
+        itempool.append(**treasures)
+        
+    if "Revenge of Meta Knight" in world.options.included_maingames:
+        itempool.append(**revenge_of_meta_knight)
+        
+    if "Milky Way Wishes" in world.options.included_maingames:
+        itempool.append(**milky_way_wishes)
+        itempool.append(**planets)
+        
+    if "The Arena" in world.options.included_maingames:
+        itempool.append(**the_arena)
+        
+    if "Revenge of The King" in world.options.included_maingames:
+        itempool.append(**revenge_of_meta_knight)
+        
+    if "Meta Knightmare Ultra" in world.options.included_maingames:
+        itempool.append(**meta_knightmare_ultra)
+        
+    if "Helper to Hero" in world.options.included_maingames:
+        itempool.append(**helper_to_hero)
+        
+    if "The True Arena" in world.options.included_maingames:
+        itempool.append(**the_true_arena)
+        
     if world.options.subgames:
         itempool.append(**sub_games)
         itempool.append(**sub_game_completion)
@@ -249,6 +311,14 @@ def create_all_items(world: KSSUWorld) -> None:
         world.push_precollected(starting_confetti_cannon)
     '''
     
+item_groups: Dict[str, Set[str]] = {
+    "Copy Ability": {name for name in copy_abilities},
+    "Treasures": {name for name in treasures},
+    "Planets": {name for name in planets}
+}
+
+lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in itempool.items() if data.code}
+    
 '''
 filler_item_weights: Dict[str, int] = {
     item_names.one_up: 4,
@@ -258,11 +328,5 @@ filler_item_weights: Dict[str, int] = {
 }
 
 
-item_groups: Dict[str, Set[str]] = {
-    "Copy Ability": {name for name in copy_abilities},
-    "Treasures": {name for name in treasures},
-    "Planets": {name for name in planets}
-}
 
-lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
 '''

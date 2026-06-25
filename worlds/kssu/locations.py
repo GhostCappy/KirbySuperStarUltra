@@ -1,5 +1,5 @@
 from typing import NamedTuple, TYPE_CHECKING
-from BaseClasses import ItemClassification, Location
+from BaseClasses import Location
 from .names import location_names
 from .items import BASE_ID
 from . import items
@@ -869,29 +869,145 @@ location_table = {
 }
 
 food_table = {
-
+    **spring_breeze_food_locations,
+    **dyna_blade_food_locations,
+    **tgco_food_locations,
+    **revenge_of_meta_knight_food_locations,
+    **milky_way_wishes_food_locations,
+    **the_arena_food_locations,
+    **revenge_of_the_king_food_locations,
+    **helper_to_hero_food_locations,
+    **the_true_arena_food_locations,
 }
 
 essence_table = {
-    
+    **dyna_blade_essence_locations,
+    **gourmet_race_essence_locations,
+    **tgco_essence_locations,
+    **revenge_of_meta_knight_essence_locations,
 }
 
+# Literally everything ever needs to be imported for regions.py
+# Did this with AI I'm not typing allat
 __all__ = [
-    "KSSULocation", "LocationData",
-    "green_greens_locations", "float_islands_locations", "bubbly_clouds_locations", "mt_dedede_locations",
-    "spring_breeze_locations", "peanut_plains_locations", "mallow_castle_locations", "cocoa_cave_locations",
-    "candy_mountain_locations", "bonus_1_locations", "bonus_2_locations", "dyna_blade_nest_locations",
-    "dyna_blade_locations", "gourmet_race_locations", "subtree_locations", "crystal_locations",
-    "old_tower_locations", "garden_locations", "tgco_locations", "romk_chapter_1_locations",
-    "romk_chapter_2_locations", "romk_chapter_3_locations", "romk_chapter_4_locations",
-    "romk_chapter_5_locations", "romk_chapter_6_locations", "romk_chapter_7_locations",
-    "revenge_of_meta_knight_locations", "floria_locations", "aqualiss_locations", "skyhigh_locations",
-    "hotbeat_locations", "cavios_locations", "mecheye_locations", "halfmoon_locations",
-    "copy_planet_locations", "space_locations", "milky_way_wishes_locations", "the_arena_locations",
-    "purple_plants_locations", "illusion_islands_locations", "crash_clouds_locations",
-    "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",
-    "mku_level_1_locations", "mku_level_2_locations", "mku_level_3_locations", "mku_level_4_locations",
-    "mku_level_5_locations", "meta_knightmare_locations", "helper_to_hero_locations", 
-    "the_true_arena_locations", "megaton_locations", "samurai_locations", "card_swipe_locations", 
-    "kotd_locations", "snack_track_locations", "subgame_locations", "location_table"
+    # Classes
+    'KSSULocation',
+    'LocationData',
+    
+    # Spring Breeze
+    'green_greens_locations',
+    'float_islands_locations',
+    'bubbly_clouds_locations',
+    'spring_breeze_locations',
+    'spring_breeze_food_locations',
+    
+    # Dyna Blade
+    'peanut_plains_locations',
+    'mallow_castle_locations',
+    'cocoa_cave_locations',
+    'candy_mountain_locations',
+    'bonus_1_locations',
+    'bonus_2_locations',
+    'dyna_blade_nest_locations',
+    'dyna_blade_locations',
+    'dyna_blade_food_locations',
+    'dyna_blade_essence_locations',
+    
+    # Gourmet Race
+    'gourmet_race_locations',
+    'gourmet_race_essence_locations',
+    
+    # The Great Cave Offensive
+    'subtree_locations',
+    'subtree_food_locations',
+    'subtree_essence_locations',
+    'crystal_locations',
+    'crystal_food_locations',
+    'crystal_essence_locations',
+    'old_tower_locations',
+    'old_tower_food_locations',
+    'old_tower_essence_locations',
+    'garden_locations',
+    'garden_food_locations',
+    'garden_essence_locations',
+    'tgco_locations',
+    'tgco_food_locations',
+    'tgco_essence_locations',
+    
+    # Revenge of Meta Knight
+    'romk_chapter_2_food_locations',
+    'romk_chapter_2_essence_locations',
+    'romk_chapter_3_food_locations',
+    'romk_chapter_3_essence_locations',
+    'romk_chapter_4_food_locations',
+    'romk_chapter_4_essence_locations',
+    'romk_chapter_5_food_locations',
+    'romk_chapter_5_essence_locations',
+    'romk_chapter_6_food_locations',
+    'romk_chapter_6_essence_locations',
+    'romk_chapter_7_food_locations',
+    'romk_chapter_7_essence_locations',
+    'revenge_of_meta_knight_locations',
+    'revenge_of_meta_knight_food_locations',
+    'revenge_of_meta_knight_essence_locations',
+    
+    # Milky Way Wishes
+    'floria_locations',
+    'floria_food_locations',
+    'aqualiss_locations',
+    'aqualiss_food_locations',
+    'skyhigh_locations',
+    'skyhigh_food_locations',
+    'hotbeat_locations',
+    'hotbeat_food_locations',
+    'cavios_locations',
+    'cavios_food_locations',
+    'mecheye_locations',
+    'mecheye_food_locations',
+    'halfmoon_locations',
+    'halfmoon_food_locations',
+    'milky_way_wishes_locations',
+    'milky_way_wishes_food_locations',
+    
+    # The Arena
+    'the_arena_locations',
+    'the_arena_food_locations',
+    
+    # Revenge of the King
+    'purple_plants_food_locations',
+    'illusion_islands_food_locations',
+    'crash_clouds_food_locations',
+    'mt_dedede_sky_food_locations',
+    'the_revenge_food_locations',
+    'revenge_of_the_king_locations',
+    'revenge_of_the_king_food_locations',
+    
+    # Meta Knightmare Ultra
+    'mku_level_1_locations',
+    'mku_level_2_locations',
+    'mku_level_3_locations',
+    'mku_level_4_locations',
+    'mku_level_5_locations',
+    'meta_knightmare_locations',
+    
+    # Helper to Hero
+    'helper_to_hero_locations',
+    'helper_to_hero_food_locations',
+    
+    # The True Arena
+    'the_true_arena_locations',
+    'the_true_arena_food_locations',
+    
+    # Sub-Games
+    'megaton_locations',
+    'samurai_locations',
+    'card_swipe_locations',
+    'kotd_locations',
+    'snack_track_locations',
+    'subgame_locations',
+    
+    # Main tables
+    'location_table',
+    'food_table',
+    'essence_table',
 ]

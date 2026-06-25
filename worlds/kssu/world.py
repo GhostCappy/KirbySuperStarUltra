@@ -18,7 +18,7 @@ from .rom import KSSUProcedurePatch, write_tokens
 from .regions import create_regions
 from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanity
 from .client import KSSUClient 
-from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
+from .items import (lookup_item_to_id, itempool, item_groups, KSSUItem, filler_item_weights, copy_abilities,
                     main_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
@@ -100,11 +100,11 @@ class KSSUWorld(World):
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
         # Make sure the item is in the item table
-        if name not in item_table:
+        if name not in itempool:
             raise Exception(f"{name} is not a valid item name for Kirby Super Star Ultra.")
         
         # If it is, set its classification
-        data = item_table[name]
+        data = itempool[name]
         classification = force_classification if force_classification else data.classification
         
         # If there is no BASE_ID in an item, it is an event (Ex. A mode is completed)

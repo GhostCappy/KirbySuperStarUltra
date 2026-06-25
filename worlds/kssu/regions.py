@@ -17,14 +17,14 @@ def create_region(name, world: "KSSUWorld"):
 
 def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, LocationData]):
     filter_list = [""]
-    if "Maxim Tomato" in world.options.foodsanity:
+    
+    # All Filler
+    if world.options.foodsanity:
         filter_list.append("maxim")
-    if "1-Up" in world.options.foodsanity:
         filter_list.append("one_up")
-    if "Invincibility Candy" in world.options.foodsanity:
         filter_list.append("candy")
-    if "Tomato" in world.options.foodsanity:
         filter_list.append("tomato")
+
     if world.options.essences:
         filter_list.append("essence")
 
@@ -47,6 +47,7 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_mainga
     if "The Arena" in included_maingames:
         arena = create_region("The Arena", world)
         add_locations(world, arena, the_arena_locations)
+        
         menu.connect(arena, None, lambda state: state.has(item_names.the_arena, world.player))
         world.get_location(location_names.the_arena_complete).place_locked_item(
             world.create_item(item_names.the_arena_complete))
