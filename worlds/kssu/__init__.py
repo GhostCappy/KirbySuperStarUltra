@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-from .world import KSSUWorld as KSSUWorld
-=======
 import os
 import typing
 import logging
@@ -239,4 +236,4 @@ class KSSUWorld(World):
                 del state.prog_items[self.player]["Gold"]
 
         return value
->>>>>>> parent of 044cc34c (Pre-Full Do-over)
+
