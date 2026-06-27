@@ -18,13 +18,14 @@ def create_region(name, world: "KSSUWorld"):
 def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, LocationData]):
     filter_list = [""]
     
-    # All Filler
+    # Foodsanity Locations
     if world.options.foodsanity:
         filter_list.append("maxim")
         filter_list.append("one_up")
         filter_list.append("candy")
         filter_list.append("tomato")
 
+    # Essencesanity Locations
     if world.options.essences:
         filter_list.append("essence")
 
