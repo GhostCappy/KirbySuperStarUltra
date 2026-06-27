@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from Options import Choice, DeathLink, OptionCounter, OptionGroup, OptionSet, PerGameCommonOptions, Range, Toggle
-from schema import Schema, And
+from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLink, Toggle, OptionGroup, OptionCounter
+from schema import Schema, And, Use, Optional, Or
 
 maingame_mapping = {
         0: "Spring Breeze",
@@ -189,14 +189,17 @@ class MilkyWayWishesMode(Choice):
     default = 0
     
 # Not yet implemented
-class Foodsanity(Toggle):
+class Foodsanity(OptionSet):
     """
     [Not currently implemented]
     
-    Adds all static foods, invincible candy, and 1-ups into the location pool.
+    Adds the specified consumables to the location pool. 
+    Options are Maxim Tomato, 1-Up, and Invincibility Candy.
     """
     display_name = "Foodsanity"
+    valid_keys = ("Maxim Tomato", "1-Up", "Invincibility Candy")
 
+    default = frozenset()
 
 # Not yet implemented
 class EssencesSanity(Toggle):
@@ -307,6 +310,7 @@ option_groups = [
         SamuraiDifficulties,
         SamuaraiWins
     ])
+<<<<<<< HEAD
 ]
 
 
@@ -329,3 +333,6 @@ option_presets = {
     },
 '''
 }
+=======
+]
+>>>>>>> parent of 044cc34c (Pre-Full Do-over)
