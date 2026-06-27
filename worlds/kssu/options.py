@@ -310,7 +310,6 @@ option_groups = [
         SamuraiDifficulties,
         SamuaraiWins
     ])
-<<<<<<< HEAD
 ]
 
 
@@ -333,6 +332,5 @@ option_presets = {
     },
 '''
 }
-=======
-]
->>>>>>> parent of 044cc34c (Pre-Full Do-over)
+
+
