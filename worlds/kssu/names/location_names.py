@@ -518,7 +518,6 @@ the_arena_maxim_3 = "The Arena - Maxim Tomato (Rest Area 3)"
 the_arena_maxim_4 = "The Arena - Maxim Tomato (Rest Area 4)"
 the_arena_maxim_5 = "The Arena - Maxim Tomato (Rest Area 5)"
 
-# Will need to add items later for these two.
 # Revenge of the King
 rotk_pp_maxim_1 = "Purple Plants - Maxim Tomato (1)"
 rotk_pp_maxim_2 = "Purple Plants - Maxim Tomato (2)"

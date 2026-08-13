@@ -1,3 +1,5 @@
+# For when foodsanity is added
+
 from typing import NamedTuple
 from BaseClasses import Location
 from .names import location_names

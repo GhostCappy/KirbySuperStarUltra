@@ -194,7 +194,7 @@ filler_item_weights: Dict[str, int] = {
     item_names.tomato: 2
 }
 
-itempool: Dict[str, ItemData] = {
+item_table: Dict[str, ItemData] = {
     **main_games,
     **main_game_completion,
     **sub_games,
@@ -212,7 +212,7 @@ item_groups: Dict[str, Set[str]] = {
     "Planets": {name for name in planets}
 }
 
-lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in itempool.items() if data.code}
+lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
     
 
 '''

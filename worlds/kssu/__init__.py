@@ -23,7 +23,7 @@ from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler
                     main_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
-from .options import kssu_option_groups
+from .options import option_groups
 logger = logging.getLogger("Kirby Super Star Ultra")
 
 # Webpage for Archipelago page
@@ -39,7 +39,7 @@ class KSSUWeb(WebWorld):
             authors=["GhostCappy"],
         )
     ]
-    option_groups = kssu_option_groups
+    option_groups = option_groups
     
 # Details for game ROM
 class KSSUSettings(settings.Group):

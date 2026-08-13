@@ -20,6 +20,7 @@ class DeathState(Enum):
     dead = 1
         
 # This is gunna take forever.
+# Yeah it did
 class KSSUClient(BizHawkClient):
     game = "Kirby Super Star Ultra"
     system = "NDS"
@@ -31,39 +32,39 @@ class KSSUClient(BizHawkClient):
     received_items_count: int = 0
     
 # Game Address Offsets
-    # Generic
-    unlock_games = 0x05c174
-    unlock_true_arena = 0x05C175
-    ignore_game_notice = 0x05C176
-    ignore_arena_notice = 0x05C177
-    
     # Current State
     current_game = 0x05B6A5
     current_stage = 0x05B6A6
     current_screen = 0x05B6A7
-    transition_state = 0x05B6A4
     
     # Kirby
     kirby_lifes = 0x05B824
     kirby_hp = 0x0771D4
+    # Change to "Ability in kirby's mouth"
     kirby_ability = 0x0BAF7B
     candy_timer = 0x0BB22C
     
+    # Spring Breeze
+    spring_breeze_stages = 0x05BDFC
+    
     # Dyna Blade
-    dyna_blade_stages = 0x05BE0A
-    dyna_blade_extras = 0x06C26A
     iron_mam_defeated = 0x06C266
     
-    # TGCO
-    tgco_treasure_count = 0x06E752
+    # The Great Cave Offensive
     tgco_gold = 0x06E748
     
     # Gourmet
-    gourmet_wins = 0x05BE3C
+    gourmet_kirby_wins = 0x06D600
+    ddd_race_1 = 0x06D664
+    ddd_race_2 = 0x06D665
+    ddd_race_3 = 0x06D666 # Don't need this
     
-    # MWW
+    # RoMK
+    romk_chapters = 0x05BE6C
+    
+    # Milky Way Wishes
     mww_abilities = 0x071201
-    mww_plants = 0x071190
+    mww_planets = 0x071190
     can_copy_enemies = 0x05B81A
     
     # Arena
@@ -97,11 +98,15 @@ class KSSUClient(BizHawkClient):
     snack_green_score = 0x0B8812
     snack_timer = 0x0B8828
     
+    # Generic
     header_offset = 0x3ffe00
 
 # AP Address Offsets
-    received_offset = 0x29EAC0
-    deathlink_flags = 0x29EAC1
+    dyna_ap_stage = 0x360000
+    dyna_ap_ex_stage = 0x360002
+    dyna_ap_mam = 0x360004
+    dyna_last_completed = 0x360006
+    received_offset = 0x360008
     
     def __init__(self) -> None:
         super().__init__()
@@ -114,10 +119,15 @@ class KSSUClient(BizHawkClient):
         self.received_deathlink = False
         
         # State tracking
-        self.prev_game: int | None = None
         self.prev_stage: int | None = None
-        self.prev_transition: int | None = None
+        self.prev_screen: int | None = None
 
+        self.prev_sb_stage: int = 0
+        self.prev_dyna_stage: int = 0
+        self.prev_gourmet_win: int = 0
+        self.prev_romk_win: int = 0
+        self.prev_rotk_stage: int = 0
+        
         self.prev_arena_wins: int = 0
         self.prev_true_arena_wins: int = 0
         self.prev_hth_wins: int = 0
@@ -152,11 +162,14 @@ class KSSUClient(BizHawkClient):
         ctx.watcher_timeout = 1
         return True
     
+    # Deathlink not yet implemented
+    # Function that kills player when deathlink is recieved
     async def deathlink_kill_player(self, ctx):
         await bizhawk.write(
             ctx.bizhawk_ctx,
             [(self.kirby_hp, (0).to_bytes(1, "little"), self.ram_mem_domain)]
         )
+        # Set death state (to avoid mulitple deaths in a row)
         self.death_state = DeathState.dead
         self.last_death_link = time.time()
 
@@ -171,11 +184,13 @@ class KSSUClient(BizHawkClient):
                 if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
                     self.received_deathlink = True     
 
-                
+    # Sending loaction function
+    # Done with Name of game and location (Ex. Spring Breeze - Stage 1)            
     def get_location(self, game: str, label: str) -> int | None:
         name = f"{game} - {label}"
         return self.location_name_to_id.get(name)
-                    
+        
+    # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
         
@@ -183,11 +198,13 @@ class KSSUClient(BizHawkClient):
             if ctx.slot_data is None:
                 return
             
+            # If deathlink is enabled in options, turn it on for client
             if ctx.slot_data:
                 if "deathlink" in ctx.slot_data:
                     if ("DeathLink" not in ctx.tags) and ctx.slot_data["deathlink"]:
                         await ctx.update_death_link(True)
                         self.deathlink_enabled = True
+                    # If (somehow) deathlink is in the tags but not enabled, turn it off
                     elif ("DeathLink" in ctx.tags) and not ctx.slot_data["deathlink"]:
                         await ctx.update_death_link(False)
                         self.deathlink_enabled = False
@@ -203,82 +220,134 @@ class KSSUClient(BizHawkClient):
             
             send_locations: Set[int] = set()
             
+            # Convert addresses into variables used for client
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    (self.current_game, 1, self.ram_mem_domain),        # 0
-                    (self.current_stage, 1, self.ram_mem_domain),       # 1
-                    (self.transition_state, 1, self.ram_mem_domain),    # 2
-                    (self.kirby_hp, 1, self.ram_mem_domain),            # 3
+                    # Generic 
+                    (self.current_game, 1, self.ram_mem_domain),   
+                    (self.current_stage, 1, self.ram_mem_domain),       
+                    (self.current_screen, 1, self.ram_mem_domain),    
+                    
+                    # Kirby Attributes
+                    (self.kirby_lifes, 1, self.ram_mem_domain),  
+                    (self.kirby_hp, 1, self.ram_mem_domain),            
+                    (self.kirby_ability, 1, self.ram_mem_domain),    
+                    
+                    # Spring Breeze
+                    (self.spring_breeze_stages, 1, self.ram_mem_domain), 
 
-                    (self.arena_wins, 1, self.ram_mem_domain),          # 4
-                    (self.hth_wins, 2, self.ram_mem_domain),            # 5
+                    # Dyna Blade
+                    (self.iron_mam_defeated, 1, self.ram_mem_domain), 
+                    
+                    # TGCO
+                    (self.tgco_gold, 1, self.ram_mem_domain), 
+                    
+                    # Gourmet Race
+                    (self.gourmet_kirby_wins, 1, self.ram_mem_domain), 
+                    (self.ddd_race_1, 1, self.ram_mem_domain), 
+                    (self.ddd_race_2, 1, self.ram_mem_domain), 
+                    (self.ddd_race_3, 1, self.ram_mem_domain), 
+                    
+                    # Milky Way Wishes
+                    (self.mww_abilities, 4, self.ram_mem_domain), 
+                    (self.mww_planets, 1, self.ram_mem_domain), 
+                    (self.can_copy_enemies, 1, self.ram_mem_domain), 
+      
+                    # Arena
+                    (self.arena_wins, 1, self.ram_mem_domain),          
+                    (self.hth_wins, 2, self.ram_mem_domain),            
     
                     # Samurai Kirby
-                    (self.samurai_wins, 1, self.ram_mem_domain),        # 6
+                    (self.samurai_wins, 1, self.ram_mem_domain),        
 
                     # Megaton Punch
-                    (self.megaton_wins, 1, self.ram_mem_domain),        # 7
+                    (self.megaton_wins, 1, self.ram_mem_domain),        
 
                     # Kirby Card Swipe
-                    (self.card_swipe_difficulty, 1, self.ram_mem_domain),  # 8
-                    (self.card_swipe_wins, 1, self.ram_mem_domain),  # 9
+                    (self.card_swipe_difficulty, 1, self.ram_mem_domain), 
+                    (self.card_swipe_wins, 1, self.ram_mem_domain), 
 
                     # Kirby on the Draw
-                    (self.draw_difficulty, 1, self.ram_mem_domain),     # 10
-                    (self.draw_pink_score, 2, self.ram_mem_domain),     # 11
-                    (self.draw_yellow_score, 2, self.ram_mem_domain),   # 12
-                    (self.draw_red_score, 2, self.ram_mem_domain),      # 13
-                    (self.draw_green_score, 2, self.ram_mem_domain),    # 14
-                    (self.draw_ending, 2, self.ram_mem_domain),         # 15
+                    (self.draw_difficulty, 1, self.ram_mem_domain),     
+                    (self.draw_pink_score, 2, self.ram_mem_domain),     
+                    (self.draw_yellow_score, 2, self.ram_mem_domain),   
+                    (self.draw_red_score, 2, self.ram_mem_domain),      
+                    (self.draw_green_score, 2, self.ram_mem_domain),    
+                    (self.draw_ending, 2, self.ram_mem_domain),         
 
                     # Snack Tracks
-                    (self.snack_difficulty, 1, self.ram_mem_domain),    # 16
-                    (self.snack_pink_score, 2, self.ram_mem_domain),    # 17
-                    (self.snack_yellow_score, 2, self.ram_mem_domain),  # 18
-                    (self.snack_red_score, 2, self.ram_mem_domain),     # 19
-                    (self.snack_green_score, 2, self.ram_mem_domain),   # 20
-                    (self.snack_timer, 2, self.ram_mem_domain),         # 21
-                    (self.received_offset, 2, self.ram_mem_domain),         # 22
-                    (self.deathlink_flags, 1, self.ram_mem_domain),         # 23
+                    (self.snack_difficulty, 1, self.ram_mem_domain),    
+                    (self.snack_pink_score, 2, self.ram_mem_domain),    
+                    (self.snack_yellow_score, 2, self.ram_mem_domain),  
+                    (self.snack_red_score, 2, self.ram_mem_domain),     
+                    (self.snack_green_score, 2, self.ram_mem_domain),   
+                    (self.snack_timer, 2, self.ram_mem_domain),         
                     
-                    (self.iron_mam_defeated, 1, self.ram_mem_domain),         # 23
+                    # AP-Specific
+                    (self.received_offset, 2, self.ram_mem_domain),        
+                    (self.dyna_ap_stage, 1, self.ram_mem_domain),        
+                    (self.dyna_ap_ex_stage, 1, self.ram_mem_domain),       
+                    (self.dyna_last_completed, 1, self.ram_mem_domain),       
+                    
+                    # Stuff I forgot along the way and now have to add later   
+                    (self.romk_chapters, 1, self.ram_mem_domain),    
                 ]
             )
             
-            curr  = int.from_bytes(read_state[0], "little")
+            game  = int.from_bytes(read_state[0], "little")
             stage = int.from_bytes(read_state[1], "little")
-            trans = int.from_bytes(read_state[2], "little")
-            hp = int.from_bytes(read_state[3], "little")
-
-            arena = int.from_bytes(read_state[4], "little")
-            hth = int.from_bytes(read_state[5], "little")
-
-            samurai = int.from_bytes(read_state[6], "little")
-            megaton = int.from_bytes(read_state[7], "little")
-
-            card_difficulty = int.from_bytes(read_state[8], "little")
-            card_score = int.from_bytes(read_state[9], "little")
-
-            draw_difficulty = int.from_bytes(read_state[10], "little")
-            draw_pink = int.from_bytes(read_state[11], "little")
-            draw_yellow = int.from_bytes(read_state[12], "little")
-            draw_red = int.from_bytes(read_state[13], "little")
-            draw_green = int.from_bytes(read_state[14], "little")
-            draw_timer = int.from_bytes(read_state[15], "little")
-
-            snack_difficulty = int.from_bytes(read_state[16], "little")
-            snack_pink = int.from_bytes(read_state[17], "little")
-            snack_yellow = int.from_bytes(read_state[18], "little")
-            snack_red = int.from_bytes(read_state[19], "little")
-            snack_green = int.from_bytes(read_state[20], "little")
-            snack_timer = int.from_bytes(read_state[21], "little")
+            screen = int.from_bytes(read_state[2], "little")
             
-            received_sav = int.from_bytes(read_state[22], "little")
-            deathlink_flag = int.from_bytes(read_state[23], "little")
+            lifes = int.from_bytes(read_state[3], "little")
+            hp = int.from_bytes(read_state[4], "little")
+            ability = int.from_bytes(read_state[5], "little")
             
-            iron_mam = int.from_bytes(read_state[24], "little")
+            sb_stage = int.from_bytes(read_state[6], "little")
+            
+            iron_mam = int.from_bytes(read_state[7], "little")
+            
+            gold = int.from_bytes(read_state[8], "little")
+            
+            gourmet_wins = int.from_bytes(read_state[9], "little")
+            ddd_flag_1 = int.from_bytes(read_state[10], "little")
+            ddd_flag_2 = int.from_bytes(read_state[11], "little")
+            ddd_flag_3 = int.from_bytes(read_state[12], "little")
+            
+            unlocked_abilities = int.from_bytes(read_state[13], "little")
+            planets = int.from_bytes(read_state[14], "little")
+            copy_flag = int.from_bytes(read_state[15], "little")
 
+            arena = int.from_bytes(read_state[16], "little")
+            hth = int.from_bytes(read_state[17], "little")
+
+            samurai = int.from_bytes(read_state[18], "little")
+            megaton = int.from_bytes(read_state[19], "little")
+
+            card_difficulty = int.from_bytes(read_state[20], "little")
+            card_score = int.from_bytes(read_state[21], "little")
+
+            draw_difficulty = int.from_bytes(read_state[22], "little")
+            draw_pink = int.from_bytes(read_state[23], "little")
+            draw_yellow = int.from_bytes(read_state[24], "little")
+            draw_red = int.from_bytes(read_state[25], "little")
+            draw_green = int.from_bytes(read_state[26], "little")
+            draw_timer = int.from_bytes(read_state[27], "little")
+
+            snack_difficulty = int.from_bytes(read_state[28], "little")
+            snack_pink = int.from_bytes(read_state[29], "little")
+            snack_yellow = int.from_bytes(read_state[30], "little")
+            snack_red = int.from_bytes(read_state[31], "little")
+            snack_green = int.from_bytes(read_state[32], "little")
+            snack_timer = int.from_bytes(read_state[33], "little")
+            
+            received_sav = int.from_bytes(read_state[34], "little")
+            dyna_prog_stages = int.from_bytes(read_state[35], "little")
+            dyna_ex_stages = int.from_bytes(read_state[36], "little")
+            dyna_prev_complete = int.from_bytes(read_state[37], "little")
+            
+            romk_chapters_completed = int.from_bytes(read_state[38], "little")
+            
             # Item Handling
             for index in range(min(self.received_items_count, received_sav), len(ctx.items_received)):
                 network_item = ctx.items_received[index]
@@ -297,26 +366,24 @@ class KSSUClient(BizHawkClient):
             
             # Location Handeling
             # Spring Breeze
-            if curr == 0:  
+            if game == 0:  
                 game_name = "Spring Breeze"
-                if stage > 0:
-                    if self.prev_stage is None or stage != self.prev_stage:
-                        loc = self.get_location(game_name, f"Stage {stage}")
+                # The last stage saved is not the same as completed stages (A stage has been completed)
+                if sb_stage > self.prev_sb_stage:
+                    # For each stage 1 - 4
+                    for i in range(self.prev_sb_stage + 1, sb_stage + 1):               
+                        loc = self.get_location(game_name, f"Stage {i}")
                         if loc is not None:
                             send_locations.add(loc)
 
-                # Completion check: Stage 3 + transition = 3
-                if stage == 3 and trans == 3:
-                    loc = self.get_location(game_name, "Stage 4")
-                    if loc is not None:
-                        send_locations.add(loc)
-
             # Dyna Blade 
-            if curr == 1: 
+            if game == 1: 
                 game_name = "Dyna Blade"
-                if stage > 0:
-                    if self.prev_stage is None or stage != self.prev_stage:
-                        loc = self.get_location(game_name, f"Stage {stage}")
+                # The last stage saved is not the same as completed stages (A stage has been completed)
+                if dyna_prev_complete > self.prev_dyna_stage:
+                    # For each stage 1 - 5
+                    for i in range(self.prev_dyna_stage + 1, dyna_prev_complete + 1):               
+                        loc = self.get_location(game_name, f"Stage {i}")
                         if loc is not None:
                             send_locations.add(loc)
                             
@@ -325,48 +392,66 @@ class KSSUClient(BizHawkClient):
                     if loc is not None:
                         send_locations.add(loc)
 
-                if stage == 4 and trans == 3:
+                if self.prev_dyna_stage == 5:
                     loc = self.get_location(game_name, "Complete")
+                    if loc is not None:
+                        send_locations.add(loc)
+                        
+            # Gourmet Race
+            if game == 2:
+                game_name = "Gourmet Race"
+                if gourmet_wins > self.prev_gourmet_win:
+                    
+                    # Introducing the worst code ever
+                    if gourmet_wins == 1:
+                        # Did DDD win round 2?
+                        if ddd_flag_2 == 2:
+                            round_won = 3
+                        # Did DDD win round 1?
+                        elif ddd_flag_1 == 2:
+                            round_won = 2
+                        else:
+                            round_won = 1
+                    elif gourmet_wins == 2:
+                        # Did DDD win round 1 or round 2?
+                        if (ddd_flag_1 == 2) or (ddd_flag_2 == 2):
+                            round_won = 3
+                        else:
+                            round_won = 2
+                    elif gourmet_wins == 3:
+                        round_won = 3
+
+                    loc = self.get_location(game_name, f"Win Round {round_won}")
                     if loc is not None:
                         send_locations.add(loc)
 
             # The Great Cave Offensive 
             # Dreadful
-            if curr == 3:
+            if game == 3:
                 game_name = "The Great Cave Offensive"
 
             # Revenge of Meta Knight
-            if curr == 4:  
+            if game == 4:  
                 game_name = "Revenge of Meta Knight"
-                if stage > 0:
-                    if self.prev_stage is None or stage != self.prev_stage:
-                        loc = self.get_location(game_name, f"Chapter {stage}")
+                if romk_chapters_completed > self.prev_romk_win:
+                    # For each chapter 1 - 7
+                    for i in range(self.prev_romk_win + 1, romk_chapters_completed + 1):               
+                        loc = self.get_location(game_name, f"Stage {i}")
                         if loc is not None:
                             send_locations.add(loc)
-                if stage == 6 and trans == 3:
-                    loc = self.get_location(game_name, "Chapter 7")
-                    if loc is not None:
-                        send_locations.add(loc)
 
             # Milky Way Wishes
             # Dreadful: Part 2
-            if curr == 5:
+            if game == 5:
                 game_name = "Milky Way Wishes"
 
             # Revenge of the King 
-            if curr == 6:  
+            if game == 6:  
                 game_name = "Revenge of the King"
-                if stage > 0:
-                    if self.prev_stage is None or stage != self.prev_stage:
-                        loc = self.get_location(game_name, f"Stage {stage}")
-                        if loc is not None:
-                            send_locations.add(loc)
-                if stage == 4 and trans == 3:
-                    loc = self.get_location(game_name, "Stage 5")
-                    if loc is not None:
-                        send_locations.add(loc)
+
+
             # Arena
-            if curr == 7:  # The Arena
+            if game == 7:  # The Arena
                 game_name = "The Arena"
                 if arena > self.prev_arena_wins:
                     if arena == 1:
@@ -378,20 +463,20 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Meta Knightmare Ultra
-            if curr == 8: 
+            if game == 8: 
                 game_name = "Meta Knightmare Ultra"
                 if stage > 0:
                     if self.prev_stage is None or stage != self.prev_stage:
                         loc = self.get_location(game_name, f"Level {stage}")
                         if loc is not None:
                             send_locations.add(loc)
-                if stage == 4 and trans == 3:
+                if stage == 4: # Fix
                     loc = self.get_location(game_name, "Level 5")
                     if loc is not None:
                         send_locations.add(loc)
 
             # Helper to Hero 
-            if curr == 9:
+            if game == 9:
                 game_name = "Helper to Hero"
                 if arena > self.prev_arena_wins:
                     if arena == 1:
@@ -403,7 +488,7 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # True Arena 
-            if curr == 10: 
+            if game == 10: 
                 game_name = "The True Arena"
                 if arena > self.prev_arena_wins:
                     if arena == 1:
@@ -480,30 +565,7 @@ class KSSUClient(BizHawkClient):
 
             # --- DeathLink ---
             # Need a better way to track player in-game.
-            
-            '''
-            if self.deathlink_enabled:
-                in_gameplay = (trans == 0)
-                alive = (0 < hp < 255 and hp != 28)
-                just_died = (hp == 0 and self.last_hp > 0 and in_gameplay)
 
-                # --- SEND DEATHLINK ---
-                if (just_died and self.death_state == DeathState.alive and self.last_death_link + 1 < time.time() and not self.suppress_deathlink):
-                    await ctx.send_death(f"{ctx.player_names[ctx.slot]} has died!")
-                    self.death_state = DeathState.dead
-                    self.last_death_link = time.time()
-
-                # If HP > 0 and in gameplay, reset death state to alive
-                elif alive and in_gameplay:
-                    self.death_state = DeathState.alive
-                    self.suppress_deathlink = False
-
-                # --- RECEIVE DEATHLINK ---
-                if "DeathLink" in ctx.tags and self.last_death_link + 1 < time.time():
-                    if self.received_deathlink:
-                        self.received_deathlink = False
-                        await self.deathlink_kill_player(ctx)
-                '''
 
             # --- Send locations if changed ---
             if send_locations != self.local_checked_locations:
@@ -512,11 +574,12 @@ class KSSUClient(BizHawkClient):
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(send_locations)}])
 
             # --- Update previous state ---
-            self.prev_game = curr
-            self.prev_stage = stage
-            self.prev_transition = trans
+            self.prev_screen = screen
             self.last_hp = hp
 
+            self.prev_sb_stage = sb_stage
+            self.prev_dyna_stage = dyna_prev_complete
+            
             self.prev_arena_wins = arena
             self.prev_true_arena_wins = arena
             self.prev_hth_wins = hth
