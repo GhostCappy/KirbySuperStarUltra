@@ -41,3 +41,12 @@ ___
 
 This happens when you try to enter a game you do not have unlocked yet. Double-check to make sure you are properly connected
 with the LUA and to the Archipelago server.
+
+___
+### I lost my save game! How do I make sure this doesn't happen again?
+
+In some versions of Bizhawk, there is an option that tries to save the game, but fails. You can turn this options off by
+going to Config→Customize, switching to the advanced tab and turning off AutoSaveRAM. Another way to ensure that Bizhawk 
+saves properly is by saving the game like normal (at a bed) and then going to File->Save Ram->Flush Save Ram or pressing 
+Control+S
+
