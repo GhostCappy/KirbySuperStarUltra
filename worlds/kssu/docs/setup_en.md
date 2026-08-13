@@ -1,36 +1,30 @@
-# Setup Guide for Sonic Rush: Archipelago
+# Kirby Super Star Ultra Randomizer Setup Guide
 
-As we are using BizHawk, this guide is only applicable to Windows and Linux systems. 
-This APWorld is still in development, so expect bugs! 
-If you find one, please report it to the #future-game-design thread for this game!
+## Important
+As we are using BizHawk, this guide is only applicable to Windows and Linux systems. This APWorld is still in development, so expect bugs! 
+If you find a bug, please report it to the #future-game-design thread for this game!
 
 ## Required Software
 
+- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases)
 - BizHawk: [Bizhawk Releases from TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
   - Version 2.9.1 is recommended; 2.10 is currently unable to connect.
   - Detailed installation instructions for BizHawk can be found at the above link.
   - Windows users must run the prerequisite installer first, which can also be found at the above link.
-- The built-in BizHawk client within the Archipelago software, which can be installed 
-  [here](https://github.com/ArchipelagoMW/Archipelago/releases)
 - A .nds file for the USA version of Kirby Super Star Ultra
-
-## Optional software
-
-- Universal Tracker (check UT's `#future-game-design` thread in the discord server for instructions)
 
 ## Configuring your YAML file
 
-### What is a YAML file and why do I need one?
+### What is a YAML file, and why do I need one?
 
-Your YAML file contains a set of configuration options which provide the generator with information about how it should
-generate your game. 
+Your YAML file contains a set of configuration options which provide the generator with information about how it should generate your game. 
 Each player of a multiworld will provide their own YAML file. 
-This setup allows each player to enjoy an experience customized for their taste, and different players in the same 
-multiworld can all have different options.
+This setup allows each player to enjoy an experience customized for their taste, and different players in the same multiworld can all have different options.
 
 ### Where do I get a YAML file?
 
-Install the download .apworld file with the Archipelago Launcher. In the launcher, click "Generate Template Options" to generate a template YAML. You can make a copy of this template, and edit it to configure your settings.
+Install the download .apworld file with the Archipelago Launcher. In the launcher, click "Generate Template Options" to generate a template YAML.
+You can make a copy of this template, and edit it to configure your settings.
 
 ## Joining a MultiWorld Game
 
