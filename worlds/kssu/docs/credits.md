@@ -5,7 +5,7 @@
 - ChibiAkuma's guide on DS hardware and assembly (https://www.chibialiens.com/arm/nds.php)
 
 ## Archipelago
-- Blastslimey, for his work on both Sonic Rush and Pokémon: Black and White archipelago, and for guiding me on how to modify DS games. Their APWorld was also used as reference for the client.
+- BlastSlimey, for his work on both Sonic Rush and Pokémon: Black and White archipelago, and for guiding me on how to modify DS games. Their APWorld was also used as reference for the client.
 - toadster172, for explaining a lot of the logic found in Kirby Super Star Ultra and for finding unused space in arm9.
 - .tierith (AKA Harrison), for providing resources and giving advice on how to start finding important memory addresses. Also one of the developers for Kirby and the Amazing Mirror Archipelago.
 - The PMD: EoS APWorld team, which was used as a reference to making the APWorld.
