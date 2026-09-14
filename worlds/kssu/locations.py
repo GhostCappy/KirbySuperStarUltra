@@ -2,6 +2,7 @@ from typing import NamedTuple
 from BaseClasses import Location
 from .names import location_names
 from .items import BASE_ID
+# Base ID does not conflict with items
 
 class KSSULocation(Location):
     game = "Kirby Super Star Ultra"
@@ -10,9 +11,6 @@ class LocationData(NamedTuple):
     code: int | None
     tag: str = ""
     
-# Dont forget to change BASE_ID.
-# Each stage location contains the items and boss of that stage 
-# Useful for foodsanity
 # Spring Breeze
 green_greens_locations = {
     location_names.sb_whispy: LocationData(BASE_ID + 0),
@@ -47,6 +45,7 @@ mallow_castle_locations = {
     location_names.db_switch_1: LocationData(BASE_ID + 9),
 }
 
+# Essences will be here, when implemented
 bonus_1_locations = {
 
 }
@@ -61,6 +60,7 @@ candy_mountain_locations = {
     location_names.db_switch_2: LocationData(BASE_ID + 10),
 }
 
+# Essences will be here, when implemented
 bonus_2_locations = {
 
 }

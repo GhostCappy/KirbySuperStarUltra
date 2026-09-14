@@ -3,8 +3,8 @@ from typing import NamedTuple, Dict, Optional, Set
 from BaseClasses import Item, ItemClassification
 from .names import item_names
     
-# Will CERTAINLY need to be changed later.
-BASE_ID = 0x200000
+# This is strictly to track individual items for the client
+BASE_ID = 0x370000
 
 class KSSUItem(Item):
     game = "Kirby Super Star Ultra"
@@ -12,9 +12,10 @@ class KSSUItem(Item):
 class ItemData(NamedTuple):
     code: Optional[int] # Item ID
     classification: ItemClassification # Type of item (progression, filler, trap)
-    value: int = 0 # Gold Value (If applicable)
+    value: int = 0 # Gold Value
+    num: int = 1 # Solely for progressive stages
+    single_use: bool = False # Used for abilities that are single use
 
-# Might be a better way of doing this but idk it
 
 main_games: Dict[str, ItemData] = {
     item_names.spring_breeze: ItemData(BASE_ID + 0, ItemClassification.progression),
@@ -23,8 +24,8 @@ main_games: Dict[str, ItemData] = {
     item_names.great_cave_offensive: ItemData(BASE_ID + 3, ItemClassification.progression),
     item_names.revenge_of_meta_knight: ItemData(BASE_ID + 4, ItemClassification.progression),
     item_names.milky_way_wishes: ItemData(BASE_ID + 5, ItemClassification.progression),
-    item_names.the_arena: ItemData(BASE_ID + 6, ItemClassification.progression),
-    item_names.revenge_of_the_king: ItemData(BASE_ID + 7, ItemClassification.progression),
+    item_names.revenge_of_the_king: ItemData(BASE_ID + 6, ItemClassification.progression),
+    item_names.the_arena: ItemData(BASE_ID + 7, ItemClassification.progression),
     item_names.meta_knightmare_ultra: ItemData(BASE_ID + 8, ItemClassification.progression),
     item_names.helper_to_hero: ItemData(BASE_ID + 9, ItemClassification.progression),
     item_names.the_true_arena: ItemData(BASE_ID + 10, ItemClassification.progression),
@@ -45,11 +46,11 @@ main_game_completion: Dict[str, ItemData] = {
 }
 
 sub_games: Dict[str, ItemData] = {
-    item_names.megaton_punch: ItemData(BASE_ID + 0x200, ItemClassification.progression),
-    item_names.samurai_kirby: ItemData(BASE_ID + 0x201, ItemClassification.progression),
-    item_names.kirby_card_swipe: ItemData(BASE_ID + 0x202, ItemClassification.progression),
-    item_names.kirby_on_the_draw: ItemData(BASE_ID + 0x203, ItemClassification.progression),
-    item_names.snack_tracks: ItemData(BASE_ID + 0x204, ItemClassification.progression),
+    item_names.kirby_card_swipe: ItemData(BASE_ID + 11, ItemClassification.progression),
+    item_names.kirby_on_the_draw: ItemData(BASE_ID + 12, ItemClassification.progression),
+    item_names.snack_tracks: ItemData(BASE_ID + 13, ItemClassification.progression),
+    item_names.megaton_punch: ItemData(BASE_ID + 14, ItemClassification.progression),
+    item_names.samurai_kirby: ItemData(BASE_ID + 15, ItemClassification.progression),
 }
 
 sub_game_completion: Dict[str, ItemData] = {
@@ -74,29 +75,30 @@ sub_game_completion: Dict[str, ItemData] = {
 
 copy_abilities: Dict[str, ItemData] = {
     item_names.cutter: ItemData(BASE_ID + 0x101, ItemClassification.progression),
-    item_names.beam: ItemData(BASE_ID + 0x102, ItemClassification.progression),
-    item_names.yoyo: ItemData(BASE_ID + 0x103, ItemClassification.progression),
-    item_names.ninja: ItemData(BASE_ID + 0x104, ItemClassification.progression),
-    item_names.wing: ItemData(BASE_ID + 0x105, ItemClassification.progression),
-    item_names.fighter: ItemData(BASE_ID + 0x106, ItemClassification.progression),
-    item_names.jet: ItemData(BASE_ID + 0x107, ItemClassification.progression),
-    item_names.sword: ItemData(BASE_ID + 0x108, ItemClassification.progression),
-    item_names.fire: ItemData(BASE_ID + 0x109, ItemClassification.progression),
-    item_names.stone: ItemData(BASE_ID + 0x10A, ItemClassification.progression),
-    item_names.bomb: ItemData(BASE_ID + 0x10B, ItemClassification.progression),
-    item_names.plasma: ItemData(BASE_ID + 0x10C, ItemClassification.progression),
-    item_names.wheel: ItemData(BASE_ID + 0x10D, ItemClassification.progression),
-    item_names.ice: ItemData(BASE_ID + 0x10E, ItemClassification.progression),
-    item_names.mirror: ItemData(BASE_ID + 0x10F, ItemClassification.progression),
+    item_names.mirror: ItemData(BASE_ID + 0x102, ItemClassification.progression), 
+    item_names.beam: ItemData(BASE_ID + 0x103, ItemClassification.progression),
+    item_names.fighter: ItemData(BASE_ID + 0x104, ItemClassification.progression), 
+    item_names.suplex: ItemData(BASE_ID + 0x105, ItemClassification.progression), 
+    item_names.yoyo: ItemData(BASE_ID + 0x106, ItemClassification.progression),
+    item_names.wheel: ItemData(BASE_ID + 0x107, ItemClassification.progression),
+    item_names.bomb: ItemData(BASE_ID + 0x108, ItemClassification.progression),
+    item_names.ice: ItemData(BASE_ID + 0x109, ItemClassification.progression),
+    item_names.fire: ItemData(BASE_ID + 0x10A, ItemClassification.progression),
+    item_names.plasma: ItemData(BASE_ID + 0x10B, ItemClassification.progression),
+    item_names.ninja: ItemData(BASE_ID + 0x10C, ItemClassification.progression),
+    item_names.stone: ItemData(BASE_ID + 0x10D, ItemClassification.progression),
+    item_names.wing: ItemData(BASE_ID + 0x10E, ItemClassification.progression),
+    item_names.jet: ItemData(BASE_ID + 0x10F, ItemClassification.progression),
     item_names.copy: ItemData(BASE_ID + 0x110, ItemClassification.progression),
-    item_names.suplex: ItemData(BASE_ID + 0x111, ItemClassification.progression),
+    item_names.sword: ItemData(BASE_ID + 0x111, ItemClassification.progression),
     item_names.hammer: ItemData(BASE_ID + 0x112, ItemClassification.progression),
     item_names.parasol: ItemData(BASE_ID + 0x113, ItemClassification.progression),
-    item_names.mike: ItemData(BASE_ID + 0x114, ItemClassification.progression),
-    item_names.sleep: ItemData(BASE_ID + 0x115, ItemClassification.trap),
-    item_names.paint: ItemData(BASE_ID + 0x116, ItemClassification.useful),
-    item_names.cook: ItemData(BASE_ID + 0x117, ItemClassification.useful),
-    item_names.crash: ItemData(BASE_ID + 0x118, ItemClassification.progression),
+    
+    item_names.mike: ItemData(BASE_ID + 0x114, ItemClassification.progression, single_use=True),
+    item_names.sleep: ItemData(BASE_ID + 0x115, ItemClassification.trap, single_use=True),
+    item_names.paint: ItemData(BASE_ID + 0x116, ItemClassification.useful, single_use=True),
+    item_names.cook: ItemData(BASE_ID + 0x117, ItemClassification.useful, single_use=True),
+    item_names.crash: ItemData(BASE_ID + 0x118, ItemClassification.progression, single_use=True),
 }
 
 treasures: Dict[str, ItemData] = {
@@ -176,6 +178,7 @@ planets: Dict[str, ItemData] = {
 dyna_items: Dict[str, ItemData] = {
     item_names.dyna_blade_ex1: ItemData(BASE_ID + 0x800, ItemClassification.progression),
     item_names.dyna_blade_ex2: ItemData(BASE_ID + 0x801, ItemClassification.progression),
+    item_names.progressive_dyna_blade: ItemData(BASE_ID + 0x802, ItemClassification.progression, num=4)
 }
 
 misc_items: Dict[str, ItemData] = {
@@ -208,6 +211,7 @@ item_table: Dict[str, ItemData] = {
 
 item_groups: Dict[str, Set[str]] = {
     "Copy Ability": {name for name in copy_abilities},
+    "Single Use Copy Ability": {name for name, data in copy_abilities.items() if data.single_use},
     "Treasures": {name for name in treasures},
     "Planets": {name for name in planets}
 }
@@ -217,7 +221,7 @@ lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in
 
 '''
 # Filler Items
-# Change this later
+## Change this later
 def get_random_filler_item_name(world: KSSUWorld) -> str:
     # Random Chance for a Trap
     if world.random.randint(0, 99) < world.options.trap_chance:

@@ -149,16 +149,17 @@ halfmoon = "Halfmoon"
 copy_planet = "???"
 
 # Misc
+progressive_dyna_blade = "Dyna Blade - Progressive Stage"
 dyna_blade_ex1 = "Dyna Blade - Extra 1"
 dyna_blade_ex2 = "Dyna Blade - Extra 2"
 rainbow_star = "Rainbow Star"
-invincible_candy = "Invincible Candy"
+cave_key = "Cave Key"
 
 one_up = "1-Up"
 maxim_tomato = "Maxim Tomato"
 food = "Food"
 tomato = "Tomato"
-cave_key = "Cave Key"
+invincible_candy = "Invincible Candy"
 
 # Hopefully not needed but, the whole list of "Food" items (Excluding 1-Up, Maxim Tomato, and Tomato)
 '''
