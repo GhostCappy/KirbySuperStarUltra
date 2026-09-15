@@ -1,3 +1,16 @@
+''' 
+Hello! If you're going through the client with the intent to learn how to make your own NDS APWorld:
+Do not.
+
+This is a very ugly fusion of BlastSlimey's Sonic Rush and Silvris's Kirby Super Star APWorlds.
+As such, almost none of this code is the "best way" of going about things.
+I would highly recommend checking out APQuest for documentation, 
+and Pokemon Mystery Dungeon: Explorers of Sky for DS (Bizhawk) for specific functionality.
+
+However, comments were left in the off-chance anyone is still interested in the code.
+(And also to keep my sanity)
+'''
+
 import time
 import asyncio
 
@@ -183,24 +196,6 @@ class KSSUClient(BizHawkClient):
         #self.death_state = DeathState.dead
         self.last_death_link = time.time()
 
-    # Receiving item function
-    '''
-    async def update_received_items(
-            self, ctx: "BizHawkClientContext", received_items_offset, received_index, i
-    ) -> None:
-        # write the received index to the rom to save where we are at with the queue
-        await bizhawk.write(
-            ctx.bizhawk_ctx,
-            [
-                (
-                    received_items_offset,
-                    [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100],
-                    self.ram_mem_domain,
-                ),
-            ],
-        )
-    '''
-    
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
@@ -427,7 +422,7 @@ class KSSUClient(BizHawkClient):
                     
                     # AP-Specific
                     case "Rainbow Star":
-                        await self.bizhawk_set_halfword(ctx, self.mww_rainbow_stars, 1)   
+                        await self.bizhawk_add_halfword(ctx, self.mww_rainbow_stars, 1)   
                     case "Cave Key":
                         await self.bizhawk_add_halfword(ctx, self.tgco_cave_key, 1)    
                                                                
@@ -556,6 +551,8 @@ class KSSUClient(BizHawkClient):
             # Dreadful: Part 2
             if game == 5:
                 game_name = "Milky Way Wishes"
+
+                # If abilty doesnt match received then make it equal
 
             # Revenge of the King 
             if game == 6:  
