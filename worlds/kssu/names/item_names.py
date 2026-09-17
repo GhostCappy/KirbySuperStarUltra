@@ -152,6 +152,7 @@ copy_planet = "???"
 progressive_dyna_blade = "Dyna Blade - Progressive Stage"
 dyna_blade_ex1 = "Dyna Blade - Extra 1"
 dyna_blade_ex2 = "Dyna Blade - Extra 2"
+progressive_mku = "Meta Knightmare Ultra - Progressive Level"
 rainbow_star = "Rainbow Star"
 cave_key = "Cave Key"
 
