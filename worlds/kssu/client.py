@@ -1,14 +1,15 @@
 ''' 
 Hello! If you're going through the client with the intent to learn how to make your own NDS APWorld:
 Do not.
+
 This is a very ugly fusion of BlastSlimey's Sonic Rush and Silvris's Kirby Super Star APWorlds.
 As such, almost none of this code is the "best way" of going about things.
 I would highly recommend checking out APQuest for documentation, 
 and Pokemon Mystery Dungeon: Explorers of Sky for DS (Bizhawk) for specific functionality.
+
 However, comments were left in the off-chance anyone is still interested in the code.
 (And also to keep my sanity)
 '''
-
 import time
 import asyncio
 
@@ -193,7 +194,6 @@ class KSSUClient(BizHawkClient):
         # Set death state (to avoid mulitple deaths in a row)
         ## self.death_state = DeathState.dead
         self.last_death_link = time.time()
-
 
     async def play_sfx(self, ctx: "BizHawkClientContext", sfx: str) -> None:
         sound: dict[str, int] = {
@@ -454,8 +454,12 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
+
                         await self.bizhawk_set_halfword(ctx, self.mww_rainbow_stars, 1)   
                         await self.play_sfx(ctx, "Planet")
+
+                        await self.bizhawk_add_halfword(ctx, self.mww_rainbow_stars, 1)   
+
                     case "Cave Key":
                         await self.bizhawk_add_halfword(ctx, self.tgco_cave_key, 1)    
                         await self.play_sfx(ctx, "Progressive")                                                          
@@ -576,6 +580,8 @@ class KSSUClient(BizHawkClient):
             # Dreadful: Part 2
             if game == 5:
                 game_name = "Milky Way Wishes"
+
+                # If abilty doesnt match received then make it equal
 
             # Revenge of the King 
             if rotk_stage:  
