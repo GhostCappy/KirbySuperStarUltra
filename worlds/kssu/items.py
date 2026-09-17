@@ -181,13 +181,19 @@ dyna_items: Dict[str, ItemData] = {
     item_names.progressive_dyna_blade: ItemData(BASE_ID + 0x802, ItemClassification.progression, num=4)
 }
 
+
+mku_items: Dict[str, ItemData] = {
+    item_names.progressive_mku: ItemData(BASE_ID + 0x900, ItemClassification.progression, num=4)
+}
+
+
 misc_items: Dict[str, ItemData] = {
     item_names.one_up: ItemData(BASE_ID + 0x1001, ItemClassification.filler),
     item_names.maxim_tomato: ItemData(BASE_ID + 0x1002, ItemClassification.filler),
     item_names.invincible_candy: ItemData(BASE_ID + 0x1003, ItemClassification.filler),
     item_names.cave_key: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
     item_names.rainbow_star: ItemData(BASE_ID + 0x1005, ItemClassification.progression),
-    item_names.tomato: ItemData(BASE_ID + 0x1006, ItemClassification.filler)
+    item_names.tomato: ItemData(BASE_ID + 0x1006, ItemClassification.filler),
 }
 
 filler_item_weights: Dict[str, int] = {
@@ -206,6 +212,7 @@ item_table: Dict[str, ItemData] = {
     **treasures,
     **planets,
     **dyna_items,
+    **mku_items,
     **misc_items
 }
 

@@ -127,6 +127,7 @@ class KSSUClient(BizHawkClient):
     tgco_collected_2 = 0x36000C
     mww_collected = 0x360010
     mww_unlocked_planets = 0x360018
+    mku_prog_level = 0x360020
     mww_rainbow_stars = 0x36001A
     play_sound = 0x36001C
     games_unlocked = 0x360024
@@ -300,6 +301,7 @@ class KSSUClient(BizHawkClient):
                     (self.single_use_unlocked, 2, self.ram_mem_domain),
                     (self.unlock_true_arena, 1, self.ram_mem_domain),
                     (self.rotk_stages, 1, self.ram_mem_domain),
+                    (self.mku_prog_level, 1, self.ram_mem_domain),
                 ]
             )
             
@@ -454,17 +456,18 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
-
                         await self.bizhawk_set_halfword(ctx, self.mww_rainbow_stars, 1)   
                         await self.play_sfx(ctx, "Planet")
-
+                    case "Meta Knightmare Ultra - Progressive Level":
                         await self.bizhawk_add_halfword(ctx, self.mww_rainbow_stars, 1)   
-
+                        await self.play_sfx(ctx, "Progressive")   
                     case "Cave Key":
                         await self.bizhawk_add_halfword(ctx, self.tgco_cave_key, 1)    
                         await self.play_sfx(ctx, "Progressive")                                                          
                     # Filler
                     case "1-Up":
+                        # Should check if in game
+                        # Alas, can I really?
                         await self.bizhawk_add_halfword(ctx, self.kirby_lifes, 1)
                         await self.play_sfx(ctx, "1-Up")
                     case "Maxim Tomato":
