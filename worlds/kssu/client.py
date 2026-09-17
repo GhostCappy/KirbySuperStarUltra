@@ -1,3 +1,14 @@
+''' 
+Hello! If you're going through the client with the intent to learn how to make your own NDS APWorld:
+Do not.
+This is a very ugly fusion of BlastSlimey's Sonic Rush and Silvris's Kirby Super Star APWorlds.
+As such, almost none of this code is the "best way" of going about things.
+I would highly recommend checking out APQuest for documentation, 
+and Pokemon Mystery Dungeon: Explorers of Sky for DS (Bizhawk) for specific functionality.
+However, comments were left in the off-chance anyone is still interested in the code.
+(And also to keep my sanity)
+'''
+
 import time
 import asyncio
 
@@ -116,7 +127,7 @@ class KSSUClient(BizHawkClient):
     mww_collected = 0x360010
     mww_unlocked_planets = 0x360018
     mww_rainbow_stars = 0x36001A
-    play_sound = 0x236001C
+    play_sound = 0x36001C
     games_unlocked = 0x360024
     tgco_received_1 = 0x360028
     tgco_received_2 = 0x36002C
@@ -180,27 +191,22 @@ class KSSUClient(BizHawkClient):
             [(self.kirby_hp, (0).to_bytes(1, "little"), self.ram_mem_domain)]
         )
         # Set death state (to avoid mulitple deaths in a row)
-        #self.death_state = DeathState.dead
+        ## self.death_state = DeathState.dead
         self.last_death_link = time.time()
 
-    # Receiving item function
-    '''
-    async def update_received_items(
-            self, ctx: "BizHawkClientContext", received_items_offset, received_index, i
-    ) -> None:
-        # write the received index to the rom to save where we are at with the queue
-        await bizhawk.write(
-            ctx.bizhawk_ctx,
-            [
-                (
-                    received_items_offset,
-                    [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100],
-                    self.ram_mem_domain,
-                ),
-            ],
-        )
-    '''
-    
+
+    async def play_sfx(self, ctx: "BizHawkClientContext", sfx: str) -> None:
+        sound: dict[str, int] = {
+            "Major": 67,
+            "Filler": 68,
+            "Treasure": 69,
+            "Planet": 70,
+            "Progressive": 71,
+            "Ability": 72,
+            "1-Up": 73,
+        }
+        await self.bizhawk_set_halfword(ctx, self.play_sound, sound.get(sfx, 0))
+        
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
@@ -240,58 +246,60 @@ class KSSUClient(BizHawkClient):
                 [
                     (self.received_offset, 2, self.ram_mem_domain),
                     
-                    (self.current_game, 2, self.ram_mem_domain),
-                    (self.current_stage, 2, self.ram_mem_domain),
-                    (self.current_screen, 2, self.ram_mem_domain),
+                    (self.current_game, 1, self.ram_mem_domain),
+                    (self.current_stage, 1, self.ram_mem_domain),
+                    (self.current_screen, 1, self.ram_mem_domain),
                     
-                    (self.spring_breeze_stages, 2, self.ram_mem_domain),
+                    (self.spring_breeze_stages, 1, self.ram_mem_domain),
                     
-                    (self.iron_mam_defeated, 2, self.ram_mem_domain),
+                    (self.iron_mam_defeated, 1, self.ram_mem_domain),
                     
-                    (self.tgco_gold, 2, self.ram_mem_domain),
+                    (self.tgco_gold, 4, self.ram_mem_domain),
                     
-                    (self.gourmet_kirby_wins, 2, self.ram_mem_domain),
-                    (self.ddd_race_1, 2, self.ram_mem_domain),
-                    (self.ddd_race_2, 2, self.ram_mem_domain),
+                    (self.gourmet_kirby_wins, 1, self.ram_mem_domain),
+                    (self.ddd_race_1, 1, self.ram_mem_domain),
+                    (self.ddd_race_2, 1, self.ram_mem_domain),
                     
-                    (self.romk_chapters, 2, self.ram_mem_domain),
+                    (self.romk_chapters, 1, self.ram_mem_domain),
                     
-                    (self.mww_abilities, 2, self.ram_mem_domain),
+                    (self.mww_abilities, 4, self.ram_mem_domain),
                     
-                    (self.arena_wins, 2, self.ram_mem_domain),
-                    (self.hth_wins, 2, self.ram_mem_domain),
+                    (self.arena_wins, 1, self.ram_mem_domain),
+                    (self.hth_wins, 4, self.ram_mem_domain),
                     
-                    (self.samurai_wins, 2, self.ram_mem_domain),
-                    (self.megaton_wins, 2, self.ram_mem_domain),
-                    (self.card_swipe_difficulty, 2, self.ram_mem_domain),
-                    (self.card_swipe_wins, 2, self.ram_mem_domain),
-                    (self.draw_difficulty, 2, self.ram_mem_domain),
+                    (self.samurai_wins, 1, self.ram_mem_domain),
+                    (self.megaton_wins, 1, self.ram_mem_domain),
+                    (self.card_swipe_difficulty, 1, self.ram_mem_domain),
+                    (self.card_swipe_wins, 1, self.ram_mem_domain),
+                    (self.draw_difficulty, 1, self.ram_mem_domain),
                     (self.draw_pink_score, 2, self.ram_mem_domain),
                     (self.draw_yellow_score, 2, self.ram_mem_domain),
                     (self.draw_red_score, 2, self.ram_mem_domain),
                     (self.draw_green_score, 2, self.ram_mem_domain),
                     (self.draw_ending, 2, self.ram_mem_domain),
-                    (self.snack_difficulty, 2, self.ram_mem_domain),
+                    (self.snack_difficulty, 1, self.ram_mem_domain),
                     (self.snack_pink_score, 2, self.ram_mem_domain),
                     (self.snack_yellow_score, 2, self.ram_mem_domain),
                     (self.snack_red_score, 2, self.ram_mem_domain),
                     (self.snack_green_score, 2, self.ram_mem_domain),
                     (self.snack_timer, 2, self.ram_mem_domain),
                     
-                    (self.dyna_last_completed, 2, self.ram_mem_domain),
-                    (self.tgco_collected_1, 2, self.ram_mem_domain),
-                    (self.tgco_collected_2, 2, self.ram_mem_domain),
-                    (self.mww_collected, 2, self.ram_mem_domain),
-                    (self.dyna_switch_activated, 2, self.ram_mem_domain),
-                    (self.games_unlocked, 2, self.ram_mem_domain),
+                    (self.dyna_last_completed, 1, self.ram_mem_domain),
+                    (self.tgco_collected_1, 4, self.ram_mem_domain),
+                    (self.tgco_collected_2, 4, self.ram_mem_domain),
+                    (self.mww_collected, 4, self.ram_mem_domain),
+                    (self.dyna_switch_activated, 1, self.ram_mem_domain),
+                    (self.games_unlocked, 4, self.ram_mem_domain),
 
-                    (self.dyna_ap_stage, 2, self.ram_mem_domain),
-                    (self.dyna_ap_ex_stage, 2, self.ram_mem_domain),
-                    (self.tgco_cave_key, 2, self.ram_mem_domain),
+                    (self.dyna_ap_stage, 1, self.ram_mem_domain),
+                    (self.dyna_ap_ex_stage, 1, self.ram_mem_domain),
+                    (self.tgco_cave_key, 1, self.ram_mem_domain),
                     (self.mww_unlocked_planets, 2, self.ram_mem_domain),
-                    (self.mww_rainbow_stars, 2, self.ram_mem_domain),
-                    (self.abilities_recieved, 2, self.ram_mem_domain),
+                    (self.mww_rainbow_stars, 1, self.ram_mem_domain),
+                    (self.abilities_recieved, 4, self.ram_mem_domain),
                     (self.single_use_unlocked, 2, self.ram_mem_domain),
+                    (self.unlock_true_arena, 1, self.ram_mem_domain),
+                    (self.rotk_stages, 1, self.ram_mem_domain),
                 ]
             )
             
@@ -327,7 +335,7 @@ class KSSUClient(BizHawkClient):
             snack_red = int.from_bytes(read_state[27], "little")
             snack_green = int.from_bytes(read_state[28], "little")
             snack_timer = int.from_bytes(read_state[29], "little")
-            dyna_prev_complete = int.from_bytes(read_state[30], "little")
+            dyna_stage = int.from_bytes(read_state[30], "little")
             treasure_collected_1 = int.from_bytes(read_state[31], "little")
             treasure_collected_2 = int.from_bytes(read_state[32], "little")
             ability_collected = int.from_bytes(read_state[33], "little")
@@ -340,6 +348,8 @@ class KSSUClient(BizHawkClient):
             current_rainbow_stars = int.from_bytes(read_state[40], "little")
             current_abils = int.from_bytes(read_state[41], "little")
             current_single_abils = int.from_bytes(read_state[42], "little")
+            true_arena_flag = int.from_bytes(read_state[43], "little")
+            rotk_stage = int.from_bytes(read_state[44], "little")
                
             # =================================
             # Item Handling Loop
@@ -357,8 +367,20 @@ class KSSUClient(BizHawkClient):
                         # Update the address
                         if new_unlocked != unlocked_games:
                             await self.bizhawk_set_halfword(ctx, self.games_unlocked, new_unlocked)
+                            # Plays a sound
+                            await self.play_sfx(ctx, "Major")
                             # Make sure it doesnt repeat (probably not necessary tbh)
                             unlocked_games = new_unlocked
+                            
+                        # The True Arena unlock
+                        if subgame_bit == 0x0A:
+                            if true_arena_flag != 15:
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [(self.unlock_true_arena, (15).to_bytes(1, "little"), self.ram_mem_domain)],
+                                )
+                                true_arena_flag = 15
+
                     # Abilities
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x100) and network_item.item > 0:
                         # Check if abilities are non-single use
@@ -370,6 +392,7 @@ class KSSUClient(BizHawkClient):
                                     ctx.bizhawk_ctx,
                                     [(self.abilities_recieved, new_abilities.to_bytes(4, "little"), self.ram_mem_domain)],
                                 )
+                                await self.play_sfx(ctx, "Ability")
                                 current_abils = new_abilities 
                         else: # Single Use
                             pass
@@ -384,6 +407,7 @@ class KSSUClient(BizHawkClient):
                                         ctx.bizhawk_ctx,
                                         [(self.tgco_received_1, new_treasure.to_bytes(4, "little"), self.ram_mem_domain)],
                                     )
+                                    await self.play_sfx(ctx, "Treasure")
                                     treasure_collected_1 = new_treasure
                                     # gold amount does NOT get updated until TGCO is loaded
                                     new_gold = gold + treasure_value
@@ -396,6 +420,7 @@ class KSSUClient(BizHawkClient):
                                     ctx.bizhawk_ctx,
                                     [(self.tgco_received_2, new_treasure.to_bytes(4, "little"), self.ram_mem_domain)],
                                 )
+                                await self.play_sfx(ctx, "Treasure")
                                 treasure_collected_2 = new_treasure
                                 new_gold = gold + treasure_value
                     # Planets
@@ -403,6 +428,7 @@ class KSSUClient(BizHawkClient):
                         planet_bit = network_item.item & 0xFF
                         new_planets = current_unlocked_planets | (1 << planet_bit)
                         if new_planets != current_unlocked_planets:
+                            await self.play_sfx(ctx, "Planet")
                             await self.bizhawk_set_halfword(ctx, self.mww_unlocked_planets, new_planets)
                             current_unlocked_planets = new_planets
                     # Dyna Blade
@@ -413,33 +439,39 @@ class KSSUClient(BizHawkClient):
                                 dyna_new_ex_stage = dyna_ex_current_stages | (1 << 0)
                                 if dyna_new_ex_stage != dyna_ex_current_stages:
                                     await self.bizhawk_set_halfword(ctx, self.dyna_ap_ex_stage, dyna_new_ex_stage)
+                                    await self.play_sfx(ctx, "Filler")
                             # Dyna Blade EX 2
                             case 0x01:
                                 dyna_new_ex_stage  = dyna_ex_current_stages | (1 << 1)
                                 if dyna_new_ex_stage != dyna_ex_current_stages:
                                     await self.bizhawk_set_halfword(ctx, self.dyna_ap_ex_stage, dyna_new_ex_stage)
+                                    await self.play_sfx(ctx, "Filler")
                             # Progressive Dyna Blade
                             case 0x02:
                                 dyna_new_stage = min(4, dyna_current_stages + 1)
                                 if dyna_new_stage != dyna_current_stages:
-                                    await self.bizhawk_set_halfword(ctx, self.dyna_ap_stage, dyna_new_stage)                           
-                    # Sounds
-                    
+                                    await self.bizhawk_set_halfword(ctx, self.dyna_ap_stage, dyna_new_stage)     
+                                    await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
                         await self.bizhawk_set_halfword(ctx, self.mww_rainbow_stars, 1)   
+                        await self.play_sfx(ctx, "Planet")
                     case "Cave Key":
                         await self.bizhawk_add_halfword(ctx, self.tgco_cave_key, 1)    
-                                                               
+                        await self.play_sfx(ctx, "Progressive")                                                          
                     # Filler
                     case "1-Up":
                         await self.bizhawk_add_halfword(ctx, self.kirby_lifes, 1)
+                        await self.play_sfx(ctx, "1-Up")
                     case "Maxim Tomato":
-                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 76)                                                    
+                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 76)        
+                        await self.play_sfx(ctx, "Filler")                                            
                     case "Tomato":
-                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 25)                                                            
+                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 25)      
+                        await self.play_sfx(ctx, "Filler")                                                          
                     case "Invincible Candy":
                         await self.bizhawk_set_halfword(ctx, self.candy_timer, 1320)
+                        await self.play_sfx(ctx, "Filler")    
                         
                     # What did you get???
                     case _:
@@ -455,34 +487,24 @@ class KSSUClient(BizHawkClient):
             # Location Handling
             # =================================
             # Spring Breeze
-            if game == 0:  
+            if sb_stage:  
                 game_name = "Spring Breeze"
-                for i in range(4):               
+                for i in range(sb_stage):               
                     loc = self.get_location(game_name, f"Stage {i+1}")
-                    if sb_stage and loc not in ctx.checked_locations:
+                    if loc is not None:
                         send_locations.add(loc)
 
             # Dyna Blade 
-            '''
-            if game == 1: 
+            if dyna_stage: 
                 game_name = "Dyna Blade"
-                # The last stage saved is not the same as completed stages (A stage has been completed)
-                if dyna_prev_complete:
-                    # For each stage 1 - 5
-                    for i in range(self.prev_dyna_stage + 1, dyna_prev_complete + 1):               
-                        loc = self.get_location(game_name, f"Stage {i}")
-                        if loc is not None:
-                            send_locations.add(loc)
+                for i in range(dyna_stage):               
+                    loc = self.get_location(game_name, f"Stage {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
                             
                 # Check if Iron Mam was defeated         
                 if iron_mam == 8:
                     loc = self.get_location(game_name, f"Iron Mam")
-                    if loc is not None:
-                        send_locations.add(loc)
-                        
-                # Check if the game was beaten
-                if self.prev_dyna_stage == 5:
-                    loc = self.get_location(game_name, "Complete")
                     if loc is not None:
                         send_locations.add(loc)
                         
@@ -513,44 +535,42 @@ class KSSUClient(BizHawkClient):
                     if loc is not None:
                         send_locations.add(loc)
 
+            '''
             # The Great Cave Offensive 
             # Dreadful
             if game == 3:
                 game_name = "The Great Cave Offensive"
-                if gold != new_gold
+                if gold != new_gold:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
-                        [(self.tgco_gold, gold.to_bytes(4, "little"), self.ram_mem_domain)],
+                        [(self.tgco_gold, new_gold.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
             
-
-            === PSUEDOCODE ===
-            If stage = 0 & screen = 11 (Door 1):
-                if cave_keys >= 1:
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door1_room, 87)
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door1_x, 6)   
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door1_y, 4)   
-            If stage = 1 & screen = 8 (Door 2):
-                if cave_keys >= 2:
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door2_room, 95)
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door2_x, 12)   
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door2_y, 3)        
-            If stage = 2 & screen = 35 (Door 3):
-                if cave_keys >= 3:
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door3_room, 132)
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door3_x, 30)   
-                    await self.bizhawk_set_halfword(ctx, self.tgco_door3_y, 7)   
-
+                # Update door transition for each Cave Key
+                if stage == 0 and screen == 11:
+                    if cave_keys >= 1:
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_room, 87)
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_x, 6)   
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_y, 4)   
+                if stage == 1 and screen == 8:
+                    if cave_keys >= 2:
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_room, 95)
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_x, 12)   
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_y, 3)        
+                if stage == 2 and screen == 35:
+                    if cave_keys >= 3:
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_room, 132)
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_x, 30)   
+                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_y, 7)   
+            '''
 
             # Revenge of Meta Knight
-            if game == 4:  
+            if romk_chapters_completed:  
                 game_name = "Revenge of Meta Knight"
-                if romk_chapters_completed:
-                    # For each chapter 1 - 7
-                    for i in range(self.prev_romk_win + 1, romk_chapters_completed + 1):               
-                        loc = self.get_location(game_name, f"Stage {i}")
-                        if loc is not None:
-                            send_locations.add(loc)
+                for i in range(romk_chapters_completed):               
+                    loc = self.get_location(game_name, f"Stage {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
 
             # Milky Way Wishes
             # Dreadful: Part 2
@@ -558,15 +578,12 @@ class KSSUClient(BizHawkClient):
                 game_name = "Milky Way Wishes"
 
             # Revenge of the King 
-            if game == 6:  
+            if rotk_stage:  
                 game_name = "Revenge of the King"
-                # The last stage saved is not the same as completed stages (A stage has been completed)
-                if sb_stage:
-                    # For each stage 1 - 4
-                    for i in range(self.prev_sb_stage + 1, sb_stage + 1):               
-                        loc = self.get_location(game_name, f"Stage {i}")
-                        if loc is not None:
-                            send_locations.add(loc)
+                for i in range(rotk_stage):               
+                    loc = self.get_location(game_name, f"Stage {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
 
             # Arena
             if game == 7:  # The Arena
@@ -583,15 +600,6 @@ class KSSUClient(BizHawkClient):
             # Meta Knightmare Ultra
             if game == 8: 
                 game_name = "Meta Knightmare Ultra"
-                if stage > 0:
-                    if self.prev_stage is None or stage != self.prev_stage:
-                        loc = self.get_location(game_name, f"Level {stage}")
-                        if loc is not None:
-                            send_locations.add(loc)
-                if stage == 4: # Fix
-                    loc = self.get_location(game_name, "Level 5")
-                    if loc is not None:
-                        send_locations.add(loc)
 
             # Helper to Hero 
             if game == 9:
@@ -652,7 +660,7 @@ class KSSUClient(BizHawkClient):
                     loc = self.get_location(game_name, label)
                     if loc is not None:
                         send_locations.add(loc)
-'''
+
             # Kirby Card Swipe
             if card_score == 3 and card_difficulty in (0, 1, 2):
                 game_name = "Kirby Card Swipe"
@@ -684,14 +692,11 @@ class KSSUClient(BizHawkClient):
             # --- DeathLink ---
             # Need a better way to track player in-game.
 
-
             # --- Send locations if changed ---
             if send_locations != self.local_checked_locations:
                 self.local_checked_locations = send_locations
                 if send_locations is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(send_locations)}])
-       
-                        
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect.
             pass
