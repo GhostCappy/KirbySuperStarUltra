@@ -362,6 +362,24 @@ meta_knightmare_locations = {
 }
 
 helper_to_hero_locations = {
+    location_names.hth_1: LocationData(BASE_ID + 900),
+    location_names.hth_2: LocationData(BASE_ID + 901),
+    location_names.hth_3: LocationData(BASE_ID + 902),
+    location_names.hth_4: LocationData(BASE_ID + 903),
+    location_names.hth_5: LocationData(BASE_ID + 904),
+    location_names.hth_6: LocationData(BASE_ID + 905),
+    location_names.hth_7: LocationData(BASE_ID + 906),
+    location_names.hth_8: LocationData(BASE_ID + 907),
+    location_names.hth_9: LocationData(BASE_ID + 908),
+    location_names.hth_10: LocationData(BASE_ID + 909),
+    location_names.hth_11: LocationData(BASE_ID + 910),
+    location_names.hth_12: LocationData(BASE_ID + 911),
+    location_names.hth_13: LocationData(BASE_ID + 912),
+    location_names.helper_to_hero_complete: LocationData(None),
+}
+
+'''
+helper_to_hero_helper_locations = {
     location_names.hth_1: LocationData(BASE_ID + 909),
     location_names.hth_2: LocationData(BASE_ID + 910),
     location_names.hth_3: LocationData(BASE_ID + 911),
@@ -384,6 +402,7 @@ helper_to_hero_locations = {
     location_names.hth_20: LocationData(BASE_ID + 928),
     location_names.helper_to_hero_complete: LocationData(None),
 }
+'''
 
 the_true_arena_locations = {
     location_names.the_true_arena_1: LocationData(BASE_ID + 210),
@@ -451,6 +470,31 @@ location_table = {
     **helper_to_hero_locations,
     **the_true_arena_locations,
     **subgame_locations
+}
+
+# Milky Way Wishes Planet locations
+# Contains the bit, and ability offset location
+# You'd think I would've named it better in locations, huh?
+MWW_ABILITY_OFFSETS: dict[int, int] = {
+    0x01: 88,   # Cutter
+    0x02: 110,  # Mirror
+    0x04: 92,   # Beam
+    0x08: 89,   # Fighter
+    0x10: 101,  # Suplex
+    0x20: 108,  # Yo-Yo
+    0x40: 97,   # Wheel
+    0x80: 103,  # Bomb
+    0x100: 90,   # Ice
+    0x200: 100,  # Fire
+    0x400: 107,  # Plasma
+    0x800: 111,  # Ninja
+    0x1000: 105,  # Stone
+    0x2000: 98,   # Wing
+    0x4000: 96,   # Jet
+    0x8000: 112,  # Copy
+    0x10000: 94,   # Sword
+    0x20000: 104,  # Hammer
+    0x40000: 93,   # Parasol
 }
 
 __all__ = [

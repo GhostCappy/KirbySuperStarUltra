@@ -16,6 +16,7 @@ import asyncio
 from NetUtils import ClientStatus
 from typing import TYPE_CHECKING, Set, Dict
 from .items import treasures, BASE_ID
+from .locations import MWW_ABILITY_OFFSETS
 
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
@@ -34,8 +35,13 @@ class KSSUClient(BizHawkClient):
     goal_complete = False
     received_items_count: int = 0
     datapackage_requested = False
+    item_queue: typing.List[NetworkItem] = []
     
     cave_keys_collected = 0
+    progressive_mku_level = 0
+    rainbow_stars = 0
+    new_gold = 0
+    completed_games = 0
     
     # Game Address Offsets
     ## Current State
@@ -43,6 +49,9 @@ class KSSUClient(BizHawkClient):
     current_stage = 0x05B6A6
     current_screen = 0x05B6A7
     unlock_true_arena = 0x05C175
+    
+    # PLEASE FIND THIS
+    game_state = 0x00000
     
     ## Kirby
     kirby_lifes = 0x05B824
@@ -88,6 +97,11 @@ class KSSUClient(BizHawkClient):
     # RoTK
     rotk_stages = 0x05BE88
     
+    # MKU
+    mku_level = 0x05BEF5
+    cannon_item = 0x04A55E
+    cannon_real = 0x04A556
+    
     ## Minigames
     ## Samurai
     samurai_wins = 0x0A8448
@@ -127,8 +141,6 @@ class KSSUClient(BizHawkClient):
     tgco_collected_2 = 0x36000C
     mww_collected = 0x360010
     mww_unlocked_planets = 0x360018
-    mku_prog_level = 0x360020
-    mww_rainbow_stars = 0x36001A
     play_sound = 0x36001C
     games_unlocked = 0x360024
     tgco_received_1 = 0x360028
@@ -188,13 +200,16 @@ class KSSUClient(BizHawkClient):
     # Deathlink not yet implemented
     # Function that kills player when deathlink is recieved
     async def deathlink_kill_player(self, ctx):
-        await bizhawk.write(
-            ctx.bizhawk_ctx,
-            [(self.kirby_hp, (0).to_bytes(1, "little"), self.ram_mem_domain)]
-        )
-        # Set death state (to avoid mulitple deaths in a row)
-        ## self.death_state = DeathState.dead
-        self.last_death_link = time.time()
+        # CHANGE WHEN FOUND
+        if self.game_state == 5:
+            await bizhawk.write(
+                ctx.bizhawk_ctx,
+                [(self.kirby_hp, (0).to_bytes(1, "little"), self.ram_mem_domain)]
+            )
+            # Set death state (to avoid mulitple deaths in a row)
+            self.last_death_link = time.time()
+        else:
+            pass
 
     async def play_sfx(self, ctx: "BizHawkClientContext", sfx: str) -> None:
         sound: dict[str, int] = {
@@ -207,6 +222,23 @@ class KSSUClient(BizHawkClient):
             "1-Up": 73,
         }
         await self.bizhawk_set_halfword(ctx, self.play_sound, sound.get(sfx, 0))
+        
+    async def move_cannon(self, ctx: "BizHawkClientContext") -> None:
+        await bizhawk.write(
+            ctx.bizhawk_ctx,
+            [(self.cannon_item, (-1).to_bytes(1, "little"), self.ram_mem_domain)],
+        )
+        await bizhawk.write(
+            ctx.bizhawk_ctx,
+            [(self.cannon_real, (-1).to_bytes(1, "little"), self.ram_mem_domain)],
+        )
+        
+    async def queue_item(self, ctx: "BizHawkClientContext") -> None:
+        # CHANGE WHEN FOUND
+        if self.game_state == 5:
+            pass
+        else:
+            pass
         
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -294,14 +326,12 @@ class KSSUClient(BizHawkClient):
 
                     (self.dyna_ap_stage, 1, self.ram_mem_domain),
                     (self.dyna_ap_ex_stage, 1, self.ram_mem_domain),
-                    (self.tgco_cave_key, 1, self.ram_mem_domain),
+                    (self.mku_level, 1, self.ram_mem_domain),
                     (self.mww_unlocked_planets, 2, self.ram_mem_domain),
-                    (self.mww_rainbow_stars, 1, self.ram_mem_domain),
                     (self.abilities_recieved, 4, self.ram_mem_domain),
                     (self.single_use_unlocked, 2, self.ram_mem_domain),
                     (self.unlock_true_arena, 1, self.ram_mem_domain),
                     (self.rotk_stages, 1, self.ram_mem_domain),
-                    (self.mku_prog_level, 1, self.ram_mem_domain),
                 ]
             )
             
@@ -345,13 +375,12 @@ class KSSUClient(BizHawkClient):
             unlocked_games =  int.from_bytes(read_state[35], "little")
             dyna_current_stages = int.from_bytes(read_state[36], "little")
             dyna_ex_current_stages = int.from_bytes(read_state[37], "little")
-            cave_keys = int.from_bytes(read_state[38], "little")
+            mku_complete = int.from_bytes(read_state[38], "little")
             current_unlocked_planets = int.from_bytes(read_state[39], "little")
-            current_rainbow_stars = int.from_bytes(read_state[40], "little")
-            current_abils = int.from_bytes(read_state[41], "little")
-            current_single_abils = int.from_bytes(read_state[42], "little")
-            true_arena_flag = int.from_bytes(read_state[43], "little")
-            rotk_stage = int.from_bytes(read_state[44], "little")
+            current_abils = int.from_bytes(read_state[40], "little")
+            current_single_abils = int.from_bytes(read_state[41], "little")
+            true_arena_flag = int.from_bytes(read_state[42], "little")
+            rotk_stage = int.from_bytes(read_state[43], "little")
                
             # =================================
             # Item Handling Loop
@@ -412,7 +441,7 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Treasure")
                                     treasure_collected_1 = new_treasure
                                     # gold amount does NOT get updated until TGCO is loaded
-                                    new_gold = gold + treasure_value
+                                    self.new_gold = gold + treasure_value
                         # If the bit is greater than 32, it should be written to the 2nd address instead
                         else:
                             high_bit = treasure_bit - 32
@@ -424,7 +453,7 @@ class KSSUClient(BizHawkClient):
                                 )
                                 await self.play_sfx(ctx, "Treasure")
                                 treasure_collected_2 = new_treasure
-                                new_gold = gold + treasure_value
+                                self.new_gold = gold + treasure_value
                     # Planets
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x400) and network_item.item > 0:
                         planet_bit = network_item.item & 0xFF
@@ -456,13 +485,15 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
-                        await self.bizhawk_set_halfword(ctx, self.mww_rainbow_stars, 1)   
+                        self.rainbow_stars += 1
                         await self.play_sfx(ctx, "Planet")
                     case "Meta Knightmare Ultra - Progressive Level":
-                        await self.bizhawk_add_halfword(ctx, self.mww_rainbow_stars, 1)   
+                        if self.progressive_mku_level < 4:
+                            self.progressive_mku_level += 1
                         await self.play_sfx(ctx, "Progressive")   
                     case "Cave Key":
-                        await self.bizhawk_add_halfword(ctx, self.tgco_cave_key, 1)    
+                        if self.cave_keys_collected  < 3:
+                            self.cave_keys_collected += 1  
                         await self.play_sfx(ctx, "Progressive")                                                          
                     # Filler
                     case "1-Up":
@@ -542,34 +573,42 @@ class KSSUClient(BizHawkClient):
                     if loc is not None:
                         send_locations.add(loc)
 
-            '''
             # The Great Cave Offensive 
             # Dreadful
+            if treasure_collected_1:
+                for i in range(32):
+                    if treasure_collected_1 & (1 << i):
+                        send_locations.add(BASE_ID + 19 + i)
+            
+            if treasure_collected_2:
+                for i in range(28):
+                    if treasure_collected_2 & (1 << i):
+                        send_locations.add(BASE_ID + 51 + i)
+
             if game == 3:
                 game_name = "The Great Cave Offensive"
-                if gold != new_gold:
+                if gold != self.new_gold:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
-                        [(self.tgco_gold, new_gold.to_bytes(4, "little"), self.ram_mem_domain)],
+                        [(self.tgco_gold, self.new_gold.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
             
                 # Update door transition for each Cave Key
                 if stage == 0 and screen == 11:
-                    if cave_keys >= 1:
+                    if self.cave_keys_collected >= 1:
                         await self.bizhawk_set_halfword(ctx, self.tgco_door1_room, 87)
                         await self.bizhawk_set_halfword(ctx, self.tgco_door1_x, 6)   
                         await self.bizhawk_set_halfword(ctx, self.tgco_door1_y, 4)   
                 if stage == 1 and screen == 8:
-                    if cave_keys >= 2:
+                    if self.cave_keys_collected >= 2:
                         await self.bizhawk_set_halfword(ctx, self.tgco_door2_room, 95)
                         await self.bizhawk_set_halfword(ctx, self.tgco_door2_x, 12)   
                         await self.bizhawk_set_halfword(ctx, self.tgco_door2_y, 3)        
                 if stage == 2 and screen == 35:
-                    if cave_keys >= 3:
+                    if self.cave_keys_collected >= 3:
                         await self.bizhawk_set_halfword(ctx, self.tgco_door3_room, 132)
                         await self.bizhawk_set_halfword(ctx, self.tgco_door3_x, 30)   
                         await self.bizhawk_set_halfword(ctx, self.tgco_door3_y, 7)   
-            '''
 
             # Revenge of Meta Knight
             if romk_chapters_completed:  
@@ -581,10 +620,27 @@ class KSSUClient(BizHawkClient):
 
             # Milky Way Wishes
             # Dreadful: Part 2
+            # If ability is collected in-game
+            if ability_collected:
+                for bit, x in MWW_ABILITY_OFFSETS.items():
+                    if ability_collected & bit:
+                        send_locations.add(BASE_ID + x)
+
             if game == 5:
                 game_name = "Milky Way Wishes"
 
-                # If abilty doesnt match received then make it equal
+                # If ability doesnt match received then make it equal
+                # NOT WORKING ATM?
+                if unlocked_abilities != current_abils:
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [(self.mww_abilities, current_abils.to_bytes(4, "little"), self.ram_mem_domain)],
+                    )
+                    unlocked_abilities = current_abils
+                    
+                # If rainbow key is equal to option number, unlock Galactic Nova
+                
+                
 
             # Revenge of the King 
             if rotk_stage:  
@@ -595,7 +651,7 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Arena
-            if game == 7:  # The Arena
+            if game == 7: 
                 game_name = "The Arena"
                 if arena:
                     if arena == 1:
@@ -605,10 +661,31 @@ class KSSUClient(BizHawkClient):
                     loc = self.get_location(game_name, label)
                     if loc is not None:
                         send_locations.add(loc)
-
+                        
+            
             # Meta Knightmare Ultra
+            if mku_complete:
+                game_name = "Meta Knightmare Ultra"
+                for i in range(mku_complete):               
+                    loc = self.get_location(game_name, f"Level {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
+                
             if game == 8: 
                 game_name = "Meta Knightmare Ultra"
+                # Update door transition for each Progressive Level
+                if stage == 0 and screen == 22:
+                    if self.progressive_mku_level >= 1:
+                        await self.move_cannon(ctx)
+                if stage == 1 and screen == 36:
+                    if self.progressive_mku_level >= 2:
+                        await self.move_cannon(ctx)
+                if stage == 2 and screen == 29:
+                    if self.progressive_mku_level >= 3:
+                        await self.move_cannon(ctx)
+                if stage == 3 and screen == 36:
+                    if self.progressive_mku_level >= 4:
+                        await self.move_cannon(ctx)
 
             # Helper to Hero 
             if game == 9:
@@ -697,7 +774,7 @@ class KSSUClient(BizHawkClient):
                     loc = self.get_location(game_name, f"Level {level}")
                     if loc is not None:
                         send_locations.add(loc)
-
+            
             # --- DeathLink ---
             # Need a better way to track player in-game.
 
