@@ -1,7 +1,5 @@
-
 from BaseClasses import Entrance, Region
 from typing import TYPE_CHECKING
-from .items import KSSUItem
 from .locations import *
 from .names import item_names, location_names
 

@@ -1,4 +1,3 @@
-
 from typing import NamedTuple, Dict, Optional, Set
 from BaseClasses import Item, ItemClassification
 from .names import item_names
@@ -173,14 +172,14 @@ misc_items: Dict[str, ItemData] = {
     item_names.invincible_candy: ItemData(BASE_ID + 0x1003, ItemClassification.filler),
     item_names.cave_key: ItemData(BASE_ID + 0x1004, ItemClassification.progression),
     item_names.rainbow_star: ItemData(BASE_ID + 0x1005, ItemClassification.progression),
-    item_names.tomato: ItemData(BASE_ID + 0x1006, ItemClassification.filler),
+    item_names.food: ItemData(BASE_ID + 0x1006, ItemClassification.filler),
 }
 
 filler_item_weights: Dict[str, int] = {
     item_names.one_up: 4,
     item_names.maxim_tomato: 2,
     item_names.invincible_candy: 2,
-    item_names.tomato: 2
+    item_names.food: 2
 }
 
 item_table: Dict[str, ItemData] = {
@@ -203,5 +202,5 @@ item_groups: Dict[str, Set[str]] = {
 }
 
 lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
-    
+
 

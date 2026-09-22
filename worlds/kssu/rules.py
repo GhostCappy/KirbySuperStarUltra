@@ -1,13 +1,11 @@
 from typing import Dict, TYPE_CHECKING
 from .items import main_game_completion
 from .names import location_names, item_names
-from worlds.generic.Rules import set_rule
+from worlds.generic.Rules import set_rule, add_rule
 from BaseClasses import CollectionState
 
 if TYPE_CHECKING:
     from . import KSSUWorld
-    
-# I better remember this file at some point, this is responsible for logic.
 
 # Abilities that can beat wind  
 def can_fight_wind(state: "CollectionState", player: int) -> bool:
@@ -91,7 +89,7 @@ def the_great_cave_rules(world: "KSSUWorld") -> None:
              lambda state: state.has_any([item_names.ninja, item_names.sword, item_names.wing, item_names.cutter],
                                          world.player))
 
-# Abilties that can access cannon, food and essences
+# Abilities that can access cannon, food and essences
 def revenge_of_metaknight_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_location(location_names.romk_chapter_3),
              lambda state: state.has(item_names.fire, world.player))
@@ -105,7 +103,7 @@ def revenge_of_metaknight_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_entrance("RoMK - Chapter 6 -> RoMK - Chapter 7"),
              lambda state: state.has_any([item_names.wing, item_names.suplex], world.player))
 
-# Abilties that can access essences and food
+# Abilities that can access essences and food
 def milky_way_wishes_rules(world: "KSSUWorld") -> None:
     if world.options.milky_way_wishes_mode == "local":
         set_rule(world.get_location(location_names.mww_complete),
@@ -137,7 +135,7 @@ def milky_way_wishes_rules(world: "KSSUWorld") -> None:
 
 # More rules that need to be made:
 # Helper to Hero (When helpers are blocked behind ability)
-# The True Aena (Same thing as arena)
+# The True Arena (Same thing as arena)
 def set_rules(world: "KSSUWorld") -> None:
     # Dyna Blade
     if "Dyna Blade" in world.options.included_maingames:
