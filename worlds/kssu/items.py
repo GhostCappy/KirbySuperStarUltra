@@ -145,10 +145,10 @@ treasures: Dict[str, ItemData] = {
 
 planets: Dict[str, ItemData] = {
     item_names.floria: ItemData(BASE_ID + 0x400, ItemClassification.progression),
-    item_names.hotbeat: ItemData(BASE_ID + 0x401, ItemClassification.progression),
+    item_names.aqualiss: ItemData(BASE_ID + 0x401, ItemClassification.progression),
     item_names.skyhigh: ItemData(BASE_ID + 0x402, ItemClassification.progression),
-    item_names.cavios: ItemData(BASE_ID + 0x403, ItemClassification.progression),
-    item_names.aqualiss: ItemData(BASE_ID + 0x404, ItemClassification.progression),
+    item_names.hotbeat: ItemData(BASE_ID + 0x403, ItemClassification.progression),
+    item_names.caviosd: ItemData(BASE_ID + 0x404, ItemClassification.progression),
     item_names.mecheye: ItemData(BASE_ID + 0x405, ItemClassification.progression),
     item_names.halfmoon: ItemData(BASE_ID + 0x406, ItemClassification.progression),
     item_names.copy_planet: ItemData(BASE_ID + 0x407, ItemClassification.progression),
