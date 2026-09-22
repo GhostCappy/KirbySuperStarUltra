@@ -600,7 +600,7 @@ class KSSUClient(BizHawkClient):
             if romk_chapters_completed:  
                 game_name = "Revenge of Meta Knight"
                 for i in range(romk_chapters_completed):               
-                    loc = self.get_location(game_name, f"Stage {i+1}")
+                    loc = self.get_location(game_name, f"Chapter {i+1}")
                     if loc is not None:
                         send_locations.add(loc)
 
