@@ -18,8 +18,8 @@ from .rom import KSSUProcedurePatch, write_tokens
 from .regions import create_regions
 from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanity
 from .client import KSSUClient 
-from .items import (lookup_item_to_id, itempool, item_groups, KSSUItem, filler_item_weights, copy_abilities,
-                    main_games, dyna_items, planets, treasures)
+from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
+                    main_games, sub_games, dyna_items, planets, treasures)
 from .locations import location_table, KSSULocation
 from .rules import set_rules
 from . import web_world
@@ -68,7 +68,6 @@ class KSSUWorld(World):
         self.rom_name_available_event = threading.Event()
         self.treasure_value = []
           
-    # Probably needs more future work
     # Verifies user options
     def generate_early(self) -> None:
         if not self.options.included_maingames.value.intersection(
@@ -82,7 +81,7 @@ class KSSUWorld(World):
                                F"adding to included main-games")
                 self.options.included_maingames.value.add(game)
 
-        if self.options.starting_maingame.current_option_name not in self.options.included_maingames:
+        if maingame_mapping[self.options.starting_maingame.value] not in self.options.included_maingames:
             logger.warning(f"Kirby Super Star Ultra({self.player_name}): Starting maingame not included, choosing random.")
             self.options.starting_maingame.value = self.random.choice([value[0] for value in maingame_mapping.items()
                                                                       if value[1] in self.options.included_maingames])
@@ -95,29 +94,24 @@ class KSSUWorld(World):
             # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
             self.options.included_maingames = IncludedMainGames.valid_keys
-            self.options.foodsanity.value = True
-            self.options.essences.value = True
+            self.options.foodsanity.value = False
+            self.options.essences.value = False
           
     def create_item(self, name, force_classification: ItemClassification | None = None):
         # Make sure the item is in the item table
-        if name not in itempool:
+        if name not in item_table:
             raise Exception(f"{name} is not a valid item name for Kirby Super Star Ultra.")
         
         # If it is, set its classification
-        data = itempool[name]
+        data = item_table[name]
         classification = force_classification if force_classification else data.classification
-        
-        # If there is no BASE_ID in an item, it is an event (Ex. A mode is completed)
-        if data.code is None:
-            return KSSUEventItem(name, self.player)
-                             
         return KSSUItem(name, classification, data.code, self.player)
 
     def create_items(self) -> None:
         itempool = []
         # Add the included games
         modes = [self.create_item(name) for name in main_games if name in self.options.included_maingames]
-        starting_mode = self.create_item(maingame_mapping[self.options.starting_maingame])
+        starting_mode = self.create_item(maingame_mapping[self.options.starting_maingame.value])
 
         # At least one game is needed to play. This game should be removed from item pool.
         modes.remove(starting_mode)
@@ -131,10 +125,10 @@ class KSSUWorld(World):
         
         # If Dyna blade is included, add its items
         if "Dyna Blade" in self.options.included_maingames:
-            force = None
-            if not self.options.essences and not self.options.foodsanity:
-                force = ItemClassification.useful
-            itempool.extend([self.create_item(name, force) for name in dyna_items])
+            itempool.extend([self.create_item(name)
+                             for name, data in dyna_items.items()
+                             for _num in range(data.num)
+                             ])
             
         # If TGCO is included, add its items
         if "The Great Cave Offensive" in self.options.included_maingames:
@@ -157,6 +151,9 @@ class KSSUWorld(World):
             if self.options.milky_way_wishes_mode == "multiworld":
                 itempool.extend(self.create_item(item_names.rainbow_star) for _ in range(7))
                 
+        if self.options.include_subgames.value:
+            itempool.extend([self.create_item(name) for name in sub_games])
+        
         location_count = len(list(self.multiworld.get_unfilled_locations(self.player))) - len(itempool)
         if location_count < 0:
             if "The Great Cave Offensive" in self.options.included_maingames:
@@ -199,6 +196,7 @@ class KSSUWorld(World):
         return slot_data
     
     def generate_output(self, output_directory: str) -> None:
+        try:
             patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
             patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
             write_tokens(patch)
@@ -213,6 +211,8 @@ class KSSUWorld(World):
 
             # Signal modify_multidata() that ROM name is ready
             self.rom_name_available_event.set()
+        except Exception:
+            raise
 
     def modify_multidata(self, multidata: Dict[str, Any]) -> None:
         self.rom_name_available_event.wait()

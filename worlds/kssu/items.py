@@ -53,26 +53,6 @@ sub_games: Dict[str, ItemData] = {
     item_names.samurai_kirby: ItemData(BASE_ID + 15, ItemClassification.progression),
 }
 
-sub_game_completion: Dict[str, ItemData] = {
-    item_names.megaton_punch_1_complete: ItemData(None, ItemClassification.progression),
-    item_names.megaton_punch_2_complete: ItemData(None, ItemClassification.progression),
-    item_names.megaton_punch_3_complete: ItemData(None, ItemClassification.progression),
-    item_names.samurai_kirby_1_complete: ItemData(None, ItemClassification.progression),
-    item_names.samurai_kirby_2_complete: ItemData(None, ItemClassification.progression),
-    item_names.samurai_kirby_3_complete: ItemData(None, ItemClassification.progression),
-    item_names.samurai_kirby_4_complete: ItemData(None, ItemClassification.progression),
-    item_names.samurai_kirby_5_complete: ItemData(None, ItemClassification.progression),
-    item_names.kirby_card_swipe_1_complete: ItemData(None, ItemClassification.progression),
-    item_names.kirby_card_swipe_2_complete: ItemData(None, ItemClassification.progression), 
-    item_names.kirby_card_swipe_3_complete: ItemData(None, ItemClassification.progression),
-    item_names.kirby_on_the_draw_1_complete: ItemData(None, ItemClassification.progression),
-    item_names.kirby_on_the_draw_2_complete: ItemData(None, ItemClassification.progression),
-    item_names.kirby_on_the_draw_3_complete: ItemData(None, ItemClassification.progression),
-    item_names.snack_tracks_1_complete: ItemData(None, ItemClassification.progression),
-    item_names.snack_tracks_2_complete: ItemData(None, ItemClassification.progression),
-    item_names.snack_tracks_3_complete: ItemData(None, ItemClassification.progression),
-}
-
 copy_abilities: Dict[str, ItemData] = {
     item_names.cutter: ItemData(BASE_ID + 0x101, ItemClassification.progression),
     item_names.mirror: ItemData(BASE_ID + 0x102, ItemClassification.progression), 
@@ -207,7 +187,6 @@ item_table: Dict[str, ItemData] = {
     **main_games,
     **main_game_completion,
     **sub_games,
-    **sub_game_completion,
     **copy_abilities,
     **treasures,
     **planets,
@@ -225,94 +204,4 @@ item_groups: Dict[str, Set[str]] = {
 
 lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
     
-
-'''
-# Filler Items
-## Change this later
-def get_random_filler_item_name(world: KSSUWorld) -> str:
-    # Random Chance for a Trap
-    if world.random.randint(0, 99) < world.options.trap_chance:
-        return "1-Up"
-    return "Invincible Candy"
-
-def create_all_items(world: KSSUWorld) -> None:
-    # Eventually need to seperate to check for every option specific item:
-    # - Individual Main-Games
-    # - All sub-games
-    # - Tresures (If TGCO is on)
-    # - Planets (If MWW is on)
-    # - Dyna Items (If Dyna Blade is on)
-    # - Food (If Foodsanity is on)
-    # - Essences (If EssencesSanity is on)
-    # - Cave Key (If the option is turned on)
-
-
-    # Add Main Games in pool if enabled
-    # There REALLY might be a better way of doing this (like for each bla bla bla)
-    if "Spring Breeze" in world.options.included_maingames:
-        itempool.append(**spring_breeze)
-        
-    if "Dyna Blade" in world.options.included_maingames:
-        itempool.append(**dyna_blade)
-        itempool.append(**dyna_items)
-        
-    if "Gourmet Race" in world.options.included_maingames:
-        itempool.append(**gourmet_race)
-        
-    if "The Great Cave Offensive" in world.options.included_maingames:
-        itempool.append(**the_great_cave_offensive)
-        itempool.append(**treasures)
-        
-    if "Revenge of Meta Knight" in world.options.included_maingames:
-        itempool.append(**revenge_of_meta_knight)
-        
-    if "Milky Way Wishes" in world.options.included_maingames:
-        itempool.append(**milky_way_wishes)
-        itempool.append(**planets)
-        
-    if "The Arena" in world.options.included_maingames:
-        itempool.append(**the_arena)
-        
-    if "Revenge of The King" in world.options.included_maingames:
-        itempool.append(**revenge_of_meta_knight)
-        
-    if "Meta Knightmare Ultra" in world.options.included_maingames:
-        itempool.append(**meta_knightmare_ultra)
-        
-    if "Helper to Hero" in world.options.included_maingames:
-        itempool.append(**helper_to_hero)
-        
-    if "The True Arena" in world.options.included_maingames:
-        itempool.append(**the_true_arena)
-        
-    if world.options.subgames:
-        itempool.append(**sub_games)
-        itempool.append(**sub_game_completion)
-
-    # The length of our itempool is easy to determine, since we have it as a list.
-    number_of_items = len(itempool)
-
-    # The number of total locations 
-    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
-
-    # Subtract the number of items from the number of locations to get the number of empty item slots.
-    needed_number_of_filler_items = number_of_unfilled_locations - number_of_items
-
-    # Fill the rest of item pool with filler
-    # (1-Ups, Candy, etc.)
-    itempool += [world.create_filler() for _ in range(needed_number_of_filler_items)]
-
-    # Anyway. With our world's itempool finalized, we now need to submit it to the multiworld itempool.
-    # This is how the generator actually knows about the existence of our items.
-    world.multiworld.itempool += itempool
-
-    # Give the player starting inventory (if desired)
-
-    if world.options.start_with_one_confetti_cannon:
-        # We're adding a filler item, but you can also add progression items to the player's precollected inventory.
-        starting_confetti_cannon = world.create_item("Confetti Cannon")
-        world.push_precollected(starting_confetti_cannon)
-'''
-    
-
 

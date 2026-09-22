@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 from .items import KSSUItem
 from .locations import *
 from .names import item_names, location_names
-from .options import IncludedMainGames
 
 if TYPE_CHECKING:
     from . import KSSUWorld
@@ -12,10 +11,10 @@ if TYPE_CHECKING:
 class KSSURegion(Region):
     game = "Kirby Super Star Ultra"
 
-def create_region(name, world: "KSSUWorld"):
+def create_region(name, world: "KSSUWorld") -> KSSURegion:
     return KSSURegion(name, world.player, world.multiworld)
 
-def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, LocationData]):
+def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, LocationData]) -> None:
     filter_list = [""]
     
     # Foodsanity Locations
@@ -36,7 +35,7 @@ def add_locations(world: "KSSUWorld", region: KSSURegion, locations: dict[str, L
         region.add_locations(filtered, KSSULocation)
 
 
-def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_maingames: set[str]):
+def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_maingames: set[str]) -> None:
     if "Gourmet Race" in included_maingames:
         gourmet_race = create_region("Gourmet Race", world)
         add_locations(world, gourmet_race, gourmet_race_locations)
@@ -70,7 +69,32 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_mainga
             world.create_item(item_names.helper_to_hero_complete))
         world.multiworld.regions.append(helper_to_hero)
         
-def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion):
+    if world.options.include_subgames.value:
+        megaton_punch = create_region("Megaton Punch", world)
+        samurai_kirby = create_region("Samurai Kirby", world)
+        card_swipe = create_region("Kirby Card Swipe", world)
+        kotd = create_region("Kirby on the Draw", world)
+        snack_track = create_region("Snack Tracks", world)
+
+        add_locations(world, megaton_punch, megaton_locations)
+        add_locations(world, samurai_kirby, samurai_locations)
+        add_locations(world, card_swipe, card_swipe_locations)
+        add_locations(world, kotd, kotd_locations)
+        add_locations(world, snack_track, snack_track_locations)
+
+        menu.connect(megaton_punch, None, lambda state: state.has(item_names.megaton_punch, world.player))
+        menu.connect(samurai_kirby, None, lambda state: state.has(item_names.samurai_kirby, world.player))
+        menu.connect(card_swipe, None, lambda state: state.has(item_names.kirby_card_swipe, world.player))
+        menu.connect(kotd, None, lambda state: state.has(item_names.kirby_on_the_draw, world.player))
+        menu.connect(snack_track, None, lambda state: state.has(item_names.snack_tracks, world.player))
+
+        world.multiworld.regions.append(megaton_punch)       
+        world.multiworld.regions.append(samurai_kirby) 
+        world.multiworld.regions.append(card_swipe)  
+        world.multiworld.regions.append(kotd)  
+        world.multiworld.regions.append(snack_track)  
+        
+def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion) -> None:
     spring_breeze = create_region("Spring Breeze", world)
     green_greens = create_region("Green Greens", world)
     float_islands = create_region("Float Islands", world)
@@ -93,21 +117,27 @@ def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([spring_breeze, green_greens, float_islands, bubbly_clouds, mt_dedede])
 
 
-def create_dyna_blade(world: "KSSUWorld", menu: KSSURegion):
+def create_dyna_blade(world: "KSSUWorld", menu: KSSURegion) -> None:
     dyna_blade = create_region("Dyna Blade", world)
     peanut_plains = create_region("Peanut Plains", world)
     mallow_castle = create_region("Mallow Castle", world)
     cocoa_cave = create_region("Cocoa Cave", world)
     candy_mountain = create_region("Candy Mountain", world)
     dyna_blade_nest = create_region("Dyna Blade's Nest", world)
+    
+    region: KSSURegion
+    connection: KSSURegion
+    locations: dict[str, LocationData]
 
-    for region, connection, locations in zip((peanut_plains, mallow_castle, cocoa_cave, candy_mountain, dyna_blade_nest),
+    for i, (region, connection, locations) in enumerate(
+                                        zip((peanut_plains, mallow_castle, cocoa_cave, candy_mountain, dyna_blade_nest),
                                              (mallow_castle, cocoa_cave, candy_mountain, dyna_blade_nest, None),
                                              (peanut_plains_locations, mallow_castle_locations, cocoa_cave_locations,
                                               candy_mountain_locations, dyna_blade_nest_locations)
-                                             ):
+                                             )):
         if connection:
-            region.connect(connection)
+            access_rule = lambda state, x=i + 1: state.has(item_names.progressive_dyna_blade, world.player, x)
+            region.connect(connection, rule=access_rule)
         add_locations(world, region, locations)
 
     menu.connect(dyna_blade, None, lambda state: state.has(item_names.dyna_blade, world.player))
@@ -116,16 +146,16 @@ def create_dyna_blade(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([dyna_blade, peanut_plains, mallow_castle, cocoa_cave,
                                      candy_mountain, dyna_blade_nest])
 
-    if world.options.essences or "Maxim Tomato" in world.options.foodsanity:
-        extra1 = create_region("Dyna Blade Bonus 1", world)
-        extra2 = create_region("Dyna Blade Bonus 2", world)
-        for locations, region in zip((bonus_1_locations, bonus_2_locations), (extra1, extra2)):
-            add_locations(world, region, locations)
-            dyna_blade.connect(region)
-            world.multiworld.regions.append(region)
+    extra1 = create_region("Dyna Blade Bonus 1", world)
+    extra2 = create_region("Dyna Blade Bonus 2", world)
+    for locations, region, parent in zip((bonus_1_locations, bonus_2_locations), (extra1, extra2),
+                                         (mallow_castle, candy_mountain)):
+        add_locations(world, region, locations)
+        parent.connect(region)
+        world.multiworld.regions.append(region)
 
 
-def create_great_cave_offensive(world: "KSSUWorld", menu: KSSURegion):
+def create_great_cave_offensive(world: "KSSUWorld", menu: KSSURegion) -> None:
     tgco = create_region("The Great Cave Offensive", world)
     subtree = create_region("Sub-Tree", world)
     crystal = create_region("Crystal", world)
@@ -148,7 +178,7 @@ def create_great_cave_offensive(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([tgco, subtree, crystal, old_tower, garden])
 
 
-def create_revenge_meta_knight(world: "KSSUWorld", menu: KSSURegion):
+def create_revenge_meta_knight(world: "KSSUWorld", menu: KSSURegion) -> None:
     revenge_of_meta_knight = create_region("Revenge of Meta Knight", world)
     chapter_1 = create_region("RoMK - Chapter 1", world)
     chapter_2 = create_region("RoMK - Chapter 2", world)
@@ -180,7 +210,7 @@ def create_revenge_meta_knight(world: "KSSUWorld", menu: KSSURegion):
                                      chapter_6, chapter_7])
 
 
-def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion):
+def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion) -> None:
     milky_way_wishes = create_region("Milky Way Wishes", world)
     floria = create_region("Floria", world)
     aqualiss = create_region("Aqualiss", world)
@@ -210,11 +240,11 @@ def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion):
     world.multiworld.regions.extend([milky_way_wishes, floria, aqualiss, skyhigh, hotbeat, cavios,
                                      mecheye, halfmoon, copy_planet])
 
-def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion):
+def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion) -> None:
     revenge_of_the_king = create_region("Revenge of the King", world)
     purple_plants = create_region("Purple Plants", world)
     illusion_islands = create_region("Illusion Islands", world)
-    crash_clouds = create_region("Float Islands", world)
+    crash_clouds = create_region("Crash Clouds", world)
     mt_dedede_sky = create_region("Mt. Dedede Sky", world)
     the_revenge = create_region("The Revenge", world)
 
@@ -233,7 +263,7 @@ def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion):
         world.create_item(item_names.revenge_of_the_king_complete))
     world.multiworld.regions.extend([revenge_of_the_king, purple_plants, crash_clouds, illusion_islands, mt_dedede_sky, the_revenge])
 
-def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion):
+def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion) -> None:
     meta_knightmare_ultra = create_region("Meta Knightmare Ultra", world)
     mku_level_1 = create_region("Level 1", world)
     mku_level_2 = create_region("Level 2", world)
@@ -256,28 +286,9 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion):
         world.create_item(item_names.meta_knightmare_ultra_complete))
     world.multiworld.regions.extend([meta_knightmare_ultra, mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5])
 
-def create_subgames(world: "KSSUWorld", menu: KSSURegion):
-    megaton_punch = create_region("Megaton Punch", world)
-    samurai_kirby = create_region("Samurai Kirby", world)
-    card_swipe = create_region("Kirby Card Swipe", world)
-    kotd = create_region("Kirby on the Draw", world)
-    snack_track = create_region("Snack Tracks", world)
 
-    add_locations(world, megaton_punch, megaton_locations)
-    add_locations(world, samurai_kirby, samurai_locations)
-    add_locations(world, card_swipe, card_swipe_locations)
-    add_locations(world, kotd, kotd_locations)
-    add_locations(world, snack_track, snack_track_locations)
 
-    menu.connect(megaton_punch, lambda state: state.has(item_names.megaton_punch, world.player))
-    menu.connect(samurai_kirby, lambda state: state.has(item_names.samurai_kirby, world.player))
-    menu.connect(card_swipe, lambda state: state.has(item_names.card_swipe, world.player))
-    menu.connect(kotd, lambda state: state.has(item_names.kotd, world.player))
-    menu.connect(snack_track, lambda state: state.has(item_names.snack_track, world.player))
-
-    world.multiworld.regions.extend([megaton_punch, samurai_kirby, card_swipe, kotd, snack_track])
-
-def create_regions(world: "KSSUWorld"):
+def create_regions(world: "KSSUWorld") -> None:
     menu = create_region("Menu", world)
     world.multiworld.regions.append(menu)
     included_maingames = world.options.included_maingames.value
@@ -296,7 +307,3 @@ def create_regions(world: "KSSUWorld"):
         create_revenge_of_the_king(world, menu)
     if "Meta Knightmare Ultra" in included_maingames:
         create_meta_knightmare_ultra(world, menu)
-    if world.options.include_subgames:
-        create_subgames(world, menu)
-        
-    world.regions = list(world.multiworld.regions)

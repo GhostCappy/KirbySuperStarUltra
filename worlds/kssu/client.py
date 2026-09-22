@@ -35,7 +35,7 @@ class KSSUClient(BizHawkClient):
     goal_complete = False
     received_items_count: int = 0
     datapackage_requested = False
-    item_queue: typing.List[NetworkItem] = []
+    #item_queue: typing.List[NetworkItem] = []
     
     cave_keys_collected = 0
     progressive_mku_level = 0
@@ -51,7 +51,7 @@ class KSSUClient(BizHawkClient):
     unlock_true_arena = 0x05C175
     
     # PLEASE FIND THIS
-    game_state = 0x00000
+    game_state = 0x042219
     
     ## Kirby
     kirby_lifes = 0x05B824
@@ -135,12 +135,13 @@ class KSSUClient(BizHawkClient):
     # AP Address Offsets
     dyna_ap_stage = 0x360000
     dyna_ap_ex_stage = 0x360002
-    tgco_cave_key = 0x360004
+    single_use_recieved = 0x360004
     dyna_last_completed = 0x360006
     tgco_collected_1 = 0x360008
     tgco_collected_2 = 0x36000C
     mww_collected = 0x360010
     mww_unlocked_planets = 0x360018
+    planets_completed = 0x36001A
     play_sound = 0x36001C
     games_unlocked = 0x360024
     tgco_received_1 = 0x360028
@@ -148,7 +149,6 @@ class KSSUClient(BizHawkClient):
     abilities_recieved = 0x360030
     received_offset = 0x360034
     dyna_switch_activated = 0x360038
-    single_use_unlocked = 0x360040
     
     def __init__(self) -> None:
         super().__init__()
@@ -223,23 +223,24 @@ class KSSUClient(BizHawkClient):
         }
         await self.bizhawk_set_halfword(ctx, self.play_sound, sound.get(sfx, 0))
         
-    async def move_cannon(self, ctx: "BizHawkClientContext") -> None:
-        await bizhawk.write(
-            ctx.bizhawk_ctx,
-            [(self.cannon_item, (-1).to_bytes(1, "little"), self.ram_mem_domain)],
-        )
-        await bizhawk.write(
-            ctx.bizhawk_ctx,
-            [(self.cannon_real, (-1).to_bytes(1, "little"), self.ram_mem_domain)],
-        )
-        
+    '''
+    read_state = await bizhawk.read(
+        ctx.bizhawk_ctx,
+        [
+            (self.game_state, 2, self.ram_mem_domain),
+            (self.current_game, 1, self.ram_mem_domain),
+        ]
+    )
+    in_game = int.from_bytes(read_state[0], "little")
+    demo_check = int.from_bytes(read_state[1], "little")
+    
     async def queue_item(self, ctx: "BizHawkClientContext") -> None:
-        # CHANGE WHEN FOUND
-        if self.game_state == 5:
+        if in_game == 68 and demo_check != 11:
             pass
         else:
             pass
-        
+    '''      
+    
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
@@ -329,16 +330,17 @@ class KSSUClient(BizHawkClient):
                     (self.mku_level, 1, self.ram_mem_domain),
                     (self.mww_unlocked_planets, 2, self.ram_mem_domain),
                     (self.abilities_recieved, 4, self.ram_mem_domain),
-                    (self.single_use_unlocked, 2, self.ram_mem_domain),
+                    (self.single_use_recieved, 2, self.ram_mem_domain),
                     (self.unlock_true_arena, 1, self.ram_mem_domain),
                     (self.rotk_stages, 1, self.ram_mem_domain),
+                    (self.planets_completed, 1, self.ram_mem_domain),
                 ]
             )
             
             # Variables in question
             received_index = int.from_bytes(read_state[0], "little")
             
-            game  = int.from_bytes(read_state[1], "little")
+            game = int.from_bytes(read_state[1], "little")
             stage = int.from_bytes(read_state[2], "little")
             screen = int.from_bytes(read_state[3], "little")
             sb_stage = int.from_bytes(read_state[4], "little")
@@ -381,6 +383,7 @@ class KSSUClient(BizHawkClient):
             current_single_abils = int.from_bytes(read_state[41], "little")
             true_arena_flag = int.from_bytes(read_state[42], "little")
             rotk_stage = int.from_bytes(read_state[43], "little")
+            plantes_done = int.from_bytes(read_state[44], "little")
                
             # =================================
             # Item Handling Loop
@@ -592,23 +595,6 @@ class KSSUClient(BizHawkClient):
                         ctx.bizhawk_ctx,
                         [(self.tgco_gold, self.new_gold.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
-            
-                # Update door transition for each Cave Key
-                if stage == 0 and screen == 11:
-                    if self.cave_keys_collected >= 1:
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_room, 87)
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_x, 6)   
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door1_y, 4)   
-                if stage == 1 and screen == 8:
-                    if self.cave_keys_collected >= 2:
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_room, 95)
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_x, 12)   
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door2_y, 3)        
-                if stage == 2 and screen == 35:
-                    if self.cave_keys_collected >= 3:
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_room, 132)
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_x, 30)   
-                        await self.bizhawk_set_halfword(ctx, self.tgco_door3_y, 7)   
 
             # Revenge of Meta Knight
             if romk_chapters_completed:  
@@ -673,19 +659,7 @@ class KSSUClient(BizHawkClient):
                 
             if game == 8: 
                 game_name = "Meta Knightmare Ultra"
-                # Update door transition for each Progressive Level
-                if stage == 0 and screen == 22:
-                    if self.progressive_mku_level >= 1:
-                        await self.move_cannon(ctx)
-                if stage == 1 and screen == 36:
-                    if self.progressive_mku_level >= 2:
-                        await self.move_cannon(ctx)
-                if stage == 2 and screen == 29:
-                    if self.progressive_mku_level >= 3:
-                        await self.move_cannon(ctx)
-                if stage == 3 and screen == 36:
-                    if self.progressive_mku_level >= 4:
-                        await self.move_cannon(ctx)
+
 
             # Helper to Hero 
             if game == 9:

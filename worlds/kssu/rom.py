@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from . import KSSUWorld
     
 starting_stage = 0x09EAC0
+mww_mode = 0x360020
 
 def get_base_rom_as_bytes() -> bytes:
     with open(get_settings().kssu_options.rom_file, "rb") as infile:
@@ -35,6 +36,7 @@ class KSSUProcedurePatch(APProcedurePatch, APTokenMixin):
 def patch_rom(world: "KSSUWorld", patch: KSSUProcedurePatch) -> None:
     # starting subgame (index)
     patch.write_token("starting_maingame", world.options.starting_maingame.value)
+    patch.write_byte(mww_mode, world.options.milky_way_wishes_mode.value)
 
     # numeric goal (how many subgames must be completed)
     patch.write_token(
