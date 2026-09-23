@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from Options import PerGameCommonOptions, Range, Choice, OptionSet, DeathLink, Toggle, OptionGroup, OptionCounter
 from schema import Schema, And, Use, Optional, Or
+from typing import Any
 
 maingame_mapping = {
         0: "Spring Breeze",
@@ -110,7 +111,6 @@ class IncludedMainGames(OptionSet):
     
 class TGCOAreas(Choice):
     """
-    [Not currently implemented]
     Determines how new areas are unlocked in The Great Cave Offensive
     
     Key: New areas are unlocked with progressive keys found in the pool. Three keys are required to finish the mode.
@@ -234,6 +234,7 @@ class IncludeSubgames(Toggle):
     If enabled, all Sub-Games will be included as location checks.
     
     This includes Megaton Punch, Samurai Kirby, Kirby Card Swipe, Kirby on the Draw, and Snack Tracks.
+    Sub-Games will not count towards the Main-Game Completion goal.
     """
     display_name = "Include Sub-Games"
     default = True
@@ -258,7 +259,7 @@ class SamuraiDifficulties(Toggle):
     
 class SamuaraiWins(Range):
     """
-    How many opponents / wins to include as locations in Samurai Kirby.
+    How many opponents / wins can be include as progressive locations in Samurai Kirby.
     """
     display_name = "Samurai Kirby Wins"
     range_start = 1
@@ -314,23 +315,7 @@ option_groups = [
 
 
 option_presets = {
-    '''
-    "SNES Default": {
 
-    },
-    "Revenge of the King": {
-
-    },
-    "Marx Soul": {
-
-    },
-    "Marx Soul": {
-
-    },
-    "Insanity": {
-
-    },
-'''
 }
 
 

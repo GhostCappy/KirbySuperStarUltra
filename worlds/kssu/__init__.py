@@ -4,6 +4,7 @@ import logging
 import pkgutil
 import threading
 import base64
+import math
 
 # Shows warning but should work without issue
 import settings
@@ -90,8 +91,25 @@ class KSSUWorld(World):
             logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Required maingame count greater than "
                            f"included maingames, reducing to all included.")
             self.options.required_maingame_completions.value = len(self.options.included_maingames.value)
+            
+        if "The Great Cave Offensive" in self.options.included_maingames:
+            if (self.options.the_great_cave_offensive_thresholds["Crystal"] >
+                    self.options.the_great_cave_offensive_thresholds["Old Tower"]):
+                logger.warning(f"TGCO ({self.player_name}): Crystal threshold is greater than Old Tower, swapping")
+                temp = self.options.the_great_cave_offensive_thresholds["Old Tower"]
+                self.options.the_great_cave_offensive_thresholds.value["Old Tower"] =\
+                    self.options.the_great_cave_offensive_thresholds["Crystal"]
+                self.options.the_great_cave_offensive_thresholds.value["Crystal"] = temp
+            if (self.options.the_great_cave_offensive_thresholds["Old Tower"] >
+                    self.options.the_great_cave_offensive_thresholds["Garden"]):
+                logger.warning(f"TGCO ({self.player_name}): Old Tower threshold is greater than Garden, swapping")
+                temp = self.options.the_great_cave_offensive_thresholds["Garden"]
+                self.options.the_great_cave_offensive_thresholds.value["Garden"] =\
+                    self.options.the_great_cave_offensive_thresholds["Old Tower"]
+                self.options.the_great_cave_offensive_thresholds.value["Old Tower"] = temp
                 
-            # proper UT support
+                
+        # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
             self.options.included_maingames = IncludedMainGames.valid_keys
             self.options.foodsanity.value = False
@@ -121,6 +139,7 @@ class KSSUWorld(World):
         itempool.extend([self.create_item(name) for name in copy_abilities])
         itempool.extend(modes)
 
+        # Used for TGCO
         treasure_value = 0
         
         # If Dyna blade is included, add its items
@@ -132,9 +151,21 @@ class KSSUWorld(World):
             
         # If TGCO is included, add its items
         if "The Great Cave Offensive" in self.options.included_maingames:
+            max_gold = (math.floor((9999990 - self.options.the_great_cave_offensive_required_gold.value) *
+                                    (self.options.the_great_cave_offensive_excess_gold.value / 100))
+                        + self.options.the_great_cave_offensive_required_gold.value)
+            treasure_classification = (ItemClassification.filler
+                                    if self.options.the_great_cave_offensive_areas != "gold"
+                                    else None)
             for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
-                itempool.append(self.create_item(name))
+                itempool.append(self.create_item(name, force_classification=treasure_classification))
                 treasure_value += treasure.value
+                if treasure_value >= max_gold:
+                    break
+            if self.options.the_great_cave_offensive_areas == "key":
+                total_keys = 3 + self.options.the_great_cave_offensive_keys.value
+                for i in range(total_keys):
+                    itempool.append(self.create_item("Cave Key"))
         
         # If Milky Way Wishes is included, add its items
         if "Milky Way Wishes" in self.options.included_maingames:
@@ -151,9 +182,11 @@ class KSSUWorld(World):
             if self.options.milky_way_wishes_mode == "multiworld":
                 itempool.extend(self.create_item(item_names.rainbow_star) for _ in range(7))
                 
+                
+        # If the subgames are included, add them.
         if self.options.include_subgames.value:
             itempool.extend([self.create_item(name) for name in sub_games])
-        
+
         location_count = len(list(self.multiworld.get_unfilled_locations(self.player))) - len(itempool)
         if location_count < 0:
             if "The Great Cave Offensive" in self.options.included_maingames:
@@ -163,6 +196,7 @@ class KSSUWorld(World):
                     item = next((item for item in itempool if item.name == name), None)
                     if item:
                         itempool.remove(item)
+                        treasure_value -= treasure.value
                         location_count += 1
             else:
                 raise OptionError("Unable to create item pool with current settings.")
@@ -170,6 +204,13 @@ class KSSUWorld(World):
                          self.random.choices(list(filler_item_weights.keys()),
                                              weights=list(filler_item_weights.values()),
                                              k=location_count)])
+        
+        required_gold = min(self.options.the_great_cave_offensive_required_gold.value, treasure_value)
+
+        self.treasure_value = [*[math.floor(required_gold *
+                                            (self.options.the_great_cave_offensive_thresholds[region] / 100))
+                                for region in ["Crystal", "Old Tower", "Garden"]],
+                               self.options.the_great_cave_offensive_required_gold.value]
         
         self.multiworld.itempool += itempool
         # DEBUG: detect event items placed on real locations
@@ -185,8 +226,9 @@ class KSSUWorld(World):
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", "milky_way_wishes_mode", "deathlink")
+        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", "milky_way_wishes_mode", "deathlink", "required_maingame_completions")
         slot_data.update({
+            "goal": self.options.goal.current_key,
             "treasure_value": self.treasure_value
         })
         return slot_data

@@ -36,6 +36,7 @@ class KSSUClient(BizHawkClient):
     received_items_count: int = 0
     datapackage_requested = False
     #item_queue: typing.List[NetworkItem] = []
+    player_actionable = False
     
     cave_keys_collected = 0
     progressive_mku_level = 0
@@ -50,7 +51,8 @@ class KSSUClient(BizHawkClient):
     current_screen = 0x05B6A7
     unlock_true_arena = 0x05C175
     
-    # PLEASE FIND THIS
+    games_cleared = 0x05C158
+    
     game_state = 0x042219
     
     ## Kirby
@@ -223,23 +225,25 @@ class KSSUClient(BizHawkClient):
         }
         await self.bizhawk_set_halfword(ctx, self.play_sound, sound.get(sfx, 0))
         
-    '''
-    read_state = await bizhawk.read(
-        ctx.bizhawk_ctx,
-        [
-            (self.game_state, 2, self.ram_mem_domain),
-            (self.current_game, 1, self.ram_mem_domain),
-        ]
-    )
-    in_game = int.from_bytes(read_state[0], "little")
-    demo_check = int.from_bytes(read_state[1], "little")
+    async def in_game(self, ctx: "BizHawkClientContext", sfx: str) -> None:
+        read_state = await bizhawk.read(
+            ctx.bizhawk_ctx,
+            [
+                (self.game_state, 2, self.ram_mem_domain),
+                (self.current_game, 1, self.ram_mem_domain),
+            ]
+        )
+        in_game = int.from_bytes(read_state[0], "little")
+        demo_check = int.from_bytes(read_state[1], "little")
+    
+        if in_game == 68 and demo_check != 11:
+            self.player_actionable = True
+        else:
+            self.player_actionable = False
     
     async def queue_item(self, ctx: "BizHawkClientContext") -> None:
-        if in_game == 68 and demo_check != 11:
-            pass
-        else:
-            pass
-    '''      
+        pass
+     
     
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -334,6 +338,9 @@ class KSSUClient(BizHawkClient):
                     (self.unlock_true_arena, 1, self.ram_mem_domain),
                     (self.rotk_stages, 1, self.ram_mem_domain),
                     (self.planets_completed, 1, self.ram_mem_domain),
+                    (self.games_cleared, 2, self.ram_mem_domain),
+                    (self.tgco_received_1, 4, self.ram_mem_domain),
+                    (self.tgco_received_2, 4, self.ram_mem_domain),
                 ]
             )
             
@@ -383,7 +390,10 @@ class KSSUClient(BizHawkClient):
             current_single_abils = int.from_bytes(read_state[41], "little")
             true_arena_flag = int.from_bytes(read_state[42], "little")
             rotk_stage = int.from_bytes(read_state[43], "little")
-            plantes_done = int.from_bytes(read_state[44], "little")
+            planets_done = int.from_bytes(read_state[44], "little")
+            cleared_games = int.from_bytes(read_state[45], "little")
+            treasure_received_1 = int.from_bytes(read_state[46], "little")
+            treasure_received_2 = int.from_bytes(read_state[46], "little")
                
             # =================================
             # Item Handling Loop
@@ -435,27 +445,27 @@ class KSSUClient(BizHawkClient):
                         treasure_bit = (network_item.item & 0xFF) - 1
                         treasure_value = treasures[name].value
                         if treasure_bit < 32:
-                                new_treasure = treasure_collected_1 | (1 << treasure_bit)
-                                if new_treasure != treasure_collected_1:
+                                new_treasure = treasure_received_1 | (1 << treasure_bit)
+                                if new_treasure != treasure_received_1:
                                     await bizhawk.write(
                                         ctx.bizhawk_ctx,
                                         [(self.tgco_received_1, new_treasure.to_bytes(4, "little"), self.ram_mem_domain)],
                                     )
                                     await self.play_sfx(ctx, "Treasure")
-                                    treasure_collected_1 = new_treasure
+                                    treasure_received_1 = new_treasure
                                     # gold amount does NOT get updated until TGCO is loaded
                                     self.new_gold = gold + treasure_value
                         # If the bit is greater than 32, it should be written to the 2nd address instead
                         else:
                             high_bit = treasure_bit - 32
-                            new_treasure = treasure_collected_2 | (1 << high_bit)
-                            if new_treasure != treasure_collected_2:
+                            new_treasure = treasure_received_2 | (1 << high_bit)
+                            if new_treasure != treasure_received_2:
                                 await bizhawk.write(
                                     ctx.bizhawk_ctx,
                                     [(self.tgco_received_2, new_treasure.to_bytes(4, "little"), self.ram_mem_domain)],
                                 )
                                 await self.play_sfx(ctx, "Treasure")
-                                treasure_collected_2 = new_treasure
+                                treasure_received_2 = new_treasure
                                 self.new_gold = gold + treasure_value
                     # Planets
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x400) and network_item.item > 0:
@@ -757,6 +767,42 @@ class KSSUClient(BizHawkClient):
                 self.local_checked_locations = send_locations
                 if send_locations is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(send_locations)}])
+                    
+           # Check for completing the goal and send it to the server
+            if not self.goal_complete:
+                goalsd: bool
+                match ctx.slot_data["goal"]:
+                    case "milky_way_wishes":
+                        goaled = False
+                        if cleared_games & 32:
+                            goaled = True
+                    case "main_game_completion":
+                        goaled = False
+                        self.completed_games = bin(cleared_games & 0x7FF).count("1")
+                        if self.completed_games >= ctx.slot_data["required_maingame_completions"]:
+                            goaled = True
+                    case "the_arena":
+                        goaled = False
+                        if cleared_games & 128:
+                            goaled = True
+                    case "revenge_of_the_king":
+                        goaled = False
+                        if cleared_games & 64:
+                            goaled = True
+                    case "meta_knightmare_ultra":
+                        goaled = False
+                        if cleared_games & 256:
+                            goaled = True
+                    case "marx_soul":
+                        goaled = False
+                        if cleared_games & 1024:
+                            goaled = True
+                    case _:
+                        raise Exception("Bad goal in slot data: " + ctx.slot_data["goal"])
+
+                if goaled:
+                    self.goal_complete = True
+                    await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect.
             pass

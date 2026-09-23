@@ -1,4 +1,4 @@
-from BaseClasses import Entrance, Region
+from BaseClasses import Entrance, Region, LocationProgressType
 from typing import TYPE_CHECKING
 from .locations import *
 from .names import item_names, location_names
@@ -68,30 +68,25 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_mainga
         world.multiworld.regions.append(helper_to_hero)
         
     if world.options.include_subgames.value:
-        megaton_punch = create_region("Megaton Punch", world)
-        samurai_kirby = create_region("Samurai Kirby", world)
-        card_swipe = create_region("Kirby Card Swipe", world)
-        kotd = create_region("Kirby on the Draw", world)
-        snack_track = create_region("Snack Tracks", world)
-
-        add_locations(world, megaton_punch, megaton_locations)
-        add_locations(world, samurai_kirby, samurai_locations)
-        add_locations(world, card_swipe, card_swipe_locations)
-        add_locations(world, kotd, kotd_locations)
-        add_locations(world, snack_track, snack_track_locations)
-
-        menu.connect(megaton_punch, None, lambda state: state.has(item_names.megaton_punch, world.player))
-        menu.connect(samurai_kirby, None, lambda state: state.has(item_names.samurai_kirby, world.player))
-        menu.connect(card_swipe, None, lambda state: state.has(item_names.kirby_card_swipe, world.player))
-        menu.connect(kotd, None, lambda state: state.has(item_names.kirby_on_the_draw, world.player))
-        menu.connect(snack_track, None, lambda state: state.has(item_names.snack_tracks, world.player))
-
-        world.multiworld.regions.append(megaton_punch)       
-        world.multiworld.regions.append(samurai_kirby) 
-        world.multiworld.regions.append(card_swipe)  
-        world.multiworld.regions.append(kotd)  
-        world.multiworld.regions.append(snack_track)  
+        subgames = (
+            ("Megaton Punch", megaton_locations, item_names.megaton_punch),
+            ("Samurai Kirby", samurai_locations, item_names.samurai_kirby),
+            ("Kirby Card Swipe", card_swipe_locations, item_names.kirby_card_swipe),
+            ("Kirby on the Draw", kotd_locations, item_names.kirby_on_the_draw),
+            ("Snack Tracks", snack_track_locations, item_names.snack_tracks),
+        )
+            
+        for name, locations, items in subgames:
+            region = create_region(name, world)
+            add_locations(world, region, locations)
+            menu.connect(region, None, lambda state, required=items: state.has(required, world.player))
+            world.multiworld.regions.append(region)
         
+        # Force items not inside "Samurai Kirby" wins to be filler
+        included_wins = world.options.samurai_kirby_wins.value
+        for name in list(samurai_locations.keys())[included_wins:]:
+            world.get_location(name).progress_type = LocationProgressType.EXCLUDED
+
 def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion) -> None:
     spring_breeze = create_region("Spring Breeze", world)
     green_greens = create_region("Green Greens", world)
