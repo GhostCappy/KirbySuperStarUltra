@@ -75,6 +75,19 @@ class KSSUWorld(World):
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
             raise OptionError(f"Kirby Super Star Ultra({self.player_name}): At least one of The Great Cave Offensive, "
                               f"Milky Way Wishes, or The Arena must be included")
+            
+        goal_required_game = {
+            "milky_way_wishes": "Milky Way Wishes",
+            "the_arena": "The Arena",
+            "revenge_of_the_king": "Revenge of The King",
+            "meta_knightmare_ultra": "Meta Knightmare Ultra",
+            "marx_soul": "The True Arena",
+        }.get(self.options.goal.current_key)
+
+        if goal_required_game and goal_required_game not in self.options.required_maingames.value:
+            logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Goal requires {goal_required_game}, "
+                        f"adding to required main-games.")
+            self.options.required_maingames.value.add(goal_required_game)
 
         for game in sorted(self.options.required_maingames.value):
             if game not in self.options.included_maingames.value:

@@ -74,7 +74,7 @@ copy_abilities: Dict[str, ItemData] = {
     item_names.parasol: ItemData(BASE_ID + 0x113, ItemClassification.progression),
     
     item_names.mike: ItemData(BASE_ID + 0x114, ItemClassification.progression, single_use=True),
-    item_names.sleep: ItemData(BASE_ID + 0x115, ItemClassification.trap, single_use=True),
+    # item_names.sleep: ItemData(BASE_ID + 0x115, ItemClassification.trap, single_use=True), # Now unlocked by default
     item_names.paint: ItemData(BASE_ID + 0x116, ItemClassification.useful, single_use=True),
     item_names.cook: ItemData(BASE_ID + 0x117, ItemClassification.useful, single_use=True),
     item_names.crash: ItemData(BASE_ID + 0x118, ItemClassification.progression, single_use=True),

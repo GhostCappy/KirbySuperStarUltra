@@ -1,4 +1,4 @@
-''' 
+'''
 Hello! If you're going through the client with the intent to learn how to make your own NDS APWorld:
 Do not.
 
@@ -150,7 +150,6 @@ class KSSUClient(BizHawkClient):
     
     cave_keys_collected = 0
     progressive_mku_level = 0
-    rainbow_stars = 0
     new_gold = 0
     completed_games = 0
     
@@ -191,6 +190,7 @@ class KSSUClient(BizHawkClient):
     
     ## Milky Way Wishes
     mww_abilities = 0x071201
+    unlock_nova = 0x071190
     
     ## Arena
     arena_wins = 0x06FFA2
@@ -242,6 +242,7 @@ class KSSUClient(BizHawkClient):
     tgco_collected_1 = 0x360008
     tgco_collected_2 = 0x36000C
     mww_collected = 0x360010
+    rainbow_stars = 0x360014
     mww_unlocked_planets = 0x360018
     planets_completed = 0x36001A
     play_sound = 0x36001C
@@ -453,6 +454,8 @@ class KSSUClient(BizHawkClient):
                     (self.tgco_received_2, 4, self.ram_mem_domain),
                     (self.real_treasure_1, 4, self.ram_mem_domain),
                     (self.real_treasure_2, 4, self.ram_mem_domain),
+                    (self.unlock_nova, 1, self.ram_mem_domain),
+                    (self.rainbow_stars, 1, self.ram_mem_domain),
                 ]
             )
             
@@ -508,6 +511,8 @@ class KSSUClient(BizHawkClient):
             treasure_received_2 = int.from_bytes(read_state[47], "little")
             tgco_real_1 = int.from_bytes(read_state[48], "little")
             tgco_real_2 = int.from_bytes(read_state[49], "little")
+            planets_cleared = int.from_bytes(read_state[50], "little")
+            current_rainbow = int.from_bytes(read_state[51], "little")
                
             # =================================
             # Item Handling Loop
@@ -612,8 +617,9 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
-                        self.rainbow_stars += 1
-                        await self.play_sfx(ctx, "Planet")
+                        if self.rainbow_stars < 8:
+                            self.rainbow_stars += 1
+                            await self.play_sfx(ctx, "Planet")
                     case "Meta Knightmare Ultra - Progressive Level":
                         if self.progressive_mku_level < 4:
                             self.progressive_mku_level += 1
@@ -661,12 +667,18 @@ class KSSUClient(BizHawkClient):
             # Dyna Blade 
             for i in range(2):
                 if switch_activated & (1 << i):
+                    game_name = "Dyna Blade"
                     loc = self.get_location(game_name, f"Switch {i+1}")
                     if loc is not None:
                         send_locations.add(loc)
 
             if dyna_stage:
                 game_name = "Dyna Blade"
+                for i in range(dyna_stage):               
+                    loc = self.get_location(game_name, f"Stage {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
+                        
                 for i in range(dyna_stage):               
                     loc = self.get_location(game_name, f"Stage {i+1}")
                     if loc is not None:
@@ -735,6 +747,7 @@ class KSSUClient(BizHawkClient):
                         ctx.bizhawk_ctx,
                         [(self.real_treasure_2, treasure_received_2.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
+                         
 
             # Revenge of Meta Knight
             if romk_chapters_completed:  
@@ -754,19 +767,21 @@ class KSSUClient(BizHawkClient):
 
             if game == 5:
                 game_name = "Milky Way Wishes"
-
                 # If ability doesnt match received then make it equal
-                # NOT WORKING ATM?
                 if unlocked_abilities != current_abils:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [(self.mww_abilities, current_abils.to_bytes(4, "little"), self.ram_mem_domain)],
-                    )
-                    unlocked_abilities = current_abils
-                    
-                # If rainbow key is equal to option number, unlock Galactic Nova
-                
-                
+                    )        
+                # If rainbow key is equal to 7, unlock Galactic Nova
+                new_cleared = 0 
+                for i in range(min(current_rainbow, 7)):
+                    new_cleared |= (1 << i)
+                if planets_cleared != new_cleared and new_cleared:
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [(self.rainbow_stars, new_cleared.to_bytes(1, "little"), self.ram_mem_domain)],
+                    )                
 
             # Revenge of the King 
             if rotk_stage:  
