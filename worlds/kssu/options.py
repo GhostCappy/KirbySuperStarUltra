@@ -51,8 +51,6 @@ class RequiredMainGameCompletions(Range):
 class RequiredMainGames(OptionSet):
     """
     Which main-games are required to be completed for the game to be considered complete.
-    
-    This option only applies when Main-Game Completion is set as the goal.
     """
     display_name = "Required Main-Games"
     valid_keys = {
@@ -175,7 +173,6 @@ class TGCOExcessGold(Range):
         
 class MilkyWayWishesMode(Choice):
     """
-    [Not currently implemented] 
     Determines how Marx is unlocked in Milky Way Wishes.
     
     Local: Marx is unlocked after completing the 7 main planets

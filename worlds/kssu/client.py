@@ -15,14 +15,124 @@ import asyncio
 
 from NetUtils import ClientStatus
 from typing import TYPE_CHECKING, Set, Dict
-from .items import treasures, BASE_ID
+from .items import (treasures, BASE_ID, main_games, sub_games, 
+                    copy_abilities, dyna_items, mku_items, 
+                    misc_items, planets)
 from .locations import MWW_ABILITY_OFFSETS
+
 
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
+from MultiServer import mark_raw
 
 if TYPE_CHECKING:
-    from worlds._bizhawk.context import BizHawkClientContext
+    from worlds._bizhawk.context import BizHawkClientContext, BizHawkClientCommandProcessor
+
+@mark_raw
+# Show which games are currently unlocked
+def cmd_games(self: "BizHawkClientCommandProcessor") -> None:
+    from CommonClient import logger
+    handler = self.ctx.client_handler
+    assert isinstance(handler, KSSUClient)
+
+    games_set = set(main_games) | set(sub_games)
+    unlocked = sorted({
+        x for network_item in self.ctx.items_received
+        if (x := self.ctx.item_names.lookup_in_game(network_item.item)) in games_set
+    })
+
+    if not unlocked:
+        logger.info("You have no games. Double-Check your address and make sure you are properly connected.")
+        return
+
+    games = []
+    games.extend(f"{name}" for name in unlocked)
+    logger.info("Games Unlocked:\n" + "\n".join(games) + "\n")
+    
+# Show which planets are currently unlocked
+def cmd_planet(self: "BizHawkClientCommandProcessor") -> None:
+    from CommonClient import logger
+    handler = self.ctx.client_handler
+    assert isinstance(handler, KSSUClient)
+
+    # Check if player even has MWW included.
+    if "Milky Way Wishes" not in self.ctx.slot_data["included_maingames"]:
+        logger.info("Milky Way Wishes is not included.")
+        return
+    
+    planets_set = set(planets)
+    unlocked = sorted({
+        x for network_item in self.ctx.items_received
+        if (x := self.ctx.item_names.lookup_in_game(network_item.item)) in planets_set
+    })
+
+    if not unlocked:
+        logger.info("You have no planets. Double-Check your address and make sure you are properly connected.")
+        return
+
+    mww_planets = []
+    mww_planets.extend(f"{name}" for name in unlocked)
+    logger.info("Planets Unlocked:\n" + "\n".join(mww_planets) + "\n")
+
+# Show which abilities are currently unlocked
+def cmd_ability(self: "BizHawkClientCommandProcessor") -> None:
+    from CommonClient import logger
+    handler = self.ctx.client_handler
+    assert isinstance(handler, KSSUClient)
+
+    ability_set = set(copy_abilities)
+    unlocked = sorted({
+        x for network_item in self.ctx.items_received
+        if (x := self.ctx.item_names.lookup_in_game(network_item.item)) in ability_set
+    })
+
+    if not unlocked:
+        logger.info("You have no abilities.")
+        return
+
+    curr_abilities = []
+    curr_abilities.extend(f"{name}" for name in unlocked)
+    logger.info("Abilities Unlocked:\n" + "\n".join(curr_abilities) + "\n")
+
+# Show how many keys / progressive items the player currently has
+def cmd_keys(self: "BizHawkClientCommandProcessor") -> None:
+    from CommonClient import logger
+    handler = self.ctx.client_handler
+    assert isinstance(handler, KSSUClient)
+
+    return
+
+# Check Gold Threshold for TGCO for specific area
+def cmd_sub_area(self: "BizHawkClientCommandProcessor", area: str | None = None) -> None:
+    from CommonClient import logger
+    handler = self.ctx.client_handler
+    assert isinstance(handler, KSSUClient)
+
+    if "The Great Cave Offensive" not in self.ctx.slot_data["included_maingames"]:
+        logger.info("The Great Cave Offensive is not included.")
+        return
+
+    if self.ctx.slot_data.get("the_great_cave_offensive_areas") != 1:
+        logger.info("The Great Cave Offensive uses Cave Keys for progression. Try '/keys' instead.")
+        return
+
+    valid_areas = ("Crystal", "Old Tower", "Garden")
+    if area is None:
+        logger.info(f"Usage: /sub_area area\narea: {', '.join(valid_areas)}")
+        return
+
+    match = next((valid for valid in valid_areas if valid.lower() == area.lower()), None)
+    if match is None:
+        logger.info(f'Unknown area "{area}", should be one of: {", ".join(valid_areas)}')
+        return
+
+    required_gold = self.ctx.slot_data["treasure_value"][valid_areas.index(match)]
+    logger.info(f"{match} requires {required_gold} gold to obtain access.")
+
+# Work on LATER
+# Toggle Deathlink on or off.
+def cmd_deathlink(self: "BizHawkClientCommandProcessor") -> None:
+    pass
         
 # This is gunna take forever.
 # Yeah it did
@@ -169,6 +279,16 @@ class KSSUClient(BizHawkClient):
         ctx.items_handling = 0b111
         ctx.want_slot_data = True
         ctx.watcher_timeout = 1
+        if "games" not in ctx.command_processor.commands:
+            ctx.command_processor.commands["games"] = cmd_games
+        if "ability" not in ctx.command_processor.commands:
+            ctx.command_processor.commands["ability"] = cmd_ability
+        if "planets" not in ctx.command_processor.commands:
+            ctx.command_processor.commands["planets"] = cmd_planet
+        if "keys" not in ctx.command_processor.commands:
+            ctx.command_processor.commands["keys"] = cmd_keys
+        if "sub_area" not in ctx.command_processor.commands:
+            ctx.command_processor.commands["sub_area"] = cmd_sub_area
         return True
 
     def on_package(self, ctx, cmd, args) -> None:
@@ -608,12 +728,12 @@ class KSSUClient(BizHawkClient):
                 if tgco_real_1 != treasure_received_1:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
-                        [(self.tgco_real_1, treasure_received_1.to_bytes(4, "little"), self.ram_mem_domain)],
+                        [(self.real_treasure_1, treasure_received_1.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
                 if tgco_real_2 != treasure_received_2:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
-                        [(self.tgco_real_2, treasure_received_2.to_bytes(4, "little"), self.ram_mem_domain)],
+                        [(self.real_treasure_2, treasure_received_2.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
 
             # Revenge of Meta Knight

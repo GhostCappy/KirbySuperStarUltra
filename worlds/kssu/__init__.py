@@ -232,7 +232,9 @@ class KSSUWorld(World):
         return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
     
     def fill_slot_data(self) -> Mapping[str, Any]:
-        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", "milky_way_wishes_mode", "deathlink", "required_maingame_completions")
+        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", 
+                                         "milky_way_wishes_mode", "deathlink", "required_maingame_completions",
+                                         "the_great_cave_offensive_areas")
         slot_data.update({
             "goal": self.options.goal.current_key,
             "treasure_value": self.treasure_value
