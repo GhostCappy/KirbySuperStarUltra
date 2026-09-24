@@ -67,19 +67,9 @@ class KSSUClient(BizHawkClient):
     iron_mam_defeated = 0x06C266
     
     ## The Great Cave Offensive
+    real_treasure_1 = 0x06E740
+    real_treasure_2 = 0x06E744
     tgco_gold = 0x06E748
-    
-    tgco_door1_room = 0x26EAD4
-    tgco_door1_x = 0x26EAD6
-    tgco_door1_y = 0x26EAD8
-    
-    tgco_door2_room = 0x26E720
-    tgco_door2_x = 0x26E722
-    tgco_door2_y = 0x26E724
-    
-    tgco_door3_room = 0x26E2FE
-    tgco_door3_x = 0x26E300
-    tgco_door3_y = 0x26E302
     
     ## Gourmet
     gourmet_kirby_wins = 0x06D600
@@ -341,6 +331,8 @@ class KSSUClient(BizHawkClient):
                     (self.games_cleared, 2, self.ram_mem_domain),
                     (self.tgco_received_1, 4, self.ram_mem_domain),
                     (self.tgco_received_2, 4, self.ram_mem_domain),
+                    (self.real_treasure_1, 4, self.ram_mem_domain),
+                    (self.real_treasure_2, 4, self.ram_mem_domain),
                 ]
             )
             
@@ -393,7 +385,9 @@ class KSSUClient(BizHawkClient):
             planets_done = int.from_bytes(read_state[44], "little")
             cleared_games = int.from_bytes(read_state[45], "little")
             treasure_received_1 = int.from_bytes(read_state[46], "little")
-            treasure_received_2 = int.from_bytes(read_state[46], "little")
+            treasure_received_2 = int.from_bytes(read_state[47], "little")
+            tgco_real_1 = int.from_bytes(read_state[48], "little")
+            tgco_real_2 = int.from_bytes(read_state[49], "little")
                
             # =================================
             # Item Handling Loop
@@ -511,13 +505,12 @@ class KSSUClient(BizHawkClient):
                     # Filler
                     case "1-Up":
                         # Should check if in game
-                        # Alas, can I really?
                         await self.bizhawk_add_halfword(ctx, self.kirby_lifes, 1)
                         await self.play_sfx(ctx, "1-Up")
                     case "Maxim Tomato":
                         await self.bizhawk_add_halfword(ctx, self.kirby_hp, 76)        
                         await self.play_sfx(ctx, "Filler")                                            
-                    case "Tomato":
+                    case "Food":
                         await self.bizhawk_add_halfword(ctx, self.kirby_hp, 25)      
                         await self.play_sfx(ctx, "Filler")                                                          
                     case "Invincible Candy":
@@ -546,7 +539,13 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Dyna Blade 
-            if dyna_stage: 
+            for i in range(2):
+                if switch_activated & (1 << i):
+                    loc = self.get_location(game_name, f"Switch {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
+
+            if dyna_stage:
                 game_name = "Dyna Blade"
                 for i in range(dyna_stage):               
                     loc = self.get_location(game_name, f"Stage {i+1}")
@@ -600,10 +599,21 @@ class KSSUClient(BizHawkClient):
 
             if game == 3:
                 game_name = "The Great Cave Offensive"
+                # Update treasure & gold in-game
                 if gold != self.new_gold:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [(self.tgco_gold, self.new_gold.to_bytes(4, "little"), self.ram_mem_domain)],
+                    )
+                if tgco_real_1 != treasure_received_1:
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [(self.tgco_real_1, treasure_received_1.to_bytes(4, "little"), self.ram_mem_domain)],
+                    )
+                if tgco_real_2 != treasure_received_2:
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [(self.tgco_real_2, treasure_received_2.to_bytes(4, "little"), self.ram_mem_domain)],
                     )
 
             # Revenge of Meta Knight

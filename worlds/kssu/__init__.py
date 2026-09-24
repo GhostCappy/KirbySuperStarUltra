@@ -21,7 +21,7 @@ from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanit
 from .client import KSSUClient 
 from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
                     main_games, sub_games, dyna_items, planets, treasures)
-from .locations import location_table, KSSULocation
+from .locations import location_table, KSSULocation, samurai_locations
 from .rules import set_rules
 from . import web_world
 logger = logging.getLogger("Kirby Super Star Ultra")
@@ -154,11 +154,12 @@ class KSSUWorld(World):
             max_gold = (math.floor((9999990 - self.options.the_great_cave_offensive_required_gold.value) *
                                     (self.options.the_great_cave_offensive_excess_gold.value / 100))
                         + self.options.the_great_cave_offensive_required_gold.value)
-            treasure_classification = (ItemClassification.filler
-                                    if self.options.the_great_cave_offensive_areas != "gold"
-                                    else None)
             for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
-                itempool.append(self.create_item(name, force_classification=treasure_classification))
+                item = self.create_item(name)
+                # Make all treasure filler if set to "Key" mode.
+                if self.options.the_great_cave_offensive_areas != "gold":
+                    item.classification = ItemClassification.filler
+                itempool.append(item)
                 treasure_value += treasure.value
                 if treasure_value >= max_gold:
                     break
@@ -186,6 +187,10 @@ class KSSUWorld(World):
         # If the subgames are included, add them.
         if self.options.include_subgames.value:
             itempool.extend([self.create_item(name) for name in sub_games])
+            wins = self.options.samurai_kirby_wins.value
+            for name in list(samurai_locations.keys())[wins:]:
+                location = self.multiworld.get_location(name, self.player)
+                location.place_locked_item(self.create_item(self.get_filler_item_name()))
 
         location_count = len(list(self.multiworld.get_unfilled_locations(self.player))) - len(itempool)
         if location_count < 0:
@@ -200,6 +205,7 @@ class KSSUWorld(World):
                         location_count += 1
             else:
                 raise OptionError("Unable to create item pool with current settings.")
+            
         itempool.extend([self.create_item(filler) for filler in
                          self.random.choices(list(filler_item_weights.keys()),
                                              weights=list(filler_item_weights.values()),

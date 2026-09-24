@@ -81,11 +81,7 @@ def create_trivial_regions(world: "KSSUWorld", menu: KSSURegion, included_mainga
             add_locations(world, region, locations)
             menu.connect(region, None, lambda state, required=items: state.has(required, world.player))
             world.multiworld.regions.append(region)
-        
-        # Force items not inside "Samurai Kirby" wins to be filler
-        included_wins = world.options.samurai_kirby_wins.value
-        for name in list(samurai_locations.keys())[included_wins:]:
-            world.get_location(name).progress_type = LocationProgressType.EXCLUDED
+
 
 def create_spring_breeze(world: "KSSUWorld", menu: KSSURegion) -> None:
     spring_breeze = create_region("Spring Breeze", world)
