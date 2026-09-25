@@ -15,10 +15,10 @@ def can_fight_wind(state: "CollectionState") -> bool:
 def dyna_blade_rules(world: "KSSUWorld") -> None:
     set_rule = world.set_rule
     set_rule(world.get_location(location_names.db_switch_1),
-            HasAny(item_names.mirror, item_names.beam) or
+            HasAny(item_names.mirror, item_names.beam) |
                            (Has(item_names.plasma)
-                            and HasAnyCount({item_names.dyna_blade_ex1: 1,
-                                                     item_names.progressive_dyna_blade: 2})))
+                            & HasAnyCount(item_names.dyna_blade_ex1: 1, 
+                                          item_names.progressive_dyna_blade: 2)))
 
     set_rule(world.get_entrance("Mallow Castle -> Dyna Blade Bonus 1"),
              Has(item_names.dyna_blade_ex1))
@@ -57,7 +57,7 @@ def the_great_cave_rules(world: "KSSUWorld") -> None:
              HasAny(item_names.hammer, item_names.stone))
     set_rule(world.get_location(location_names.tgco_treasure_32),
              HasAny(item_names.hammer, item_names.stone)
-                           and Has(item_names.fire))
+                           & Has(item_names.fire))
     set_rule(world.get_location(location_names.tgco_treasure_33),
              HasAny(item_names.hammer, item_names.stone))
     set_rule(world.get_location(location_names.tgco_treasure_34),
@@ -72,9 +72,9 @@ def the_great_cave_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_location(location_names.tgco_treasure_42),
              Has(item_names.stone))
     set_rule(world.get_location(location_names.tgco_treasure_43),
-             Has(item_names.plasma) or
+             Has(item_names.plasma) |
              (HasAny(item_names.ninja, item_names.sword, item_names.wing)
-              and Has(item_names.stone)))
+              & Has(item_names.stone)))
     set_rule(world.get_location(location_names.tgco_treasure_45),
              HasAny(item_names.jet, item_names.fire))
     set_rule(world.get_location(location_names.tgco_treasure_47),
@@ -173,7 +173,7 @@ def set_rules(world: "KSSUWorld") -> None:
             main_game_required.append(main_game)
 
     world.multiworld.completion_condition[world.player] = lambda state: \
-        HasAll(main_game_required) and HasFromList(
+        HasAll(main_game_required) & HasFromList(
             main_game_complete, world.options.required_maingame_completions)
         
     
