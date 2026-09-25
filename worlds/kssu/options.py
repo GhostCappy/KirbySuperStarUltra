@@ -149,8 +149,8 @@ class TGCOThresholds(OptionCounter):
     display_name = "The Great Cave Offensive Gold Thresholds"
     valid_keys = ("Crystal", "Old Tower", "Garden")
     schema = Schema({
-        area: And(int, lambda i: 0 <= i <= 100, error="Value must be between 0 and 100")
-        for area in ["Crystal", "Old Tower", "Garden"]
+        Optional(area, default=default): And(int, lambda i: 0 <= i <= 100, error="Value must be between 0 and 100")
+        for area, default in {"Crystal": 25, "Old Tower": 50, "Garden": 75}.items()
     })
     min = 0
     max = 100

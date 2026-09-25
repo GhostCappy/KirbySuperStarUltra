@@ -1,0 +1,39 @@
+description: Kirby Super Star Ultra Template, generated with https://github.com/Eijebong/Archipelago-fuzzer/tree/0.6.2
+game: Kirby Super Star Ultra
+requires:
+  version: 0.6.2
+Kirby Super Star Ultra:
+  progression_balancing: 91
+  accessibility: full
+  plando_items: []
+  deathlink: 'true'
+  goal: milky_way_wishes
+  required_maingame_completions: 5
+  required_maingames: []
+  starting_maingame: helper_to_hero
+  included_maingames:
+  - Dyna Blade
+  include_subgames: 'true'
+  the_great_cave_offensive_areas: key
+  the_great_cave_offensive_keys: 1
+  the_great_cave_offensive_required_gold: 2951359
+  the_great_cave_offensive_thresholds:
+    Old Tower: 71
+    Crystal: 33
+    Garden: 32
+  the_great_cave_offensive_excess_gold: 97
+  milky_way_wishes_mode: multiworld
+  helpersanity: full
+  foodsanity: []
+  essences: 'false'
+  megaton_punch_difficulties: 'false'
+  samurai_kirby_difficulties: 'false'
+  samurai_kirby_wins: 1
+  local_items: []
+  non_local_items: []
+  start_inventory: {}
+  start_hints: []
+  start_location_hints: []
+  exclude_locations: []
+  priority_locations: []
+  item_links: []

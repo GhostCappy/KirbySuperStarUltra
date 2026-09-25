@@ -70,12 +70,8 @@ class KSSUWorld(World):
         self.treasure_value = []
           
     # Verifies user options
-    def generate_early(self) -> None:
-        if not self.options.included_maingames.value.intersection(
-                {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
-            raise OptionError(f"Kirby Super Star Ultra({self.player_name}): At least one of The Great Cave Offensive, "
-                              f"Milky Way Wishes, or The Arena must be included")
-            
+    def generate_early(self) -> None:        
+        # Goal doesn't require the game it needs to goal.    
         goal_required_game = {
             "milky_way_wishes": "Milky Way Wishes",
             "the_arena": "The Arena",
@@ -89,23 +85,28 @@ class KSSUWorld(World):
                         f"adding to required main-games.")
             self.options.required_maingames.value.add(goal_required_game)
 
+        # Game in "Required Game" is not included in "Included Games"
         for game in sorted(self.options.required_maingames.value):
             if game not in self.options.included_maingames.value:
                 logger.warning(F"Kirby Super Star Ultra({self.player_name}): Required main-game {game} not included, "
                                F"adding to included main-games")
                 self.options.included_maingames.value.add(game)
 
+        # No starting game is selected, select one at random.
         if maingame_mapping[self.options.starting_maingame.value] not in self.options.included_maingames:
             logger.warning(f"Kirby Super Star Ultra({self.player_name}): Starting maingame not included, choosing random.")
             self.options.starting_maingame.value = self.random.choice([value[0] for value in maingame_mapping.items()
                                                                       if value[1] in self.options.included_maingames])
 
+        # There are more required games than included games?
+        ## IDT This can happen if we include required games as required...
         if self.options.required_maingame_completions > len(self.options.included_maingames.value):
             logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Required maingame count greater than "
                            f"included maingames, reducing to all included.")
             self.options.required_maingame_completions.value = len(self.options.included_maingames.value)
-            
+
         if "The Great Cave Offensive" in self.options.included_maingames:
+            # If thresholds are messed up (Ex. Crystal has a higher threshold than Old Tower)
             if (self.options.the_great_cave_offensive_thresholds["Crystal"] >
                     self.options.the_great_cave_offensive_thresholds["Old Tower"]):
                 logger.warning(f"TGCO ({self.player_name}): Crystal threshold is greater than Old Tower, swapping")
@@ -120,8 +121,16 @@ class KSSUWorld(World):
                 self.options.the_great_cave_offensive_thresholds.value["Garden"] =\
                     self.options.the_great_cave_offensive_thresholds["Old Tower"]
                 self.options.the_great_cave_offensive_thresholds.value["Old Tower"] = temp
-                
-                
+
+        # Options need one of TGCO, MWW or The Arena to have enough checks. Add them.
+        # Might also be able to add HtH and The True Arena
+        if not self.options.included_maingames.value.intersection(
+                {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
+            logger.warning(f"Kirby Super Star Ultra({self.player_name}): At least one of The Great Cave Offensive, "
+                              f"Milky Way Wishes, or The Arena must be included. Adding one randomly.")
+            random_game = self.random.choice(["The Great Cave Offensive", "Milky Way Wishes", "The Arena"])
+            self.options.included_maingames.value.add(random_game)
+
         # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
             self.options.included_maingames = IncludedMainGames.valid_keys
