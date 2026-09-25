@@ -218,8 +218,8 @@ floria_locations = {
     location_names.mww_ice: LocationData(BASE_ID + 90),
 }
 
-aqualiss_locations = {
-    location_names.mww_aqualiss: LocationData(BASE_ID + 91),
+aquarius_locations = {
+    location_names.mww_aquarius: LocationData(BASE_ID + 91),
     location_names.mww_beam: LocationData(BASE_ID + 92),
     location_names.mww_parasol: LocationData(BASE_ID + 93),
     location_names.mww_sword: LocationData(BASE_ID + 94),
@@ -239,15 +239,15 @@ hotbeat_locations = {
     location_names.mww_suplex: LocationData(BASE_ID + 101),
 }
 
-cavios_locations = {
-    location_names.mww_cavios: LocationData(BASE_ID + 102),
+cavius_locations = {
+    location_names.mww_cavius: LocationData(BASE_ID + 102),
     location_names.mww_bomb: LocationData(BASE_ID + 103),
     location_names.mww_hammer: LocationData(BASE_ID + 104),
     location_names.mww_stone: LocationData(BASE_ID + 105),
 }
 
-mecheye_locations = {
-    location_names.mww_mecheye: LocationData(BASE_ID + 106),
+mekkai_locations = {
+    location_names.mww_mekkai: LocationData(BASE_ID + 106),
     location_names.mww_plasma: LocationData(BASE_ID + 107),
     location_names.mww_yoyo: LocationData(BASE_ID + 108),
 }
@@ -268,11 +268,11 @@ space_locations = {
 
 milky_way_wishes_locations = {
     **floria_locations,
-    **aqualiss_locations,
+    **aquarius_locations,
     **skyhigh_locations,
     **hotbeat_locations,
-    **cavios_locations,
-    **mecheye_locations,
+    **cavius_locations,
+    **mekkai_locations,
     **halfmoon_locations,
     **copy_planet_locations,
     **space_locations
@@ -476,25 +476,25 @@ location_table = {
 # Contains the bit, and ability offset location
 # You'd think I would've named it better in locations, huh?
 MWW_ABILITY_OFFSETS: dict[int, int] = {
-    0x01: 88,   # Cutter
-    0x02: 110,  # Mirror
-    0x04: 92,   # Beam
-    0x08: 89,   # Fighter
-    0x10: 101,  # Suplex
-    0x20: 108,  # Yo-Yo
-    0x40: 97,   # Wheel
-    0x80: 103,  # Bomb
-    0x100: 90,   # Ice
-    0x200: 100,  # Fire
-    0x400: 107,  # Plasma
-    0x800: 111,  # Ninja
-    0x1000: 105,  # Stone
-    0x2000: 98,   # Wing
-    0x4000: 96,   # Jet
-    0x8000: 112,  # Copy
-    0x10000: 94,   # Sword
-    0x20000: 104,  # Hammer
-    0x40000: 93,   # Parasol
+    0x01: 88, # Cutter
+    0x02: 110, # Mirror
+    0x04: 92, # Beam
+    0x08: 89, # Fighter
+    0x10: 101, # Suplex
+    0x20: 108, # Yo-Yo
+    0x40: 97, # Wheel
+    0x80: 103, # Bomb
+    0x100: 90, # Ice
+    0x200: 100, # Fire
+    0x400: 107, # Plasma
+    0x800: 111, # Ninja
+    0x1000: 105, # Stone
+    0x2000: 98, # Wing
+    0x4000: 96, # Jet
+    0x8000: 112, # Copy
+    0x10000: 94, # Sword
+    0x20000: 104, # Hammer
+    0x40000: 93, # Parasol
 }
 
 __all__ = [
@@ -506,8 +506,8 @@ __all__ = [
     "old_tower_locations", "garden_locations", "tgco_locations", "romk_chapter_1_locations",
     "romk_chapter_2_locations", "romk_chapter_3_locations", "romk_chapter_4_locations",
     "romk_chapter_5_locations", "romk_chapter_6_locations", "romk_chapter_7_locations",
-    "revenge_of_meta_knight_locations", "floria_locations", "aqualiss_locations", "skyhigh_locations",
-    "hotbeat_locations", "cavios_locations", "mecheye_locations", "halfmoon_locations",
+    "revenge_of_meta_knight_locations", "floria_locations", "aquarius_locations", "skyhigh_locations",
+    "hotbeat_locations", "cavius_locations", "mekkai_locations", "halfmoon_locations",
     "copy_planet_locations", "space_locations", "milky_way_wishes_locations", "the_arena_locations",
     "purple_plants_locations", "illusion_islands_locations", "crash_clouds_locations",
     "mt_dedede_sky_locations", "the_revenge_locations", "revenge_of_the_king_locations",

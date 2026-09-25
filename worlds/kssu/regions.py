@@ -280,7 +280,7 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion) -> None:
 def create_regions(world: "KSSUWorld") -> None:
     menu = create_region("Menu", world)
     world.multiworld.regions.append(menu)
-    included_maingames = world.options.included_maingames.value
+    included_maingames = set(world.options.included_maingames)
     create_trivial_regions(world, menu, included_maingames)
     if "Spring Breeze" in included_maingames:
         create_spring_breeze(world, menu)

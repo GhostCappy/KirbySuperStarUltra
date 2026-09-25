@@ -1,15 +1,11 @@
 from typing import Dict, TYPE_CHECKING
 from .items import main_game_completion
 from .names import location_names, item_names
+
 from rule_builder.rules import HasAll, HasAny, Has, HasFromList, HasAnyCount, HasGroupUnique
-from BaseClasses import CollectionState
 
 if TYPE_CHECKING:
     from . import KSSUWorld
-
-# Abilities that can beat wind  
-def can_fight_wind(state: "CollectionState") -> bool:
-    return HasAny(item_names.wing, item_names.jet, item_names.ninja)
 
 # Abilities that can hit switches (and food if enabled)
 def dyna_blade_rules(world: "KSSUWorld") -> None:
@@ -17,8 +13,8 @@ def dyna_blade_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_location(location_names.db_switch_1),
             HasAny(item_names.mirror, item_names.beam) |
                            (Has(item_names.plasma)
-                            & HasAnyCount(item_names.dyna_blade_ex1: 1, 
-                                          item_names.progressive_dyna_blade: 2)))
+                            & HasAnyCount({item_names.dyna_blade_ex1: 1, 
+                                          item_names.progressive_dyna_blade: 2})))
 
     set_rule(world.get_entrance("Mallow Castle -> Dyna Blade Bonus 1"),
              Has(item_names.dyna_blade_ex1))
@@ -78,11 +74,12 @@ def the_great_cave_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_location(location_names.tgco_treasure_45),
              HasAny(item_names.jet, item_names.fire))
     set_rule(world.get_location(location_names.tgco_treasure_47),
-             lambda state: can_fight_wind(state))
+             # Abilities that can fight wind
+             HasAny(item_names.wing, item_names.jet, item_names.ninja))
     set_rule(world.get_location(location_names.tgco_treasure_49),
              Has(item_names.jet))
     set_rule(world.get_location(location_names.tgco_treasure_52),
-             Has(item_names.parasol, item_names.wing, item_names.plasma))
+             HasAny(item_names.parasol, item_names.wing, item_names.plasma))
     set_rule(world.get_location(location_names.tgco_treasure_53),
              Has(item_names.wheel))
     set_rule(world.get_location(location_names.tgco_treasure_58),
@@ -154,7 +151,7 @@ def set_rules(world: "KSSUWorld") -> None:
     if "The Arena" in world.options.included_maingames:
         set_rule = world.set_rule
         for i in range(10, 21):
-            set_rule(world.get_location(f"The True Arena - {i} Straight Wins"),
+            set_rule(world.get_location(f"The Arena - {i} Straight Wins"),
                         HasGroupUnique("Copy Ability", 5))
 
     # Helper to Hero
@@ -162,8 +159,8 @@ def set_rules(world: "KSSUWorld") -> None:
     # The True Arena
     if "The True Arena" in world.options.included_maingames:
         set_rule = world.set_rule
-        for i in range(1, 10):
-            set_rule(world.get_location(f"The Arena - {i} Straight Wins"),
+        for i in range(3, 10):
+            set_rule(world.get_location(f"The True Arena - {i} Straight Wins"),
                         HasGroupUnique("Copy Ability", 10))
         
     main_game_complete = list(main_game_completion.keys())
@@ -171,9 +168,17 @@ def set_rules(world: "KSSUWorld") -> None:
     for main_game in main_game_completion.keys():
         if main_game.rsplit(" - ")[0] in world.options.required_maingames:
             main_game_required.append(main_game)
-
+            
+    world.set_completion_rule(
+        HasAll(*main_game_required)
+        & HasFromList(
+            *main_game_complete,
+            count=(world.options.required_maingame_completions.value),
+        )
+    )
+    '''
     world.multiworld.completion_condition[world.player] = lambda state: \
-        HasAll(main_game_required) & HasFromList(
-            main_game_complete, world.options.required_maingame_completions)
-        
+        state.has_all(main_game_required, world.player) and state.has_from_list(
+            main_game_complete, world.player, world.options.required_maingame_completions.value)
+    '''
     

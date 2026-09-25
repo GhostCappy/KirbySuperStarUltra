@@ -121,11 +121,11 @@ triforce = "Triforce"
 
 # Milky Way Wishes Planets
 floria = "Floria"
-aqualiss = "Aqualiss"
+aquarius = "Aquarius"
 skyhigh = "Skyhigh"
 hotbeat = "Hotbeat"
-cavios = "Cavios"
-mecheye = "Mecheye"
+cavius = "Cavius"
+mekkai = "Mekkai"
 halfmoon = "Halfmoon"
 copy_planet = "???"
 
