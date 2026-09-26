@@ -27,7 +27,7 @@ If you're looking to help with this, feel free to reach out!
 ___
 ### I found a bug, where do I report it?
 
-Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836)
+Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836).
 I will review it and try to fix it for a future version.
 
 ___  
