@@ -148,7 +148,6 @@ class KSSUClient(BizHawkClient):
     #item_queue: typing.List[NetworkItem] = []
     player_actionable = False
     
-    cave_keys_collected = 0
     progressive_mku_level = 0
     new_gold = 0
     completed_games = 0
@@ -326,13 +325,13 @@ class KSSUClient(BizHawkClient):
 
     async def play_sfx(self, ctx: "BizHawkClientContext", sfx: str) -> None:
         sound: dict[str, int] = {
-            "Major": 67,
-            "Filler": 68,
-            "Treasure": 69,
-            "Planet": 70,
-            "Progressive": 71,
-            "Ability": 72,
-            "1-Up": 73,
+            "Major": 0x43,
+            "Filler": 0x5B,
+            "Treasure": 0xC4,
+            "Planet": 0x106,
+            "Progressive": 0xE7,
+            "Ability": 0x81,
+            "1-Up": 0x58,
         }
         await self.bizhawk_set_halfword(ctx, self.play_sound, sound.get(sfx, 0))
         
@@ -574,6 +573,9 @@ class KSSUClient(BizHawkClient):
                                     treasure_received_1 = new_treasure
                                     # gold amount does NOT get updated until TGCO is loaded
                                     self.new_gold = gold + treasure_value
+                                    # Make sure gold is never over the max
+                                    if self.new_gold > 9999999:
+                                        self.new_gold = 9999999
                         # If the bit is greater than 32, it should be written to the 2nd address instead
                         else:
                             high_bit = treasure_bit - 32
@@ -586,6 +588,8 @@ class KSSUClient(BizHawkClient):
                                 await self.play_sfx(ctx, "Treasure")
                                 treasure_received_2 = new_treasure
                                 self.new_gold = gold + treasure_value
+                                if self.new_gold > 9999999:
+                                    self.new_gold = 9999999
                     # Planets
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x400) and network_item.item > 0:
                         planet_bit = network_item.item & 0xFF
@@ -625,7 +629,7 @@ class KSSUClient(BizHawkClient):
                             self.progressive_mku_level += 1
                         await self.play_sfx(ctx, "Progressive")   
                     case "Cave Key":
-                        if self.cave_keys_collected  < 3:
+                        if self.cave_keys_collected < 4:
                             self.cave_keys_collected += 1  
                         await self.play_sfx(ctx, "Progressive")                                                          
                     # Filler
@@ -634,10 +638,15 @@ class KSSUClient(BizHawkClient):
                         await self.bizhawk_add_halfword(ctx, self.kirby_lifes, 1)
                         await self.play_sfx(ctx, "1-Up")
                     case "Maxim Tomato":
-                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 76)        
-                        await self.play_sfx(ctx, "Filler")                                            
+                        # Meta Knight has less HP than kirby
+                        if game == 8:
+                            await self.bizhawk_add_halfword(ctx, self.kirby_hp, 50)    
+                            await self.play_sfx(ctx, "Filler")  
+                        else: 
+                            await self.bizhawk_add_halfword(ctx, self.kirby_hp, 76)        
+                            await self.play_sfx(ctx, "Filler")                                            
                     case "Food":
-                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 25)      
+                        await self.bizhawk_add_halfword(ctx, self.kirby_hp, 16)      
                         await self.play_sfx(ctx, "Filler")                                                          
                     case "Invincible Candy":
                         await self.bizhawk_set_halfword(ctx, self.candy_timer, 1320)

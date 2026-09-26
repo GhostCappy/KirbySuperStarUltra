@@ -106,9 +106,9 @@ def milky_way_wishes_rules(world: "KSSUWorld") -> None:
     set_rule = world.set_rule
     if world.options.milky_way_wishes_mode == "local":
         set_rule(world.get_location(location_names.mww_complete),
-                 HasAll(item_names.floria, item_names.aqualiss,
+                 HasAll(item_names.floria, item_names.aquarius,
                                               item_names.skyhigh, item_names.hotbeat,
-                                              item_names.cavios, item_names.mecheye,
+                                              item_names.cavius, item_names.mekkai,
                                               item_names.halfmoon))
     else:
         set_rule(world.get_location(location_names.mww_complete),

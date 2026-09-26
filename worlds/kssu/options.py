@@ -176,7 +176,7 @@ class MilkyWayWishesMode(Choice):
     Determines how Marx is unlocked in Milky Way Wishes.
     
     Local: Marx is unlocked after completing the 7 main planets
-    (Floria, Aqualiss, Skyhigh, Hotbeat, Cavios, Mecheye, Halfmoon)
+    (Floria, Aquarius, Skyhigh, Hotbeat, Cavius, Mekkai, Halfmoon)
     
     Multiworld: Marx is unlocked after receiving 7 Rainbow Stars scattered across the multiworld
     """
@@ -256,7 +256,7 @@ class SamuraiDifficulties(Toggle):
     
 class SamuaraiWins(Range):
     """
-    How many opponents / wins can be include as progressive locations in Samurai Kirby.
+    How many opponents / wins can be included as progressive locations in Samurai Kirby.
     """
     display_name = "Samurai Kirby Wins"
     range_start = 1

@@ -202,19 +202,19 @@ def create_revenge_meta_knight(world: "KSSUWorld", menu: KSSURegion) -> None:
 def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion) -> None:
     milky_way_wishes = create_region("Milky Way Wishes", world)
     floria = create_region("Floria", world)
-    aqualiss = create_region("Aqualiss", world)
+    aquarius = create_region("Aquarius", world)
     skyhigh = create_region("Skyhigh", world)
     hotbeat = create_region("Hotbeat", world)
-    cavios = create_region("Cavios", world)
-    mecheye = create_region("Mecheye", world)
+    cavius = create_region("Cavius", world)
+    mekkai = create_region("Mekkai", world)
     halfmoon = create_region("Halfmoon", world)
     copy_planet = create_region("???", world)
 
-    for region, locations, item in zip((floria, aqualiss, skyhigh, hotbeat, cavios, mecheye, halfmoon, copy_planet),
-                                       (floria_locations, aqualiss_locations, skyhigh_locations, hotbeat_locations,
-                                        cavios_locations, mecheye_locations, halfmoon_locations, copy_planet_locations),
-                                       (item_names.floria, item_names.aqualiss, item_names.skyhigh, item_names.hotbeat,
-                                        item_names.cavios, item_names.mecheye, item_names.halfmoon,
+    for region, locations, item in zip((floria, aquarius, skyhigh, hotbeat, cavius, mekkai, halfmoon, copy_planet),
+                                       (floria_locations, aquarius_locations, skyhigh_locations, hotbeat_locations,
+                                        cavius_locations, mekkai_locations, halfmoon_locations, copy_planet_locations),
+                                       (item_names.floria, item_names.aquarius, item_names.skyhigh, item_names.hotbeat,
+                                        item_names.cavius, item_names.mekkai, item_names.halfmoon,
                                         item_names.copy_planet)
                                  ):
         add_locations(world, region, locations)
@@ -226,8 +226,8 @@ def create_milky_way_wishes(world: "KSSUWorld", menu: KSSURegion) -> None:
     world.get_location(location_names.mww_complete).place_locked_item(
         world.create_item(item_names.milky_way_wishes_complete))
 
-    world.multiworld.regions.extend([milky_way_wishes, floria, aqualiss, skyhigh, hotbeat, cavios,
-                                     mecheye, halfmoon, copy_planet])
+    world.multiworld.regions.extend([milky_way_wishes, floria, aquarius, skyhigh, hotbeat, cavius,
+                                     mekkai, halfmoon, copy_planet])
 
 def create_revenge_of_the_king(world: "KSSUWorld", menu: KSSURegion) -> None:
     revenge_of_the_king = create_region("Revenge of the King", world)
