@@ -1,3 +1,4 @@
+import typing
 from typing import Dict, TYPE_CHECKING
 from .items import main_game_completion
 from .names import location_names, item_names
@@ -24,6 +25,28 @@ def dyna_blade_rules(world: "KSSUWorld") -> None:
 # Abilities that can access treasure, food, essences, etc.
 def the_great_cave_rules(world: "KSSUWorld") -> None:
     set_rule = world.set_rule
+    if hasattr(world.multiworld, "re_gen_passthrough"):
+        re_gen_passthrough: dict[str, typing.Any] = getattr(world.multiworld, "re_gen_passthrough")
+        if "Kirby Super Star Ultra" in re_gen_passthrough:
+            world.treasure_value = re_gen_passthrough["Kirby Super Star Ultra"]["treasure_value"]
+
+    # Entrances (Key)
+    if world.options.the_great_cave_offensive_areas == "key":
+        set_rule(world.get_entrance("Sub-Tree -> Crystal"),
+                 Has(item_names.cave_key, 1))
+        set_rule(world.get_entrance("Crystal -> Old Tower"),
+                 Has(item_names.cave_key, 2))
+        set_rule(world.get_entrance("Old Tower -> Garden"),
+                 Has(item_names.cave_key, 3))
+        set_rule(world.get_location(location_names.tgco_complete),
+                 Has(item_names.cave_key, 4))
+    else:
+    # Entrances (Gold)
+        if world.treasure_value:
+            set_rule(world.get_entrance("Sub-Tree -> Crystal"), Has("Gold", world.treasure_value[0]))
+            set_rule(world.get_entrance("Crystal -> Old Tower"), Has("Gold",world.treasure_value[1]))
+            set_rule(world.get_entrance("Old Tower -> Garden"), Has("Gold", world.treasure_value[2]))
+            set_rule(world.get_location(location_names.tgco_complete), Has("Gold", world.treasure_value[3]))
     # Treasures
     set_rule(world.get_location(location_names.tgco_treasure_4),
              HasAny(item_names.wing, item_names.plasma))
@@ -176,9 +199,5 @@ def set_rules(world: "KSSUWorld") -> None:
             count=(world.options.required_maingame_completions.value),
         )
     )
-    '''
-    world.multiworld.completion_condition[world.player] = lambda state: \
-        state.has_all(main_game_required, world.player) and state.has_from_list(
-            main_game_complete, world.player, world.options.required_maingame_completions.value)
-    '''
+
     

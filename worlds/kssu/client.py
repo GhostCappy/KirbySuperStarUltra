@@ -15,9 +15,8 @@ import asyncio
 
 from NetUtils import ClientStatus, NetworkItem
 from typing import TYPE_CHECKING, Set, Dict, List
-from .items import (treasures, BASE_ID, main_games, sub_games, 
-                    copy_abilities, dyna_items, mku_items, 
-                    misc_items, planets)
+from .items import (treasures, BASE_ID, main_games, main_game_completion,
+                    sub_games, copy_abilities, planets)
 from .locations import MWW_ABILITY_OFFSETS
 
 
@@ -416,8 +415,20 @@ class KSSUClient(BizHawkClient):
                 case "Invincible Candy":
                     await self.bizhawk_set_halfword(ctx, self.candy_timer, 1320)
                     await self.play_sfx(ctx, "Filler")    
+                    # What did you get???
         else:
             pass
+
+    # game_name -> completion_name
+    def _completed_maingames(self, ctx) -> set[str]:
+        mapping = ctx.slot_data.get("completion_items", {})  
+        inv = {v: k for k, v in mapping.items()}
+        done = set()
+        for network_item in ctx.items_received:
+            name = ctx.item_names.lookup_in_game(network_item.item)
+            if name in inv:
+                done.add(inv[name])
+        return done
     
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -706,15 +717,15 @@ class KSSUClient(BizHawkClient):
                     # What did you get???
                     case _:
                         raise Exception("Bad item name received: " + name)
-                    
-                # Queue item if not in-game
-                await self.queue_item(ctx)
                                            
                 # Keep APSave updated
                 if index >= received_index:
                     await self.bizhawk_set_halfword(ctx, self.received_offset, index + 1)
                 self.received_items_count = index + 1
                 await asyncio.sleep(0.1)
+
+            # Queue item if not in-game
+            await self.queue_item(ctx)
             
             # =================================
             # Location Handling
@@ -986,35 +997,34 @@ class KSSUClient(BizHawkClient):
                     
            # Check for completing the goal and send it to the server
             if not self.goal_complete:
-                goalsd: bool
-                match ctx.slot_data["goal"]:
-                    case "milky_way_wishes":
-                        goaled = False
-                        if cleared_games & 32:
-                            goaled = True
-                    case "main_game_completion":
-                        goaled = False
-                        self.completed_games = bin(cleared_games & 0x7FF).count("1")
-                        if self.completed_games >= ctx.slot_data["required_maingame_completions"]:
-                            goaled = True
-                    case "the_arena":
-                        goaled = False
-                        if cleared_games & 128:
-                            goaled = True
-                    case "revenge_of_the_king":
-                        goaled = False
-                        if cleared_games & 64:
-                            goaled = True
-                    case "meta_knightmare_ultra":
-                        goaled = False
-                        if cleared_games & 256:
-                            goaled = True
-                    case "marx_soul":
-                        goaled = False
-                        if cleared_games & 1024:
-                            goaled = True
-                    case _:
-                        raise Exception("Bad goal in slot data: " + ctx.slot_data["goal"])
+                goaled = False
+                required_games = set(ctx.slot_data.get("required_maingames", []))
+                finished_games = self._completed_maingames(ctx)
+                finished_required = required.issubset(finished_games)
+
+                if finished_required:
+                    match ctx.slot_data["goal"]:
+                        case "milky_way_wishes":
+                            if cleared_games & 32:
+                                goaled = True
+                        case "main_game_completion":
+                            self.completed_games = bin(cleared_games & 0x7FF).count("1")
+                            if self.completed_games >= ctx.slot_data["required_maingame_completions"]:
+                                goaled = True
+                        case "the_arena":
+                            if cleared_games & 128:
+                                goaled = True
+                        case "revenge_of_the_king":
+                            if cleared_games & 64:
+                                goaled = True
+                        case "meta_knightmare_ultra":
+                            if cleared_games & 256:
+                                goaled = True
+                        case "marx_soul":
+                            if cleared_games & 1024:
+                                goaled = True
+                        case _:
+                            raise Exception("Bad goal in slot data: " + ctx.slot_data["goal"])
 
                 if goaled:
                     self.goal_complete = True

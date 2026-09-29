@@ -259,7 +259,8 @@ class KSSUWorld(World):
                                          "the_great_cave_offensive_areas")
         slot_data.update({
             "goal": self.options.goal.current_key,
-            "treasure_value": self.treasure_value
+            "treasure_value": self.treasure_value,
+            "required_maingames": sorted(self.options.required_maingames.value),
         })
         return slot_data
     

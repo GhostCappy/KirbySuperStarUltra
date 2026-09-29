@@ -56,12 +56,21 @@ There are also some other useful commands inside the client, including:
 - /planets (Shows all the planets you currently have unlocked)
 - /ability (Shows all the abilities you currently have unlocked)
 - /keys (Shows all the keys / progressive stages you currently have.)
-- /sub_areas (Tells you the gold threshold to progress through an area in TGCO.)
+- /sub_area (Tells you the gold threshold to progress through an area in TGCO.)
 ___
 ### When I try to enter a game, it kicks me back out to the game select menu!
 
 This happens when you try to enter a game you do not have unlocked yet. Double-check to make sure you are properly connected
 with the LUA and to the Archipelago server.
+
+___
+### Are there any features you plan to add?
+
+Most updates will focus on bug fixes and quality of life. Outside of those, some features I plan to add at a later date are:
+- Traps
+- Locking helpers in Helper to Hero based on abilities unlocked
+- "Helpersanity" (Locations for each helper in Helper to Hero)
+- "Foodsanity" (Locations for each food item)
 
 ___
 ### I lost my save game! How do I make sure this doesn't happen again?
