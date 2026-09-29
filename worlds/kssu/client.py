@@ -178,6 +178,7 @@ class KSSUClient(BizHawkClient):
     real_treasure_1 = 0x06E740
     real_treasure_2 = 0x06E744
     tgco_gold = 0x06E748
+    tgco_bosses = 0x06E74E
     
     ## Gourmet
     gourmet_kirby_wins = 0x06D600
@@ -455,6 +456,7 @@ class KSSUClient(BizHawkClient):
                     (self.real_treasure_2, 4, self.ram_mem_domain),
                     (self.unlock_nova, 1, self.ram_mem_domain),
                     (self.rainbow_stars, 1, self.ram_mem_domain),
+                    (self.tgco_bosses, 1, self.ram_mem_domain),
                 ]
             )
             
@@ -512,6 +514,7 @@ class KSSUClient(BizHawkClient):
             tgco_real_2 = int.from_bytes(read_state[49], "little")
             planets_cleared = int.from_bytes(read_state[50], "little")
             current_rainbow = int.from_bytes(read_state[51], "little")
+            bosses_defeated = int.from_bytes(read_state[52], "little")
                
             # =================================
             # Item Handling Loop
@@ -574,8 +577,8 @@ class KSSUClient(BizHawkClient):
                                     # gold amount does NOT get updated until TGCO is loaded
                                     self.new_gold = gold + treasure_value
                                     # Make sure gold is never over the max
-                                    if self.new_gold > 9999999:
-                                        self.new_gold = 9999999
+                                    if self.new_gold > 9999990:
+                                        self.new_gold = 9999990
                         # If the bit is greater than 32, it should be written to the 2nd address instead
                         else:
                             high_bit = treasure_bit - 32
@@ -588,8 +591,8 @@ class KSSUClient(BizHawkClient):
                                 await self.play_sfx(ctx, "Treasure")
                                 treasure_received_2 = new_treasure
                                 self.new_gold = gold + treasure_value
-                                if self.new_gold > 9999999:
-                                    self.new_gold = 9999999
+                                if self.new_gold > 9999990:
+                                    self.new_gold = 9999990
                     # Planets
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x400) and network_item.item > 0:
                         planet_bit = network_item.item & 0xFF
