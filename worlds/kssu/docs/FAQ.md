@@ -25,7 +25,14 @@ In addition to this, it would be quite a long process as certain addresses great
 If you're looking to help with this, feel free to reach out!
 
 ___
-### I found a bug, where do I report it?
+### Are there any known bugs?
+
+- The "ability selection" menu in MWW is not accurate. It shows which abilities have been collected, not received. Selecting them does nothing, unless it was already received.
+- The treasures on the pause screen of TGCO cannot be selected.
+- When watching the beginner show, you may experience some visual bugs. It's best to skip these.
+
+___
+### I found another bug, where do I report it?
 
 Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836).
 I will review it and try to fix it for a future version.
@@ -36,6 +43,18 @@ ___
 There is no dedicated tracker for this game at the moment. However, it was made in mind to be compatible with Universal Tracker, which
 can be found [here](https://github.com/FarisTheAncient/Archipelago/releases)
 
+___  
+### How do I check the gold thresholds for TGCO (and other important items)? 
+
+Inside the client, you can run /sub_area (area) to see how much gold is required to progress.
+Ex. /sub_area Old Tower
+
+There are also some other useful commands inside the client, including:
+- /games (Shows all the games you currently have unlocked)
+- /planets (Shows all the planets you currently have unlocked)
+- /ability (Shows all the abilities you currently have unlocked)
+- /keys (Shows all the keys / progressive stages you currently have.)
+- /sub_areas (Tells you the gold threshold to progress through an area in TGCO.)
 ___
 ### When I try to enter a game, it kicks me back out to the game select menu!
 
