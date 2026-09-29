@@ -16,6 +16,8 @@ ___
 - AI has not and will not be used to brainstorm or design any ideas or new features.
 - LLMs have been used as a means to better understand the logic of certain functions (Which was done by looking through Ghidra's de-compiled C code).
 - LLMs were rarely used as a [rubber duck](https://en.wikipedia.org/wiki/Rubber_duck_debugging) to help diagnose bugs early in development.
+- The APWorld itself re-uses and tweaks some code from pre-existing worlds. For more information, please refer to the [credits](https://github.com/GhostCappy/KirbySuperStarUltra/blob/main/worlds/kssu/docs/credits.md) page.
+- Documentation for all assembly changes can be found [here](https://docs.google.com/document/d/17oQgLhXj-Uu3xDFecNxVluyk4rJFPOidhxv2isrZJZo).
 
 ___
 ### Will there be PAL or JPN support in the future?
