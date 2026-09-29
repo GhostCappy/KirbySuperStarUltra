@@ -14,7 +14,7 @@ ___
 - Kirby Super Star Ultra Archipelago is **not** vibe-coded
 - Kirby Super Star Ultra Archipelago does **not** contain AI Art
 - AI has not and will not be used to brainstorm or design any ideas or new features.
-- LLMs have been used as a means to better understand the logic of certain functions (Which was done by looking through Ghidra's de-compiled C code). However, it was not used to write code for assembly nor the APWorld.
+- LLMs have been used as a means to better understand the logic of certain functions (Which was done by looking through Ghidra's de-compiled C code).
 - LLMs were rarely used as a [rubber duck](https://en.wikipedia.org/wiki/Rubber_duck_debugging) to help diagnose bugs early in development.
 
 ___
@@ -27,8 +27,8 @@ If you're looking to help with this, feel free to reach out!
 ___
 ### I found a bug, where do I report it?
 
-Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836)
-We will review it and try to fix it for a future version
+Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836).
+I will review it and try to fix it for a future version.
 
 ___  
 ### Is there a tracker for this game?
