@@ -772,6 +772,12 @@ class KSSUClient(BizHawkClient):
             # Location Handling
             # =================================
             # Spring Breeze
+            if cleared_games & 1:
+                game_name = "Spring Breeze"
+                loc = self.get_location(game_name, "Castle Dedede")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             if sb_stage:  
                 game_name = "Spring Breeze"
                 for i in range(sb_stage):               
@@ -780,6 +786,12 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Dyna Blade 
+            if cleared_games & 2:
+                game_name = "Dyna Blade"
+                loc = self.get_location(game_name, "Dyna Blade")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             for i in range(2):
                 if switch_activated & (1 << i):
                     game_name = "Dyna Blade"
@@ -801,6 +813,12 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
                         
             # Gourmet Race
+            if cleared_games & 4:
+                game_name = "Gourmet Race"
+                loc = self.get_location(game_name, "Results")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             if game == 2:
                 game_name = "Gourmet Race"
                 if gourmet_wins:
@@ -829,6 +847,12 @@ class KSSUClient(BizHawkClient):
 
             # The Great Cave Offensive 
             # Dreadful
+            if cleared_games & 8:
+                game_name = "The Great Cave Offensive"
+                loc = self.get_location(game_name, "Cave Exit")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             if treasure_collected_1:
                 for i in range(32):
                     if treasure_collected_1 & (1 << i):
@@ -900,6 +924,12 @@ class KSSUClient(BizHawkClient):
                          
 
             # Revenge of Meta Knight
+            if cleared_games & 16:
+                game_name = "Revenge of Meta Knight"
+                loc = self.get_location(game_name, "Halberd's Helm")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             if romk_chapters_completed:  
                 game_name = "Revenge of Meta Knight"
                 for i in range(romk_chapters_completed):               
@@ -910,6 +940,11 @@ class KSSUClient(BizHawkClient):
             # Milky Way Wishes
             # Dreadful: Part 2
             # If ability is collected in-game
+            if cleared_games & 32:
+                loc = self.get_location("Galactic Nova")
+                if loc is not None:
+                    send_locations.add(loc) 
+                    
             if ability_collected:
                 for bit, x in MWW_ABILITY_OFFSETS.items():
                     if ability_collected & bit:
@@ -931,6 +966,12 @@ class KSSUClient(BizHawkClient):
                     )                       
 
             # Revenge of the King 
+            if cleared_games & 64:
+                game_name = "Revenge of the King"
+                loc = self.get_location(game_name, "Complete")
+                if loc is not None:
+                    send_locations.add(loc)    
+                    
             if rotk_stage:  
                 game_name = "Revenge of the King"
                 for i in range(rotk_stage):               
@@ -958,6 +999,12 @@ class KSSUClient(BizHawkClient):
                         
             
             # Meta Knightmare Ultra
+            if cleared_games & 256:
+                game_name = "Meta Knightmare Ultra"
+                loc = self.get_location(game_name, "Complete")
+                if loc is not None:
+                    send_locations.add(loc)     
+                    
             if mku_complete:
                 game_name = "Meta Knightmare Ultra"
                 for i in range(mku_complete):               
