@@ -15,8 +15,9 @@ import asyncio
 
 from NetUtils import ClientStatus, NetworkItem
 from typing import TYPE_CHECKING, Set, Dict, List
-from .items import (treasures, BASE_ID, main_games, main_game_completion,
-                    sub_games, copy_abilities, planets)
+from .items import (treasures, BASE_ID, main_games,
+                    sub_games, copy_abilities, planets,
+                    maingame_complete_table)
 from .locations import MWW_ABILITY_OFFSETS
 
 
@@ -430,16 +431,12 @@ class KSSUClient(BizHawkClient):
         else:
             pass
 
-    # game_name -> completion_name
-    def _completed_maingames(self, ctx) -> set[str]:
-        mapping = ctx.slot_data.get("completion_items", {})  
-        inv = {v: k for k, v in mapping.items()}
-        done = set()
-        for network_item in ctx.items_received:
-            name = ctx.item_names.lookup_in_game(network_item.item)
-            if name in inv:
-                done.add(inv[name])
-        return done
+
+    def completed_maingames(self, cleared_games: int) -> set[str]:
+        return {
+            name for name, x in maingame_complete_table.items()
+            if cleared_games & (1 << x)
+        }
     
     # Main Function                
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
@@ -964,19 +961,19 @@ class KSSUClient(BizHawkClient):
                 
             if game == 8: 
                 # MKU Door 1                
-                if stage == 0 and screen == 11:
+                if stage == 0 and screen == 22:
                     if self.progressive_mku_level >= 1 and mku_block_1 == 0x8038:
                         await self.bizhawk_set_halfword(ctx, self.mku_door_1, 0x8060)      
                 # MKU Door 2                
-                if stage == 1 and screen == 11:
+                if stage == 1 and screen == 36:
                     if self.progressive_mku_level >= 2 and mku_block_2 == 0x8009:
                         await self.bizhawk_set_halfword(ctx, self.mku_door_2, 0x8193)    
                 # MKU Door 1                
-                if stage == 2 and screen == 11:
+                if stage == 2 and screen == 29:
                     if self.progressive_mku_level >= 3 and mku_block_3 == 0x8064:
                         await self.bizhawk_set_halfword(ctx, self.mku_door_3, 0x814D)      
                 # MKU Door 2                
-                if stage == 3 and screen == 11:
+                if stage == 3 and screen == 36:
                     if self.progressive_mku_level >= 4 and mku_block_4 == 0x8001:
                         await self.bizhawk_set_halfword(ctx, self.mku_door_4, 0x813A)    
 
@@ -1082,7 +1079,7 @@ class KSSUClient(BizHawkClient):
             if not self.goal_complete:
                 goaled = False
                 required_games = set(ctx.slot_data.get("required_maingames", []))
-                finished_games = self._completed_maingames(ctx)
+                finished_games = self.completed_maingames(ctx)
                 finished_required = required_games.issubset(finished_games)
 
                 if finished_required:

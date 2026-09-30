@@ -201,6 +201,20 @@ item_groups: Dict[str, Set[str]] = {
     "Planets": {name for name in planets}
 }
 
+maingame_complete_table: Dict[str, int] = {
+    item_names.spring_breeze: 0,
+    item_names.dyna_blade: 1,
+    item_names.gourmet_race: 2,
+    item_names.great_cave_offensive: 3,
+    item_names.revenge_of_meta_knight: 4,
+    item_names.milky_way_wishes: 5,
+    item_names.the_arena: 6,
+    item_names.revenge_of_the_king: 7,
+    item_names.meta_knightmare_ultra: 8,
+    item_names.helper_to_hero: 9,
+    item_names.the_true_arena: 10,
+}
+
 lookup_item_to_id: Dict[str, int] = {item_name: data.code for item_name, data in item_table.items() if data.code}
 
 
