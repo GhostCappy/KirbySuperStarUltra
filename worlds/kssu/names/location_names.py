@@ -181,8 +181,7 @@ hth_9 = "Helper to Hero - 9 Straight Wins"
 hth_10 = "Helper to Hero - 10 Straight Wins"
 hth_11 = "Helper to Hero - 11 Straight Wins"
 hth_12 = "Helper to Hero - 12 Straight Wins"
-hth_13 = "Helper to Hero - 13 Straight Wins"
-helper_to_hero_complete = "Helper to Hero - Complete"
+helper_to_hero_complete = "Helper to Hero - 13 Straight Wins"
 
 # Add later for helper sanity
 '''

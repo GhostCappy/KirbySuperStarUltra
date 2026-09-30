@@ -374,7 +374,6 @@ helper_to_hero_locations = {
     location_names.hth_10: LocationData(BASE_ID + 909),
     location_names.hth_11: LocationData(BASE_ID + 910),
     location_names.hth_12: LocationData(BASE_ID + 911),
-    location_names.hth_13: LocationData(BASE_ID + 912),
     location_names.helper_to_hero_complete: LocationData(None),
 }
 
@@ -400,7 +399,7 @@ helper_to_hero_helper_locations = {
     location_names.hth_18: LocationData(BASE_ID + 926),
     location_names.hth_19: LocationData(BASE_ID + 927),
     location_names.hth_20: LocationData(BASE_ID + 928),
-    location_names.helper_to_hero_complete: LocationData(None),
+
 }
 '''
 

@@ -939,6 +939,12 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # Arena
+            if cleared_games & 128:
+                game_name = "The Arena"
+                loc = self.get_location(game_name, "19 Straight Wins")
+                if loc is not None:
+                    send_locations.add(loc)       
+                             
             if game == 7: 
                 game_name = "The Arena"
                 if arena:
@@ -977,8 +983,13 @@ class KSSUClient(BizHawkClient):
                     if self.progressive_mku_level >= 4 and mku_block_4 == 0x8001:
                         await self.bizhawk_set_halfword(ctx, self.mku_door_4, 0x813A)    
 
-
             # Helper to Hero 
+            if cleared_games & 512:
+                game_name = "Helper to Hero"
+                loc = self.get_location(game_name, "13 Straight Wins")
+                if loc is not None:
+                    send_locations.add(loc)       
+                    
             if game == 9:
                 game_name = "Helper to Hero"
                 if arena:
@@ -991,6 +1002,12 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
 
             # True Arena 
+            if cleared_games & 1024:
+                game_name = "The True Arena"
+                loc = self.get_location(game_name, "10 Straight Wins")
+                if loc is not None:
+                    send_locations.add(loc)       
+                    
             if game == 10: 
                 game_name = "The True Arena"
                 if arena:
@@ -1079,7 +1096,7 @@ class KSSUClient(BizHawkClient):
             if not self.goal_complete:
                 goaled = False
                 required_games = set(ctx.slot_data.get("required_maingames", []))
-                finished_games = self.completed_maingames(ctx)
+                finished_games = self.completed_maingames(cleared_games)
                 finished_required = required_games.issubset(finished_games)
 
                 if finished_required:
