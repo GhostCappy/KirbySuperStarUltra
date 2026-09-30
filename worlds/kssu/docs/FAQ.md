@@ -29,7 +29,7 @@ If you're looking to help with this, feel free to reach out!
 ___
 ### Are there any known bugs?
 
-- The "ability selection" menu in MWW is not accurate. It shows which abilities have been collected, not received. Selecting them does nothing, unless it was already received.
+- Occasionally in MWW, the abilities on the bottom screen will be the wrong color.
 - The treasures on the pause screen of TGCO cannot be selected.
 - When watching the beginner show, you may experience some visual bugs. It's best to skip these.
 
@@ -68,9 +68,13 @@ ___
 
 Most updates will focus on bug fixes and quality of life. Outside of those, some features I plan to add at a later date are:
 - Traps
+- Deathlink
 - Locking helpers in Helper to Hero based on abilities unlocked
 - "Helpersanity" (Locations for each helper in Helper to Hero)
 - "Foodsanity" (Locations for each food item)
+- "Essencesanity" (Locations for each essence in other modes)
+
+There is no estimate time for when these will be implemented.
 
 ___
 ### I lost my save game! How do I make sure this doesn't happen again?

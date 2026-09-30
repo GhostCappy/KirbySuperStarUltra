@@ -212,54 +212,54 @@ revenge_of_meta_knight_locations = {
 }
 
 floria_locations = {
-    location_names.mww_floria: LocationData(BASE_ID + 87),
-    location_names.mww_cutter: LocationData(BASE_ID + 88),
-    location_names.mww_fighter: LocationData(BASE_ID + 89),
-    location_names.mww_ice: LocationData(BASE_ID + 90),
+    location_names.mww_floria: LocationData(BASE_ID + 90),
+    location_names.mww_cutter: LocationData(BASE_ID + 98),
+    location_names.mww_fighter: LocationData(BASE_ID + 99),
+    location_names.mww_ice: LocationData(BASE_ID + 100),
 }
 
 aquarius_locations = {
     location_names.mww_aquarius: LocationData(BASE_ID + 91),
-    location_names.mww_beam: LocationData(BASE_ID + 92),
-    location_names.mww_parasol: LocationData(BASE_ID + 93),
-    location_names.mww_sword: LocationData(BASE_ID + 94),
+    location_names.mww_beam: LocationData(BASE_ID + 101),
+    location_names.mww_parasol: LocationData(BASE_ID + 102),
+    location_names.mww_sword: LocationData(BASE_ID + 103),
 
 }
 
 skyhigh_locations = {
-    location_names.mww_skyhigh: LocationData(BASE_ID + 95),
-    location_names.mww_jet: LocationData(BASE_ID + 96),
-    location_names.mww_wheel: LocationData(BASE_ID + 97),
-    location_names.mww_wing: LocationData(BASE_ID + 98),
+    location_names.mww_skyhigh: LocationData(BASE_ID + 92),
+    location_names.mww_jet: LocationData(BASE_ID + 104),
+    location_names.mww_wheel: LocationData(BASE_ID + 105),
+    location_names.mww_wing: LocationData(BASE_ID + 106),
 }
 
 hotbeat_locations = {
-    location_names.mww_hotbeat: LocationData(BASE_ID + 99),
-    location_names.mww_fire: LocationData(BASE_ID + 100),
-    location_names.mww_suplex: LocationData(BASE_ID + 101),
+    location_names.mww_hotbeat: LocationData(BASE_ID + 93),
+    location_names.mww_fire: LocationData(BASE_ID + 107),
+    location_names.mww_suplex: LocationData(BASE_ID + 108),
 }
 
 cavius_locations = {
-    location_names.mww_cavius: LocationData(BASE_ID + 102),
-    location_names.mww_bomb: LocationData(BASE_ID + 103),
-    location_names.mww_hammer: LocationData(BASE_ID + 104),
-    location_names.mww_stone: LocationData(BASE_ID + 105),
+    location_names.mww_cavius: LocationData(BASE_ID + 94),
+    location_names.mww_bomb: LocationData(BASE_ID + 109),
+    location_names.mww_hammer: LocationData(BASE_ID + 110),
+    location_names.mww_stone: LocationData(BASE_ID + 111),
 }
 
 mekkai_locations = {
-    location_names.mww_mekkai: LocationData(BASE_ID + 106),
-    location_names.mww_plasma: LocationData(BASE_ID + 107),
-    location_names.mww_yoyo: LocationData(BASE_ID + 108),
+    location_names.mww_mekkai: LocationData(BASE_ID + 95),
+    location_names.mww_plasma: LocationData(BASE_ID + 112),
+    location_names.mww_yoyo: LocationData(BASE_ID + 113),
 }
 
 halfmoon_locations = {
-    location_names.mww_halfmoon: LocationData(BASE_ID + 109),
-    location_names.mww_mirror: LocationData(BASE_ID + 110),
-    location_names.mww_ninja: LocationData(BASE_ID + 111),
+    location_names.mww_halfmoon: LocationData(BASE_ID + 96),
+    location_names.mww_mirror: LocationData(BASE_ID + 114),
+    location_names.mww_ninja: LocationData(BASE_ID + 115),
 }
 
 copy_planet_locations = {
-    location_names.mww_copy: LocationData(BASE_ID + 112)
+    location_names.mww_copy: LocationData(BASE_ID + 97)
 }
 
 space_locations = {
@@ -279,25 +279,25 @@ milky_way_wishes_locations = {
 }
 
 the_arena_locations = {
-    location_names.the_arena_1: LocationData(BASE_ID + 113),
-    location_names.the_arena_2: LocationData(BASE_ID + 114),
-    location_names.the_arena_3: LocationData(BASE_ID + 115),
-    location_names.the_arena_4: LocationData(BASE_ID + 116),
-    location_names.the_arena_5: LocationData(BASE_ID + 117),
-    location_names.the_arena_6: LocationData(BASE_ID + 118),
-    location_names.the_arena_7: LocationData(BASE_ID + 119),
-    location_names.the_arena_8: LocationData(BASE_ID + 120),
-    location_names.the_arena_9: LocationData(BASE_ID + 121),
-    location_names.the_arena_10: LocationData(BASE_ID + 122),
-    location_names.the_arena_11: LocationData(BASE_ID + 123),
-    location_names.the_arena_12: LocationData(BASE_ID + 124),
-    location_names.the_arena_13: LocationData(BASE_ID + 125),
-    location_names.the_arena_14: LocationData(BASE_ID + 126),
-    location_names.the_arena_15: LocationData(BASE_ID + 127),
-    location_names.the_arena_16: LocationData(BASE_ID + 128),
-    location_names.the_arena_17: LocationData(BASE_ID + 129),
-    location_names.the_arena_18: LocationData(BASE_ID + 130),
-    location_names.the_arena_19: LocationData(BASE_ID + 131),
+    location_names.the_arena_1: LocationData(BASE_ID + 120),
+    location_names.the_arena_2: LocationData(BASE_ID + 121),
+    location_names.the_arena_3: LocationData(BASE_ID + 122),
+    location_names.the_arena_4: LocationData(BASE_ID + 123),
+    location_names.the_arena_5: LocationData(BASE_ID + 124),
+    location_names.the_arena_6: LocationData(BASE_ID + 125),
+    location_names.the_arena_7: LocationData(BASE_ID + 126),
+    location_names.the_arena_8: LocationData(BASE_ID + 127),
+    location_names.the_arena_9: LocationData(BASE_ID + 128),
+    location_names.the_arena_10: LocationData(BASE_ID + 129),
+    location_names.the_arena_11: LocationData(BASE_ID + 130),
+    location_names.the_arena_12: LocationData(BASE_ID + 131),
+    location_names.the_arena_13: LocationData(BASE_ID + 132),
+    location_names.the_arena_14: LocationData(BASE_ID + 133),
+    location_names.the_arena_15: LocationData(BASE_ID + 134),
+    location_names.the_arena_16: LocationData(BASE_ID + 135),
+    location_names.the_arena_17: LocationData(BASE_ID + 136),
+    location_names.the_arena_18: LocationData(BASE_ID + 137),
+    location_names.the_arena_19: LocationData(BASE_ID + 138),
     location_names.the_arena_complete: LocationData(None),
 }
 
@@ -476,25 +476,25 @@ location_table = {
 # Contains the bit, and ability offset location
 # You'd think I would've named it better in locations, huh?
 MWW_ABILITY_OFFSETS: dict[int, int] = {
-    0x01: 88, # Cutter
-    0x02: 110, # Mirror
-    0x04: 92, # Beam
-    0x08: 89, # Fighter
-    0x10: 101, # Suplex
-    0x20: 108, # Yo-Yo
-    0x40: 97, # Wheel
-    0x80: 103, # Bomb
-    0x100: 90, # Ice
-    0x200: 100, # Fire
-    0x400: 107, # Plasma
-    0x800: 111, # Ninja
-    0x1000: 105, # Stone
-    0x2000: 98, # Wing
-    0x4000: 96, # Jet
-    0x8000: 112, # Copy
-    0x10000: 94, # Sword
-    0x20000: 104, # Hammer
-    0x40000: 93, # Parasol
+    0x01: 98, # Cutter
+    0x02: 114, # Mirror
+    0x04: 101, # Beam
+    0x08: 99, # Fighter
+    0x10: 108, # Suplex
+    0x20: 113, # Yo-Yo
+    0x40: 105, # Wheel
+    0x80: 109, # Bomb
+    0x100: 100, # Ice
+    0x200: 107, # Fire
+    0x400: 112, # Plasma
+    0x800: 115, # Ninja
+    0x1000: 111, # Stone
+    0x2000: 106, # Wing
+    0x4000: 104, # Jet
+    0x8000: 97, # Copy
+    0x10000: 103, # Sword
+    0x20000: 110, # Hammer
+    0x40000: 102, # Parasol
 }
 
 __all__ = [

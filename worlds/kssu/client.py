@@ -115,7 +115,9 @@ def cmd_keys(self: "BizHawkClientCommandProcessor") -> None:
             x = count_keys("Cave Key")
             logger.info(f"The Great Cave Offensive - Cave Key(s): {x}")
         else:
-            logger.info("The Great Cave Offensive uses gold thresholds for progression. Try '/sub_area [name]' instead.")
+            # Kind of annoying
+            # logger.info("The Great Cave Offensive uses gold thresholds for progression. Try '/sub_area [name]' instead.")
+            pass
     if "Dyna Blade" in included_maingames:
         x = count_keys("Dyna Blade - Progressive Stage")
         logger.info(f"Dyna Blade - Progressive Stage(s): {x}")
@@ -126,7 +128,7 @@ def cmd_keys(self: "BizHawkClientCommandProcessor") -> None:
         x = count_keys("Meta Knightmare Ultra - Progressive Level")
         logger.info(f"Meta Knightmare Ultra - Progressive Level(s): {x}")
 
-    games =  {"Dyna Blade", "The Great Cave Offensive", "Milky Way Wishes" "Meta Knightmare Ultra"}
+    games =  {"Dyna Blade", "The Great Cave Offensive", "Milky Way Wishes", "Meta Knightmare Ultra"}
     if not any(x in included_maingames for x in games):
         logger.info("You have no games that require a key nor progressive stages.")
 
@@ -209,6 +211,11 @@ class KSSUClient(BizHawkClient):
     tgco_gold = 0x06E748
     tgco_bosses = 0x06E74E
     
+    tgco_door_1 = 0x26E800
+    tgco_door_2 = 0x26E532
+    tgco_door_3 = 0x26DFC0
+    tgco_door_4 = 0x272DC8
+    
     ## Gourmet
     gourmet_kirby_wins = 0x06D600
     ddd_race_1 = 0x06D664
@@ -230,8 +237,10 @@ class KSSUClient(BizHawkClient):
     
     # MKU
     mku_level = 0x05BEF5
-    cannon_item = 0x04A55E
-    cannon_real = 0x04A556
+    mku_door_1 = 0x250842
+    mku_door_2 = 0x2535F2
+    mku_door_3 = 0x251742
+    mku_door_4 = 0x251572
     
     ## Minigames
     ## Samurai
@@ -275,6 +284,7 @@ class KSSUClient(BizHawkClient):
     mww_unlocked_planets = 0x360018
     planets_completed = 0x36001A
     play_sound = 0x36001C
+    mww_mode = 0x360020
     games_unlocked = 0x360024
     tgco_received_1 = 0x360028
     tgco_received_2 = 0x36002C
@@ -289,6 +299,7 @@ class KSSUClient(BizHawkClient):
         self.location_name_to_id = None
         self.deathlink_enabled = False
         self.received_deathlink = False
+        self.mww_mode_done = False
      
     # Function checks if the USA version of Kirby Super Star Ultra is being used.
     # A good copy will have "KIRBY USDX E" in the header.
@@ -457,6 +468,13 @@ class KSSUClient(BizHawkClient):
                     self.datapackage_requested = True
                     logger.info("Awaiting datapackage...")
                 return
+            # Set MWW Mode [Local or Multiworld]
+            if ctx.slot_data.get("milky_way_wishes_mode") is not None and self.mww_mode_done == False:
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [(self.mww_mode, (ctx.slot_data["milky_way_wishes_mode"]).to_bytes(1, "little"), self.ram_mem_domain)],
+                )
+                self.mww_mode_done = True
             
             # Actual code begins
             # Check for locations
@@ -519,7 +537,7 @@ class KSSUClient(BizHawkClient):
                     (self.mku_level, 1, self.ram_mem_domain),
                     (self.mww_unlocked_planets, 2, self.ram_mem_domain),
                     (self.abilities_recieved, 4, self.ram_mem_domain),
-                    (self.single_use_recieved, 2, self.ram_mem_domain),
+                    (self.single_use_recieved, 4, self.ram_mem_domain),
                     (self.unlock_true_arena, 1, self.ram_mem_domain),
                     (self.rotk_stages, 1, self.ram_mem_domain),
                     (self.planets_completed, 1, self.ram_mem_domain),
@@ -531,6 +549,16 @@ class KSSUClient(BizHawkClient):
                     (self.unlock_nova, 1, self.ram_mem_domain),
                     (self.rainbow_stars, 1, self.ram_mem_domain),
                     (self.tgco_bosses, 1, self.ram_mem_domain),
+                    
+                    (self.tgco_door_1, 2, self.ram_mem_domain),
+                    (self.tgco_door_2, 2, self.ram_mem_domain),
+                    (self.tgco_door_3, 2, self.ram_mem_domain),
+                    (self.tgco_door_4, 2, self.ram_mem_domain),
+                    
+                    (self.mku_door_1, 2, self.ram_mem_domain),
+                    (self.mku_door_2, 2, self.ram_mem_domain),
+                    (self.mku_door_3, 2, self.ram_mem_domain),
+                    (self.mku_door_4, 2, self.ram_mem_domain),
                 ]
             )
             
@@ -589,7 +617,15 @@ class KSSUClient(BizHawkClient):
             planets_cleared = int.from_bytes(read_state[50], "little")
             current_rainbow = int.from_bytes(read_state[51], "little")
             bosses_defeated = int.from_bytes(read_state[52], "little")
-               
+            tgco_block_1 = int.from_bytes(read_state[53], "little")
+            tgco_block_2 = int.from_bytes(read_state[54], "little")
+            tgco_block_3 = int.from_bytes(read_state[55], "little")
+            tgco_block_4 = int.from_bytes(read_state[56], "little")
+            mku_block_1 = int.from_bytes(read_state[57], "little")
+            mku_block_2 = int.from_bytes(read_state[58], "little")
+            mku_block_3 = int.from_bytes(read_state[59], "little")
+            mku_block_4 = int.from_bytes(read_state[60], "little")
+            
             # =================================
             # Item Handling Loop
             # =================================
@@ -608,7 +644,7 @@ class KSSUClient(BizHawkClient):
                             await self.bizhawk_set_halfword(ctx, self.games_unlocked, new_unlocked)
                             # Plays a sound
                             await self.play_sfx(ctx, "Major")
-                            # Make sure it doesnt repeat (probably not necessary tbh)
+                            # Make sure it doesnt repeat. probably not necessary tbh
                             unlocked_games = new_unlocked
                             
                         # The True Arena unlock
@@ -634,7 +670,15 @@ class KSSUClient(BizHawkClient):
                                 await self.play_sfx(ctx, "Ability")
                                 current_abils = new_abilities 
                         else: # Single Use
-                            pass
+                            ability_bit = (network_item.item & 0xFF) - 0x14
+                            new_single_abilities = current_single_abils | (1 << ability_bit)
+                            if new_single_abilities != current_single_abils:
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [(self.single_use_recieved, new_single_abilities.to_bytes(4, "little"), self.ram_mem_domain)],
+                                )
+                                await self.play_sfx(ctx, "Ability")
+                                current_single_abils = new_single_abilities
                     # Treasure
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x200) and network_item.item > 0:
                         treasure_bit = (network_item.item & 0xFF) - 1
@@ -696,8 +740,8 @@ class KSSUClient(BizHawkClient):
                                     await self.play_sfx(ctx, "Progressive")                      
                     # AP-Specific
                     case "Rainbow Star":
-                        if currnet_rainbow < 8:
-                            new_rainbow = currnet_rainbow + 1
+                        if current_rainbow < 8:
+                            new_rainbow = current_rainbow + 1
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [(self.rainbow_stars, new_rainbow.to_bytes(1, "little"), self.ram_mem_domain)],
@@ -751,12 +795,7 @@ class KSSUClient(BizHawkClient):
                 for i in range(dyna_stage):               
                     loc = self.get_location(game_name, f"Stage {i+1}")
                     if loc is not None:
-                        send_locations.add(loc)
-                        
-                for i in range(dyna_stage):               
-                    loc = self.get_location(game_name, f"Stage {i+1}")
-                    if loc is not None:
-                        send_locations.add(loc)
+                        send_locations.add(loc)              
                             
                 # Check if Iron Mam was defeated         
                 if iron_mam == 8:
@@ -829,6 +868,38 @@ class KSSUClient(BizHawkClient):
                             loc = self.get_location(game_name, boss)
                             if loc is not None:
                                 send_locations.add(loc)
+                # TGCO Door 1                
+                if stage == 0 and screen == 11:
+                    if ctx.slot_data.get("the_great_cave_offensive_areas") == 0:
+                        if self.cave_keys_collected >= 1 and tgco_block_1 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_1, 0x80bb)      
+                    else:
+                        if gold >= ctx.slot_data["treasure_value"][0] and tgco_block_1 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_1, 0x80bb) 
+                # TGCO Door 2                
+                if stage == 1 and screen == 8:
+                    if ctx.slot_data.get("the_great_cave_offensive_areas") == 0:
+                        if self.cave_keys_collected >= 2 and tgco_block_2 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_2, 0x80bb)      
+                    else:
+                        if gold >= ctx.slot_data["treasure_value"][1] and tgco_block_2 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_2, 0x80bb) 
+                # TGCO Door 3                
+                if stage == 2 and screen == 35:
+                    if ctx.slot_data.get("the_great_cave_offensive_areas") == 0:
+                        if self.cave_keys_collected >= 3 and tgco_block_3 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_3, 0x80bb)      
+                    else:
+                        if gold >= ctx.slot_data["treasure_value"][2] and tgco_block_3 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_3, 0x80bb) 
+                # TGCO Door 4                
+                if stage == 3 and screen == 24:
+                    if ctx.slot_data.get("the_great_cave_offensive_areas") == 0:
+                        if self.cave_keys_collected >= 4 and tgco_block_4 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_4, 0x80bb)      
+                    else:
+                        if gold >= ctx.slot_data["treasure_value"][3] and tgco_block_4 == 0x808a:
+                            await self.bizhawk_set_halfword(ctx, self.tgco_door_4, 0x80bb) 
                          
 
             # Revenge of Meta Knight
@@ -846,6 +917,12 @@ class KSSUClient(BizHawkClient):
                 for bit, x in MWW_ABILITY_OFFSETS.items():
                     if ability_collected & bit:
                         send_locations.add(BASE_ID + x)
+                     
+            # Planets cleared   
+            if planets_done:
+                for i in range(7):
+                    if planets_done & (1 << i):
+                        send_locations.add(BASE_ID + 90 + i)
 
             if game == 5:
                 game_name = "Milky Way Wishes"
@@ -854,16 +931,7 @@ class KSSUClient(BizHawkClient):
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [(self.mww_abilities, current_abils.to_bytes(4, "little"), self.ram_mem_domain)],
-                    )        
-                # If rainbow key is equal to 7, unlock Galactic Nova
-                new_cleared = 0 
-                for i in range(min(current_rainbow, 7)):
-                    new_cleared |= (1 << i)
-                if planets_cleared != new_cleared and new_cleared:
-                    await bizhawk.write(
-                        ctx.bizhawk_ctx,
-                        [(self.rainbow_stars, new_cleared.to_bytes(1, "little"), self.ram_mem_domain)],
-                    )                
+                    )                       
 
             # Revenge of the King 
             if rotk_stage:  
@@ -895,7 +963,22 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
                 
             if game == 8: 
-                game_name = "Meta Knightmare Ultra"
+                # MKU Door 1                
+                if stage == 0 and screen == 11:
+                    if self.progressive_mku_level >= 1 and mku_block_1 == 0x8038:
+                        await self.bizhawk_set_halfword(ctx, self.mku_door_1, 0x8060)      
+                # MKU Door 2                
+                if stage == 1 and screen == 11:
+                    if self.progressive_mku_level >= 2 and mku_block_2 == 0x8009:
+                        await self.bizhawk_set_halfword(ctx, self.mku_door_2, 0x8193)    
+                # MKU Door 1                
+                if stage == 2 and screen == 11:
+                    if self.progressive_mku_level >= 3 and mku_block_3 == 0x8064:
+                        await self.bizhawk_set_halfword(ctx, self.mku_door_3, 0x814D)      
+                # MKU Door 2                
+                if stage == 3 and screen == 11:
+                    if self.progressive_mku_level >= 4 and mku_block_4 == 0x8001:
+                        await self.bizhawk_set_halfword(ctx, self.mku_door_4, 0x813A)    
 
 
             # Helper to Hero 
@@ -1000,7 +1083,7 @@ class KSSUClient(BizHawkClient):
                 goaled = False
                 required_games = set(ctx.slot_data.get("required_maingames", []))
                 finished_games = self._completed_maingames(ctx)
-                finished_required = required.issubset(finished_games)
+                finished_required = required_games.issubset(finished_games)
 
                 if finished_required:
                     match ctx.slot_data["goal"]:
