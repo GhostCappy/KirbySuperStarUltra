@@ -94,7 +94,7 @@ class KSSUWorld(World):
 
         # No starting game is selected, select one at random.
         if maingame_mapping[self.options.starting_maingame.value] not in self.options.included_maingames:
-            logger.warning(f"Kirby Super Star Ultra({self.player_name}): Starting maingame not included, choosing random.")
+            logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Starting maingame not included, choosing random.")
             self.options.starting_maingame.value = self.random.choice([value[0] for value in maingame_mapping.items()
                                                                       if value[1] in self.options.included_maingames])
 
@@ -126,10 +126,14 @@ class KSSUWorld(World):
         # Might also be able to add HtH and The True Arena
         if not self.options.included_maingames.value.intersection(
                 {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
-            logger.warning(f"Kirby Super Star Ultra({self.player_name}): At least one of The Great Cave Offensive, "
-                              f"Milky Way Wishes, or The Arena must be included. Adding one randomly.")
-            random_game = self.random.choice(["The Great Cave Offensive", "Milky Way Wishes", "The Arena"])
-            self.options.included_maingames.value.add(random_game)
+            raise OptionError(f"Kirby Super Star Ultra ({self.player_name}): At least one of The Great Cave Offensive, "
+                              f"Milky Way Wishes, or The Arena must be included")
+            
+        # Goal is "Main Game Completions", but there's not enough games to goal.
+        if (self.options.goal.current_key == "main_game_completion" and 
+        len(self.options.included_maingames.value) < self.options.required_maingame_completions.value):
+            raise OptionError(f"Kirby Super Star Ultra ({self.player_name}): There are not enough included games "
+                              f"to complete Main-Game Completion goal.")
 
         # proper UT support
         if hasattr(self.multiworld, "generation_is_fake"):
@@ -186,7 +190,7 @@ class KSSUWorld(World):
                 if treasure_value >= max_gold:
                     break
             if self.options.the_great_cave_offensive_areas == "key":
-                total_keys = 3 + self.options.the_great_cave_offensive_keys.value
+                total_keys = 4 + self.options.the_great_cave_offensive_keys.value
                 for i in range(total_keys):
                     itempool.append(self.create_item("Cave Key"))
         
