@@ -9,14 +9,12 @@ class MaingameTest(KSSUTestBase):
         "required_maingame_completions": 1,
     }
 
-
 class TestSpringBreeze(MaingameTest):
     options = {
         **MaingameTest.options,
         "starting_maingame": 0,
         "required_maingames": {"Spring Breeze"}
     }
-
 
     # no extra tests needed really, spring breeze logic is simple
 
@@ -34,8 +32,6 @@ class TestGourmetRace(MaingameTest):
 
     def test_beatable(self):
         self.assertBeatable(True)
-
-# now for the complex ones
 
 class TestDynaBlade(MaingameTest):
     options = {

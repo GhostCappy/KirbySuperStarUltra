@@ -182,7 +182,7 @@ def set_rules(world: "KSSUWorld") -> None:
     # The True Arena
     if "The True Arena" in world.options.included_maingames:
         set_rule = world.set_rule
-        for i in range(3, 10):
+        for i in range(2, 10):
             set_rule(world.get_location(f"The True Arena - {i} Straight Wins"),
                         HasGroupUnique("Copy Ability", 10))
         
