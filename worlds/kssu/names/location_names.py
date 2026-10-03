@@ -161,10 +161,35 @@ rotk_dedede = "Revenge of the King - Stage 5"
 rotk_complete = "Revenge of the King - Complete"
 
 # Meta Knightmare Ultra
+mku_whispy = "Meta Knightmare Ultra - Whispy Woods (Level 1)"
+mku_lololo = "Meta Knightmare Ultra - Lololo & Lalala (Level 1)"
+mku_kracko = "Meta Knightmare Ultra - Kracko (Level 1)"
 mku_level_1 = "Meta Knightmare Ultra - Level 1"
+
+mku_dyna_1 = "Meta Knightmare Ultra - Peanut Plains (Level 2)"
+mku_dyna_2 = "Meta Knightmare Ultra - Mallow Castle (Level 2)"
+mku_dyna_3 = "Meta Knightmare Ultra - Cocoa Cave (Level 2)"
+mku_dyna_4 = "Meta Knightmare Ultra - Candy Mountain (Level 2)"
+mku_iron_mam = "Meta Knightmare Ultra - Iron Mam (Level 2)"
 mku_level_2 = "Meta Knightmare Ultra - Level 2"
+
+mku_fatty_whale = "Meta Knightmare Ultra - Fatty Whale (Level 3)"
+mku_virus = "Meta Knightmare Ultra - Computer Virus (Level 3)"
 mku_level_3 = "Meta Knightmare Ultra - Level 3"
+
+mku_lobster = "Meta Knightmare Ultra - Heavy Lobster 1 (Level 4)"
+mku_twin = "Meta Knightmare Ultra - Twin Woods (Level 4)"
+mku_cannon = "Meta Knightmare Ultra - Main Cannon #2 (Level 4)"
+mku_lobster_2 = "Meta Knightmare Ultra - Heavy Lobster 2 (Level 4)"
 mku_level_4 = "Meta Knightmare Ultra - Level 4"
+
+mku_mww_twin = "Meta Knightmare Ultra - Twin Woods (Level 5)"
+mku_mww_fatty = "Meta Knightmare Ultra - Fatty Whale (Level 5)"
+mku_mww_kracko = "Meta Knightmare Ultra - Kracko (Level 5)"
+mku_mww_chameleon = "Meta Knightmare Ultra - Chameleo Arm (Level 5)"
+mku_mww_wham_bam = "Meta Knightmare Ultra - Wham Bam Rock (Level 5)"
+mku_mww_lobster = "Meta Knightmare Ultra - Heavy Lobster (Level 5)"
+mku_mww_virus = "Meta Knightmare Ultra - Computer Virus (Level 5)"
 mku_level_5 = "Meta Knightmare Ultra - Level 5"
 mku_complete = "Meta Knightmare Ultra - Complete"
 

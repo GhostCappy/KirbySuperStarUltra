@@ -331,25 +331,47 @@ revenge_of_the_king_locations = {
 }
 
 # This might need to be changed level to account for beating each individual stage within each level. 
+# Yes I did
 # Memory address only updates stage count for each level.
 mku_level_1_locations = {
-    location_names.mku_level_1: LocationData(BASE_ID + 156)
+    location_names.mku_whispy: LocationData(BASE_ID + 500),
+    location_names.mku_lololo: LocationData(BASE_ID + 501),
+    location_names.mku_kracko: LocationData(BASE_ID + 502),
+    location_names.mku_level_1: LocationData(BASE_ID + 503),
 }
 
 mku_level_2_locations = {
-    location_names.mku_level_2: LocationData(BASE_ID + 157)
+    location_names.mku_dyna_1: LocationData(BASE_ID + 504),
+    location_names.mku_dyna_2: LocationData(BASE_ID + 505),
+    location_names.mku_dyna_3: LocationData(BASE_ID + 506),
+    location_names.mku_dyna_4: LocationData(BASE_ID + 507),
+    location_names.mku_iron_mam: LocationData(BASE_ID + 508),
+    location_names.mku_level_2: LocationData(BASE_ID + 509),
 }
 
 mku_level_3_locations = {
-    location_names.mku_level_3: LocationData(BASE_ID + 158)
+    location_names.mku_fatty_whale: LocationData(BASE_ID + 510),
+    location_names.mku_virus: LocationData(BASE_ID + 511),
+    location_names.mku_level_3: LocationData(BASE_ID + 512),
 }
 
 mku_level_4_locations = {
-    location_names.mku_level_4: LocationData(BASE_ID + 159)
+    location_names.mku_lobster: LocationData(BASE_ID + 513),
+    location_names.mku_twin: LocationData(BASE_ID + 514),
+    location_names.mku_cannon: LocationData(BASE_ID + 515),
+    location_names.mku_lobster_2: LocationData(BASE_ID + 516),
+    location_names.mku_level_4: LocationData(BASE_ID + 517),
 }
 
 mku_level_5_locations = {
-    location_names.mku_level_5: LocationData(BASE_ID + 160),
+    location_names.mku_mww_twin: LocationData(BASE_ID + 518),
+    location_names.mku_mww_fatty: LocationData(BASE_ID + 519),
+    location_names.mku_mww_kracko: LocationData(BASE_ID + 520),
+    location_names.mku_mww_chameleon: LocationData(BASE_ID + 521),
+    location_names.mku_mww_wham_bam: LocationData(BASE_ID + 522),
+    location_names.mku_mww_lobster: LocationData(BASE_ID + 523),
+    location_names.mku_mww_virus: LocationData(BASE_ID + 524),
+    location_names.mku_level_5: LocationData(BASE_ID + 525),
     location_names.mku_complete: LocationData(None)
 }
 
