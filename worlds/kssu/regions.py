@@ -265,11 +265,11 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion) -> None:
     locations: dict[str, LocationData]
     
     for i, (region, connection, locations) in enumerate(
-                                        zip(mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5),
+                                        zip((mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5),
                                              (mku_level_2, mku_level_3, mku_level_4, mku_level_5, None),
                                              (mku_level_1_locations, mku_level_2_locations, mku_level_3_locations,
                                               mku_level_4_locations, mku_level_5_locations)
-                                             ):
+                                             )):
         
         if connection:
             access_rule = lambda state, x=i + 1: state.has(item_names.progressive_mku, world.player, x)

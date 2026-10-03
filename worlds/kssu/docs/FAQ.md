@@ -30,15 +30,24 @@ ___
 ### Are there any known bugs?
 
 - Occasionally in MWW, the abilities on the bottom screen will be the wrong color.
-- The treasures on the pause screen of TGCO cannot be selected.
 - When watching the beginner show, you may experience some visual bugs. It's best to skip these.
-- Swallowing two enemies will still give you at least one of the abilities.
+- Swallowing two enemies will still give you at least one of the abilities or mix, even if the ability isn't unlocked.
+- When a progressive key is recieved for TGCO or MKU, the barrier will still be there visually (read more below)
 
 ___
 ### I found another bug, where do I report it?
 
 Report in the discord thread, which can be found [here](https://discord.com/channels/731205301247803413/1373856853775220836).
 I will review it and try to fix it for a future version.
+
+___
+### I got a progressive key in The Great Cave Offensive / Meta Knightmare Ultra, but the block is still there!
+
+Try pausing and unpausing your game to see if it disappears. Otherwise, please report this bug to me directly.
+This bug will happen in Meta Knightmare Ultra when re-loading your save. Please make sure to try this first.
+(You can also just walk through the block, it'll only be there visually but not physically.)
+
+In a future update, this problem will hopefully be resolved in a better fashion.
 
 ___  
 ### Is there a tracker for this game?
@@ -63,6 +72,15 @@ ___
 
 This happens when you try to enter a game you do not have unlocked yet. Double-check to make sure you are properly connected
 with the LUA and to the Archipelago server.
+
+___
+### I got a progressive key in The Great Cave Offensive / Meta Knightmare Ultra, but the block is still there!
+
+Try pausing and unpausing your game to see if it disappears. Otherwise, please report this bug to me directly.
+This bug will happen in Meta Knightmare Ultra when re-loading your save. Please make sure to try this first.
+(You can also just walk through the block, it'll only be there visually but not physically.)
+
+In a future update, this problem will hopefully be resolved in a better fashion.
 
 ___
 ### Are there any features you plan to add?

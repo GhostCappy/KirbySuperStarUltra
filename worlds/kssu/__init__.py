@@ -20,7 +20,7 @@ from .regions import create_regions
 from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanity
 from .client import KSSUClient 
 from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
-                    main_games, sub_games, dyna_items, planets, treasures)
+                    main_games, sub_games, dyna_items, mku_items, planets, treasures)
 from .locations import location_table, KSSULocation, samurai_locations
 from .rules import set_rules
 from . import web_world
@@ -209,7 +209,13 @@ class KSSUWorld(World):
             if self.options.milky_way_wishes_mode == "multiworld":
                 itempool.extend(self.create_item(item_names.rainbow_star) for _ in range(7))
                 
-                
+        # If Meta Knightmare Ultra is included, add its items
+        if "Meta Knightmare Ultra" in self.options.included_maingames:
+            itempool.extend([self.create_item(name)
+                             for name, data in mku_items.items()
+                             for _num in range(data.num)
+                             ])
+            
         # If the subgames are included, add them.
         if self.options.include_subgames.value:
             itempool.extend([self.create_item(name) for name in sub_games])
