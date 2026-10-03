@@ -1,0 +1,324 @@
+import os
+import typing
+import logging
+import pkgutil
+import threading
+import base64
+import math
+
+# Shows warning but should work without issue
+import settings
+from worlds.AutoWorld import World
+from BaseClasses import MultiWorld, ItemClassification, Item, CollectionState
+from Options import OptionError
+
+from typing import Any, List, Mapping, Dict, ClassVar
+
+from .names import item_names
+from .rom import KSSUProcedurePatch, write_tokens
+from .regions import create_regions
+from .options import KSSUOptions, maingame_mapping, IncludedMainGames, Foodsanity
+from .client import KSSUClient 
+from .items import (lookup_item_to_id, item_table, item_groups, KSSUItem, filler_item_weights, copy_abilities,
+                    main_games, sub_games, dyna_items, mku_items, planets, treasures)
+from .locations import location_table, KSSULocation, samurai_locations
+from .rules import set_rules
+from . import web_world
+logger = logging.getLogger("Kirby Super Star Ultra")
+
+    
+# Details for game ROM
+class KSSUSettings(settings.Group):
+    class RomFile(settings.UserFilePath):
+        """File name of the Kirby Super Star Ultra rom"""
+
+        copy_to = "Kirby Super Star Ultra (USA).nds"
+        description = "Kirby Super Star Ultra (USA) ROM File"
+        md5s = ["c0c84468ce0c9c7b3b97246ec443df1f"]
+
+    rom_file: RomFile = RomFile(RomFile.copy_to)
+    rom_start: bool = True
+
+class KSSUEventItem(Item):
+    game = "Kirby Super Star Ultra"
+    event = True
+
+    def __init__(self, name: str, player: int):
+        super().__init__(name, ItemClassification.progression, None, player)
+        
+# APWorld information
+class KSSUWorld(World):
+    """
+    Kirby Super Star Ultra is a remake of the Super Nintendo Entertainment System game Kirby Super Star.
+    The remake retains all game modes found in the original and adds four major new ones.
+    """
+    game = "Kirby Super Star Ultra"
+    item_name_to_id = lookup_item_to_id
+    item_name_groups = item_groups
+    options_dataclass = KSSUOptions
+    options: KSSUOptions
+    web = web_world.KSSUWeb()
+    treasure_value: List[int]
+    settings: typing.ClassVar[KSSUSettings]
+    location_name_to_id = {location: data.code
+                           for location, data in location_table.items() if data.code}
+    
+    def __init__(self, multiworld: MultiWorld, player: int):
+        super().__init__(multiworld, player)
+        self.rom_name: bytearray = bytearray()
+        self.rom_name_available_event = threading.Event()
+        self.treasure_value = []
+          
+    # Verifies user options
+    def generate_early(self) -> None:        
+        # Goal doesn't require the game it needs to goal.    
+        goal_required_game = {
+            "milky_way_wishes": "Milky Way Wishes",
+            "the_arena": "The Arena",
+            "revenge_of_the_king": "Revenge of The King",
+            "meta_knightmare_ultra": "Meta Knightmare Ultra",
+            "marx_soul": "The True Arena",
+        }.get(self.options.goal.current_key)
+
+        if goal_required_game and goal_required_game not in self.options.required_maingames.value:
+            logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Goal requires {goal_required_game}, "
+                        f"adding to required main-games.")
+            self.options.required_maingames.value.add(goal_required_game)
+
+        # Game in "Required Game" is not included in "Included Games"
+        for game in sorted(self.options.required_maingames.value):
+            if game not in self.options.included_maingames.value:
+                logger.warning(F"Kirby Super Star Ultra({self.player_name}): Required main-game {game} not included, "
+                               F"adding to included main-games")
+                self.options.included_maingames.value.add(game)
+
+        # No starting game is selected, select one at random.
+        if maingame_mapping[self.options.starting_maingame.value] not in self.options.included_maingames:
+            logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Starting maingame not included, choosing random.")
+            self.options.starting_maingame.value = self.random.choice([value[0] for value in maingame_mapping.items()
+                                                                      if value[1] in self.options.included_maingames])
+
+        # There are more required games than included games?
+        ## IDT This can happen if we include required games as required...
+        if self.options.required_maingame_completions > len(self.options.included_maingames.value):
+            logger.warning(f"Kirby Super Star Ultra ({self.player_name}): Required maingame count greater than "
+                           f"included maingames, reducing to all included.")
+            self.options.required_maingame_completions.value = len(self.options.included_maingames.value)
+
+        if "The Great Cave Offensive" in self.options.included_maingames:
+            # If thresholds are messed up (Ex. Crystal has a higher threshold than Old Tower)
+            if (self.options.the_great_cave_offensive_thresholds["Crystal"] >
+                    self.options.the_great_cave_offensive_thresholds["Old Tower"]):
+                logger.warning(f"TGCO ({self.player_name}): Crystal threshold is greater than Old Tower, swapping")
+                temp = self.options.the_great_cave_offensive_thresholds["Old Tower"]
+                self.options.the_great_cave_offensive_thresholds.value["Old Tower"] =\
+                    self.options.the_great_cave_offensive_thresholds["Crystal"]
+                self.options.the_great_cave_offensive_thresholds.value["Crystal"] = temp
+            if (self.options.the_great_cave_offensive_thresholds["Old Tower"] >
+                    self.options.the_great_cave_offensive_thresholds["Garden"]):
+                logger.warning(f"TGCO ({self.player_name}): Old Tower threshold is greater than Garden, swapping")
+                temp = self.options.the_great_cave_offensive_thresholds["Garden"]
+                self.options.the_great_cave_offensive_thresholds.value["Garden"] =\
+                    self.options.the_great_cave_offensive_thresholds["Old Tower"]
+                self.options.the_great_cave_offensive_thresholds.value["Old Tower"] = temp
+
+        # Options need one of TGCO, MWW or The Arena to have enough checks. Add them.
+        # Might also be able to add HtH and The True Arena
+        if not self.options.included_maingames.value.intersection(
+                {"The Great Cave Offensive", "Milky Way Wishes", "The Arena"}):
+            raise OptionError(f"Kirby Super Star Ultra ({self.player_name}): At least one of The Great Cave Offensive, "
+                              f"Milky Way Wishes, or The Arena must be included")
+            
+        # Goal is "Main Game Completions", but there's not enough games to goal.
+        if (self.options.goal.current_key == "main_game_completion" and 
+        len(self.options.included_maingames.value) < self.options.required_maingame_completions.value):
+            raise OptionError(f"Kirby Super Star Ultra ({self.player_name}): There are not enough included games "
+                              f"to complete Main-Game Completion goal.")
+
+        # proper UT support
+        if hasattr(self.multiworld, "generation_is_fake"):
+            self.options.included_maingames = IncludedMainGames.valid_keys
+            self.options.foodsanity.value = False
+            self.options.essences.value = False
+          
+    def create_item(self, name, force_classification: ItemClassification | None = None):
+        # Make sure the item is in the item table
+        if name not in item_table:
+            raise Exception(f"{name} is not a valid item name for Kirby Super Star Ultra.")
+        
+        # If it is, set its classification
+        data = item_table[name]
+        classification = force_classification if force_classification else data.classification
+        return KSSUItem(name, classification, data.code, self.player)
+
+    def create_items(self) -> None:
+        itempool = []
+        # Add the included games
+        modes = [self.create_item(name) for name in main_games if name in self.options.included_maingames]
+        starting_mode = self.create_item(maingame_mapping[self.options.starting_maingame.value])
+
+        # At least one game is needed to play. This game should be removed from item pool.
+        modes.remove(starting_mode)
+        self.multiworld.push_precollected(starting_mode)
+
+        # Add copy abilities
+        itempool.extend([self.create_item(name) for name in copy_abilities])
+        itempool.extend(modes)
+
+        # Used for TGCO
+        treasure_value = 0
+        
+        # If Dyna blade is included, add its items
+        if "Dyna Blade" in self.options.included_maingames:
+            itempool.extend([self.create_item(name)
+                             for name, data in dyna_items.items()
+                             for _num in range(data.num)
+                             ])
+            
+        # If TGCO is included, add its items
+        if "The Great Cave Offensive" in self.options.included_maingames:
+            max_gold = (math.floor((9999990 - self.options.the_great_cave_offensive_required_gold.value) *
+                                    (self.options.the_great_cave_offensive_excess_gold.value / 100))
+                        + self.options.the_great_cave_offensive_required_gold.value)
+            for name, treasure in sorted(treasures.items(), key=(lambda treasure: treasure[1].value), reverse=True):
+                item = self.create_item(name)
+                # Make all treasure filler if set to "Key" mode.
+                if self.options.the_great_cave_offensive_areas != "gold":
+                    item.classification = ItemClassification.filler
+                itempool.append(item)
+                treasure_value += treasure.value
+                if treasure_value >= max_gold:
+                    break
+            if self.options.the_great_cave_offensive_areas == "key":
+                total_keys = 4 + self.options.the_great_cave_offensive_keys.value
+                for i in range(total_keys):
+                    itempool.append(self.create_item("Cave Key"))
+        
+        # If Milky Way Wishes is included, add its items
+        if "Milky Way Wishes" in self.options.included_maingames:
+            # Start with a random planet, and remove it from the pool
+            planet = [self.create_item(name) for name in planets]
+            starting_planet = self.random.choice(planet)
+            planet.remove(starting_planet)
+            self.multiworld.push_precollected(starting_planet)
+
+            # Add the rest
+            itempool.extend(planet)
+
+            # If the YAML is set to mulitworld, the "rainbow star" item will be included in the pool.
+            if self.options.milky_way_wishes_mode == "multiworld":
+                itempool.extend(self.create_item(item_names.rainbow_star) for _ in range(7))
+                
+        # If Meta Knightmare Ultra is included, add its items
+        if "Meta Knightmare Ultra" in self.options.included_maingames:
+            itempool.extend([self.create_item(name)
+                             for name, data in mku_items.items()
+                             for _num in range(data.num)
+                             ])
+            
+        # If the subgames are included, add them.
+        if self.options.include_subgames.value:
+            itempool.extend([self.create_item(name) for name in sub_games])
+            wins = self.options.samurai_kirby_wins.value
+            for name in list(samurai_locations.keys())[wins:]:
+                location = self.multiworld.get_location(name, self.player)
+                location.place_locked_item(self.create_item(self.get_filler_item_name()))
+
+        location_count = len(list(self.multiworld.get_unfilled_locations(self.player))) - len(itempool)
+        if location_count < 0:
+            if "The Great Cave Offensive" in self.options.included_maingames:
+                sorted_treasures = sorted(treasures.items(), key=lambda treasure: treasure[1].value)
+                while location_count < 0:
+                    name, treasure = sorted_treasures.pop(0)
+                    item = next((item for item in itempool if item.name == name), None)
+                    if item:
+                        itempool.remove(item)
+                        treasure_value -= treasure.value
+                        location_count += 1
+            else:
+                raise OptionError("Unable to create item pool with current settings.")
+            
+        itempool.extend([self.create_item(filler) for filler in
+                         self.random.choices(list(filler_item_weights.keys()),
+                                             weights=list(filler_item_weights.values()),
+                                             k=location_count)])
+        
+        required_gold = min(self.options.the_great_cave_offensive_required_gold.value, treasure_value)
+
+        self.treasure_value = [*[math.floor(required_gold *
+                                            (self.options.the_great_cave_offensive_thresholds[region] / 100))
+                                for region in ["Crystal", "Old Tower", "Garden"]],
+                               self.options.the_great_cave_offensive_required_gold.value]
+        
+        self.multiworld.itempool += itempool
+        # DEBUG: detect event items placed on real locations
+        for loc in self.multiworld.get_locations(self.player):
+            if loc.address is not None and loc.item and getattr(loc.item, "code", None) is None:
+                print("BAD EVENT ITEM:", loc.name, "has", loc.item.name)
+
+        
+    set_rules = set_rules
+    create_regions = create_regions
+
+    def get_filler_item_name(self) -> str:
+        return self.random.choices(list(filler_item_weights.keys()), weights=list(filler_item_weights.values()), k=1)[0]
+    
+    def fill_slot_data(self) -> Mapping[str, Any]:
+        slot_data = self.options.as_dict("included_maingames", "foodsanity", "essences", 
+                                         "milky_way_wishes_mode", "deathlink", "required_maingame_completions",
+                                         "the_great_cave_offensive_areas")
+        slot_data.update({
+            "goal": self.options.goal.current_key,
+            "treasure_value": self.treasure_value,
+            "required_maingames": sorted(self.options.required_maingames.value),
+        })
+        return slot_data
+    
+    @staticmethod
+    def interpret_slot_data(slot_data: Dict[str, Any]) -> Dict[str, Any]:
+        return slot_data
+    
+    def generate_output(self, output_directory: str) -> None:
+        try:
+            patch = KSSUProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
+            patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/KSSUAPPatch.bsdiff"))
+            write_tokens(patch)
+            rom_path = os.path.join(
+                output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
+            )
+            patch.write(rom_path)
+            
+            # Use the actual output filename as ROM name
+            rom_filename = os.path.basename(rom_path)
+            self.rom_name = bytearray(rom_filename, "utf-8")
+
+            # Signal modify_multidata() that ROM name is ready
+            self.rom_name_available_event.set()
+        except Exception:
+            raise
+
+    def modify_multidata(self, multidata: Dict[str, Any]) -> None:
+        self.rom_name_available_event.wait()
+        assert isinstance(self.rom_name, bytearray)
+        rom_name = getattr(self, "rom_name", None)
+        if rom_name:
+            new_name = base64.b64encode(self.rom_name).decode()
+            multidata["connect_names"][new_name] = multidata["connect_names"][self.multiworld.player_name[self.player]]
+            
+    def collect(self, state: "CollectionState", item: "Item") -> bool:
+        value = super().collect(state, item)
+
+        if item.name in treasures:
+            state.prog_items[self.player]["Gold"] += treasures[item.name].value
+
+        return value
+
+    def remove(self, state: "CollectionState", item: "Item") -> bool:
+        value = super().remove(state, item)
+
+        if item.name in treasures:
+            state.prog_items[self.player]["Gold"] -= treasures[item.name].value
+            if not state.prog_items[self.player]["Gold"]:
+                del state.prog_items[self.player]["Gold"]
+
+        return value
