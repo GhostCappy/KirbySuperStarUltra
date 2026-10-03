@@ -160,11 +160,6 @@ def cmd_sub_area(self: "BizHawkClientCommandProcessor", area: str | None = None)
     required_gold = self.ctx.slot_data["treasure_value"][valid_areas.index(match)]
     logger.info(f"{match} requires {required_gold} gold to obtain access.")
 
-# Work on LATER
-# Toggle Deathlink on or off.
-def cmd_deathlink(self: "BizHawkClientCommandProcessor") -> None:
-    pass
-
 # This is gunna take forever.
 # Yeah it did
 class KSSUClient(BizHawkClient):
@@ -178,6 +173,7 @@ class KSSUClient(BizHawkClient):
     datapackage_requested = False
     item_queue: List[NetworkItem] = []
     player_actionable = False
+    stateAlive = True
     
     cave_keys_collected = 0
     progressive_mku_level = 0
@@ -193,7 +189,7 @@ class KSSUClient(BizHawkClient):
     
     games_cleared = 0x05C158
     
-    game_state = 0x042219
+    game_state = 0x041E77
     
     ## Kirby
     kirby_lifes = 0x05B824
@@ -298,7 +294,6 @@ class KSSUClient(BizHawkClient):
         self.local_checked_locations = set()
         self.seed_verify = False
         self.location_name_to_id = None
-        self.deathlink_enabled = False
         self.received_deathlink = False
         self.mww_mode_done = False
      
@@ -331,6 +326,8 @@ class KSSUClient(BizHawkClient):
             ctx.command_processor.commands["keys"] = cmd_keys
         if "sub_area" not in ctx.command_processor.commands:
             ctx.command_processor.commands["sub_area"] = cmd_sub_area
+            
+    
         return True
 
     def on_package(self, ctx, cmd, args) -> None:
@@ -351,20 +348,18 @@ class KSSUClient(BizHawkClient):
         name = f"{game} - {label}"
         return self.location_name_to_id.get(name)
     
-    # Deathlink not yet implemented
     # Function that kills player when deathlink is recieved
     async def deathlink_kill_player(self, ctx):
         await self.in_game(ctx)
-        if not self.player_actionable:
-            return
-        else:
+        if self.player_actionable:
+            # Die.
             await bizhawk.write(
                 ctx.bizhawk_ctx,
                 [(self.kirby_hp, (0).to_bytes(1, "little"), self.ram_mem_domain)]
             )
+            self.stateAlive = False
             # Set death state (to avoid mulitple deaths in a row)
-            self.last_death_link = time.time()
-
+            ctx.last_death_link = time.time()
 
     async def play_sfx(self, ctx: "BizHawkClientContext", sfx: str) -> None:
         sound: dict[str, int] = {
@@ -389,7 +384,7 @@ class KSSUClient(BizHawkClient):
         in_game = int.from_bytes(read_state[0], "little")
         demo_check = int.from_bytes(read_state[1], "little")
     
-        if in_game == 68 and demo_check != 11:
+        if in_game == 64 and demo_check != 11:
             self.player_actionable = True
         else:
             self.player_actionable = False
@@ -427,7 +422,6 @@ class KSSUClient(BizHawkClient):
                 case "Invincible Candy":
                     await self.bizhawk_set_halfword(ctx, self.candy_timer, 1320)
                     await self.play_sfx(ctx, "Filler")    
-                    # What did you get???
         else:
             pass
 
@@ -446,19 +440,7 @@ class KSSUClient(BizHawkClient):
                 # logger.info("slot data not initialized")
                 return   
             # else:
-            # logger.info("slot data initialized correctly")
-            # If deathlink is enabled in options, turn it on for client
-            if ctx.slot_data:
-                if "deathlink" in ctx.slot_data:
-                    if ("DeathLink" not in ctx.tags) and ctx.slot_data["deathlink"]:
-                        await ctx.update_death_link(True)
-                        self.deathlink_enabled = True
-                    # If (somehow) deathlink is in the tags but not enabled, turn it off
-                    elif ("DeathLink" in ctx.tags) and not ctx.slot_data["deathlink"]:
-                        await ctx.update_death_link(False)
-                        self.deathlink_enabled = False
-                else:
-                    return          
+            # logger.info("slot data initialized correctly")      
             if self.location_name_to_id is None:
                 if not self.datapackage_requested:
                     await ctx.send_msgs([{"cmd": "GetDataPackage", "games": [self.game]}])
@@ -556,6 +538,8 @@ class KSSUClient(BizHawkClient):
                     (self.mku_door_2, 2, self.ram_mem_domain),
                     (self.mku_door_3, 2, self.ram_mem_domain),
                     (self.mku_door_4, 2, self.ram_mem_domain),
+                    
+                    (self.kirby_hp, 2, self.ram_mem_domain),
                 ]
             )
             
@@ -622,6 +606,7 @@ class KSSUClient(BizHawkClient):
             mku_block_2 = int.from_bytes(read_state[58], "little")
             mku_block_3 = int.from_bytes(read_state[59], "little")
             mku_block_4 = int.from_bytes(read_state[60], "little")
+            current_hp = int.from_bytes(read_state[61], "little")
             
             # =================================
             # Item Handling Loop
@@ -701,11 +686,6 @@ class KSSUClient(BizHawkClient):
                                 )
                                 await self.play_sfx(ctx, "Treasure")
                                 treasure_received_2 = new_treasure
-                        # gold amount does NOT get updated until TGCO is loaded
-                        self.new_gold = gold + treasure_value
-                        # Make sure gold is never over the max
-                        if self.new_gold > 9999990:
-                            self.new_gold = 9999990
 
                     # Planets
                     case _ if (network_item.item & 0xFFFF00) == (BASE_ID | 0x400) and network_item.item > 0:
@@ -862,6 +842,14 @@ class KSSUClient(BizHawkClient):
                 for i in range(28):
                     if treasure_collected_2 & (1 << i):
                         send_locations.add(BASE_ID + 51 + i)
+
+            # Update gold count
+            treasure_value = 0
+            for item in ctx.items_received:
+                if (item.item & 0xFFFF00) == (BASE_ID | 0x200) and item.item > 0:
+                    name = ctx.item_names.lookup_in_game(item.item)
+                    treasure_value += treasures[name].value
+            self.new_gold = min(treasure_value, 9999990)
                             
             if game == 3:
                 game_name = "The Great Cave Offensive"
@@ -1131,8 +1119,31 @@ class KSSUClient(BizHawkClient):
                         send_locations.add(loc)
             
             # --- DeathLink ---
-            # Need a better way to track player in-game.
-
+            # If deathlink is enabled in options, turn it on for client
+            if ctx.slot_data:
+                if "deathlink" in ctx.slot_data:
+                    if ("DeathLink" not in ctx.tags) and ctx.slot_data["deathlink"]:
+                        await ctx.update_death_link(True)
+                    # If (somehow) deathlink is in the tags but not enabled, turn it off
+                    elif ("DeathLink" in ctx.tags) and not ctx.slot_data["deathlink"]:
+                        await ctx.update_death_link(False)
+                else:
+                    return   
+                 
+            if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
+                await self.in_game(ctx)
+                if self.player_actionable:
+                    # Deathlink Received
+                    if self.received_deathlink and current_hp > 0:
+                        self.received_deathlink = False
+                        await self.deathlink_kill_player(ctx)
+                    # Deathlink Sent
+                    elif current_hp == 0 and self.stateAlive == True:
+                        self.stateAlive = False
+                        await ctx.send_death(f"{ctx.player_names[ctx.slot]} sent a deathlink!")
+                    elif current_hp > 0:
+                        self.stateAlive = True  
+                        
             # --- Send locations if changed ---
             if send_locations != self.local_checked_locations:
                 self.local_checked_locations = send_locations

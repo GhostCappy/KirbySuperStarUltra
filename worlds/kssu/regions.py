@@ -260,13 +260,20 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion) -> None:
     mku_level_4 = create_region("Level 4", world)
     mku_level_5 = create_region("Level 5", world)
 
-    for region, connection, locations in zip((mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5),
+    region: KSSURegion
+    connection: KSSURegion
+    locations: dict[str, LocationData]
+    
+    for i, (region, connection, locations) in enumerate(
+                                        zip(mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5),
                                              (mku_level_2, mku_level_3, mku_level_4, mku_level_5, None),
                                              (mku_level_1_locations, mku_level_2_locations, mku_level_3_locations,
                                               mku_level_4_locations, mku_level_5_locations)
                                              ):
+        
         if connection:
-            region.connect(connection)
+            access_rule = lambda state, x=i + 1: state.has(item_names.progressive_mku, world.player, x)
+            region.connect(connection, rule=access_rule)
         add_locations(world, region, locations)
 
     menu.connect(meta_knightmare_ultra, None, lambda state: state.has(item_names.meta_knightmare_ultra, world.player))
@@ -274,8 +281,6 @@ def create_meta_knightmare_ultra(world: "KSSUWorld", menu: KSSURegion) -> None:
     world.get_location(location_names.mku_complete).place_locked_item(
         world.create_item(item_names.meta_knightmare_ultra_complete))
     world.multiworld.regions.extend([meta_knightmare_ultra, mku_level_1, mku_level_2, mku_level_3, mku_level_4, mku_level_5])
-
-
 
 def create_regions(world: "KSSUWorld") -> None:
     menu = create_region("Menu", world)

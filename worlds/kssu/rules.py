@@ -118,7 +118,7 @@ def revenge_of_metaknight_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_entrance("RoMK - Chapter 3 -> RoMK - Chapter 4"),
              Has(item_names.fire))
     set_rule(world.get_entrance("RoMK - Chapter 4 -> RoMK - Chapter 5"),
-             HasAny(item_names.beam, item_names.yoyo, item_names.jet, item_names.bomb))
+             HasAny(item_names.beam, item_names.yoyo, item_names.jet, item_names.beam, item_names.cutter))
     set_rule(world.get_location(location_names.romk_chapter_6),
              HasAny(item_names.wing, item_names.suplex))
     set_rule(world.get_entrance("RoMK - Chapter 6 -> RoMK - Chapter 7"),
