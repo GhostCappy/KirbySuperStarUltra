@@ -19,6 +19,25 @@ ___
 - The APWorld itself re-uses and tweaks some code from pre-existing worlds. For more information, please refer to the [credits](https://github.com/GhostCappy/KirbySuperStarUltra/blob/main/worlds/kssu/docs/credits.md) page.
 - Documentation for all assembly changes can be found [here](https://docs.google.com/document/d/17oQgLhXj-Uu3xDFecNxVluyk4rJFPOidhxv2isrZJZo).
 
+___  
+### Is there a tracker for this game?
+
+There is no dedicated tracker for this game at the moment. However, it was made in mind to be compatible with Universal Tracker, which
+can be found [here](https://github.com/FarisTheAncient/Archipelago/releases)
+
+___  
+### How do I check the gold thresholds for TGCO (and other important items)? 
+
+Inside the client, you can run /sub_area (area) to see how much gold is required to progress.
+Ex. /sub_area Old Tower
+
+There are also some other useful commands inside the client, including:
+- /games (Shows all the games you currently have unlocked)
+- /planets (Shows all the planets you currently have unlocked)
+- /ability (Shows all the abilities you currently have unlocked)
+- /keys (Shows all the keys / progressive stages you currently have.)
+- /sub_area (Tells you the gold threshold to progress through an area in TGCO.)
+
 ___
 ### Will there be PAL or JPN support in the future?
 
@@ -41,33 +60,6 @@ Report in the discord thread, which can be found [here](https://discord.com/chan
 I will review it and try to fix it for a future version.
 
 ___
-### I got a progressive key in The Great Cave Offensive / Meta Knightmare Ultra, but the block is still there!
-
-Try pausing and unpausing your game to see if it disappears. Otherwise, please report this bug to me directly.
-This bug will happen in Meta Knightmare Ultra when re-loading your save. Please make sure to try this first.
-(You can also just walk through the block, it'll only be there visually but not physically.)
-
-In a future update, this problem will hopefully be resolved in a better fashion.
-
-___  
-### Is there a tracker for this game?
-
-There is no dedicated tracker for this game at the moment. However, it was made in mind to be compatible with Universal Tracker, which
-can be found [here](https://github.com/FarisTheAncient/Archipelago/releases)
-
-___  
-### How do I check the gold thresholds for TGCO (and other important items)? 
-
-Inside the client, you can run /sub_area (area) to see how much gold is required to progress.
-Ex. /sub_area Old Tower
-
-There are also some other useful commands inside the client, including:
-- /games (Shows all the games you currently have unlocked)
-- /planets (Shows all the planets you currently have unlocked)
-- /ability (Shows all the abilities you currently have unlocked)
-- /keys (Shows all the keys / progressive stages you currently have.)
-- /sub_area (Tells you the gold threshold to progress through an area in TGCO.)
-___
 ### When I try to enter a game, it kicks me back out to the game select menu!
 
 This happens when you try to enter a game you do not have unlocked yet. Double-check to make sure you are properly connected
@@ -81,6 +73,14 @@ This bug will happen in Meta Knightmare Ultra when re-loading your save. Please 
 (You can also just walk through the block, it'll only be there visually but not physically.)
 
 In a future update, this problem will hopefully be resolved in a better fashion.
+
+___
+### I beat a level in Meta Knightmare Ultra, but the check didn't send!
+
+Use the save point to send the check. You can also complete multiple levels before using the save
+to send multiple checks, or beat the whole thing to send them all at once.
+
+If this does not work, double check that you are connected before sending a bug report.
 
 ___
 ### Are there any features you plan to add?
@@ -99,7 +99,9 @@ ___
 ### I lost my save game! How do I make sure this doesn't happen again?
 
 In some versions of Bizhawk, there is an option that tries to save the game, but fails. You can turn this options off by
-going to Config→Customize, switching to the advanced tab and turning off AutoSaveRAM. Another way to ensure that Bizhawk 
-saves properly is by saving the game like normal (at a bed) and then going to File->Save Ram->Flush Save Ram or pressing 
-Control+S
+going to Config→Customize, switching to the advanced tab and turning off AutoSaveRAM. If it is turned off, you can
+try instead turning it on.
+
+Another way to ensure that Bizhawk saves properly is by saving the game and then going to File->Save Ram->Flush Save Ram,
+or pressing Control+S
 

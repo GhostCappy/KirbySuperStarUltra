@@ -51,7 +51,7 @@ def the_great_cave_rules(world: "KSSUWorld") -> None:
     set_rule(world.get_location(location_names.tgco_treasure_4),
              HasAny(item_names.wing, item_names.plasma))
     set_rule(world.get_location(location_names.tgco_treasure_7),
-             HasAny(item_names.beam, item_names.wing, item_names.plasma))
+             HasAny(item_names.beam, item_names.wing, item_names.plasma, item_names.fighter))
     set_rule(world.get_location(location_names.tgco_treasure_13),
              HasAny(item_names.cutter, item_names.sword, item_names.wing))
     set_rule(world.get_location(location_names.tgco_treasure_18),

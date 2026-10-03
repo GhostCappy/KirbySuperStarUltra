@@ -929,9 +929,9 @@ class KSSUClient(BizHawkClient):
             # Dreadful: Part 2
             # If ability is collected in-game
             if cleared_games & 32:
-                loc = self.get_location("Galactic Nova")
+                loc = self.location_name_to_id.get("Galactic Nova")
                 if loc is not None:
-                    send_locations.add(loc) 
+                    send_locations.add(loc)
                     
             if ability_collected:
                 for bit, x in MWW_ABILITY_OFFSETS.items():
@@ -991,7 +991,12 @@ class KSSUClient(BizHawkClient):
                 game_name = "Meta Knightmare Ultra"
                 loc = self.get_location(game_name, "Complete")
                 if loc is not None:
-                    send_locations.add(loc)     
+                    send_locations.add(loc)    
+                # Send levels if they weren't sent 
+                for i in range(5):
+                    loc = self.get_location(game_name, f"Level {i+1}")
+                    if loc is not None:
+                        send_locations.add(loc)
                     
             if mku_complete:
                 game_name = "Meta Knightmare Ultra"

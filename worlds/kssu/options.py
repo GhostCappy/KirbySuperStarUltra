@@ -45,7 +45,7 @@ class RequiredMainGameCompletions(Range):
     """
     display_name = "Required Main-Game Completions"
     range_start = 1
-    range_end = 10
+    range_end = 11
     default = 6
     
 class RequiredMainGames(OptionSet):
@@ -234,7 +234,7 @@ class IncludeSubgames(Toggle):
     Sub-Games will not count towards the Main-Game Completion goal.
     """
     display_name = "Include Sub-Games"
-    default = True
+    default = False
     
 class MegatonDifficulties(Toggle):
     """
